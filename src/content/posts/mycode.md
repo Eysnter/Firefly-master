@@ -16,7 +16,7 @@ draft: false
 
 [English](./README_EN.md) | 中文
 
-<img align="right" width="200" src="https://github.com/Xuearia/Xuearia/blob/main/baizhouzi.png">
+<img align="right"  src="images/baizhouzi.avif">
 
 我是一名来自中国的 Java Web 学习者，目前居住在湖北省十堰市。
 专注于后端技术栈与 Web 应用开发，致力于构建稳定、高效的服务端应用。

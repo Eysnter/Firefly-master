@@ -8,7 +8,7 @@ draft: false
 image: api
 ---
 
-本文展示了 [Firefly](https://github.com/CuteLeaf/Firefly) 主题对 KaTeX 数学公式的渲染支持。
+本文展示了 [Firefly](https://github.com/Eysnter/Firefly) 主题对 KaTeX 数学公式的渲染支持。
 
 ## 行内公式 (Inline)
 

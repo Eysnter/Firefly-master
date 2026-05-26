@@ -11,9 +11,9 @@
 ![Astro](https://img.shields.io/badge/Astro-6.3.3-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
 >
-> [![Stars](https://img.shields.io/github/stars/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/stargazers)
-[![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/network/members)
-[![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
+> [![Stars](https://img.shields.io/github/stars/CuteLeaf/Firefly?style=social)](https://github.com/Eysnter/Firefly/stargazers)
+[![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/Eysnter/Firefly/network/members)
+[![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/Eysnter/Firefly/issues)
 > 
 > [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
 >
@@ -62,7 +62,7 @@
 >
 >**更多版面配置及示範請查看：[Firefly 版面配置系統詳解](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 >
->Firefly 支援 i18n 多語言 UI，但除了簡體中文，其他語言均為 AI 翻譯轉換，如有錯誤，歡迎提交 [Pull Request](https://github.com/CuteLeaf/Firefly/pulls) 修正。
+>Firefly 支援 i18n 多語言 UI，但除了簡體中文，其他語言均為 AI 翻譯轉換，如有錯誤，歡迎提交 [Pull Request](https://github.com/Eysnter/Firefly/pulls) 修正。
 
 ## ✨ 功能特性
 
@@ -85,7 +85,7 @@
 - [x] **主題色自訂** - 360° 色相調節
 
 
-如果你有好用的功能和優化，請提交 [Pull Request](https://github.com/CuteLeaf/Firefly/pulls)
+如果你有好用的功能和優化，請提交 [Pull Request](https://github.com/Eysnter/Firefly/pulls)
 
 ## 🚀 快速開始
 
@@ -98,11 +98,11 @@
 
 1. **克隆儲存庫：**
    ```bash
-   git clone https://github.com/Cuteleaf/Firefly.git
+   git clone https://github.com/Eysnter/Firefly.git
    cd Firefly
    ```
    
-   **先 [Fork](https://github.com/CuteLeaf/Firefly/fork) 到自己儲存庫再克隆（推薦），記得先點 Star 再 Fork 哦！**
+   **先 [Fork](https://github.com/Eysnter/Firefly/fork) 到自己儲存庫再克隆（推薦），記得先點 Star 再 Fork 哦！**
 
    ```bash
    git clone https://github.com/you-github-name/Firefly.git
@@ -140,8 +140,8 @@
 
    安裝命令： `pnpm install`
 
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/CuteLeaf/Firefly&project-name=Firefly&repository-name=Firefly)
-   [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/CuteLeaf/Firefly)
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Eysnter/Firefly&project-name=Firefly&repository-name=Firefly)
+   [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Eysnter/Firefly)
 
 ## 📖 配置說明
 
@@ -262,15 +262,15 @@ comment: true    # 是否允許留言
 
 **版權聲明：**
 - Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)
-- Copyright (c) 2025 [CuteLeaf](https://github.com/CuteLeaf) - [Firefly](https://github.com/CuteLeaf/Firefly)
+- Copyright (c) 2025 [CuteLeaf](https://github.com/Eysnter) - [Firefly](https://github.com/Eysnter/Firefly)
 
 根據 MIT 開源協議，你可以自由使用、修改、分發程式碼，但需保留上述版權聲明。
 
 ## 🍀 貢獻者
 
-感謝以下貢獻者對本專案做出的貢獻，如有問題或建議，請提交 [Issue](https://github.com/CuteLeaf/Firefly/issues) 或 [Pull Request](https://github.com/CuteLeaf/Firefly/pulls)。
+感謝以下貢獻者對本專案做出的貢獻，如有問題或建議，請提交 [Issue](https://github.com/Eysnter/Firefly/issues) 或 [Pull Request](https://github.com/Eysnter/Firefly/pulls)。
 
-><a href="https://github.com/CuteLeaf/Firefly/graphs/contributors">
+><a href="https://github.com/Eysnter/Firefly/graphs/contributors">
 >  <img src="https://contrib.rocks/image?repo=CuteLeaf/Firefly" />
 ></a>
 

@@ -1,9 +1,18 @@
+---
+title: 自我介绍
+published: 1970-01-01
+updated: 1970-01-01
+description: "了解 Firefly 中的 Markdown 功能"
+image: ""
+tags: [介绍]
+category: "示例"
+draft: false
+---
 ### 见字如面，我是 Rose Eysnter 👋
 
 [English](./README_EN.md) | 中文
 
-<img align="right" width="200" src="../../assets/images/baizhouzi.png">
-
+<img align="right" width="200" src="images/baizhouzi.png">
 
 我是一名来自中国的 Java Web 学习者，目前居住在湖北省十堰市。
 专注于后端技术栈与 Web 应用开发，致力于构建稳定、高效的服务端应用。

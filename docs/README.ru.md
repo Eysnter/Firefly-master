@@ -11,9 +11,9 @@
 ![Astro](https://img.shields.io/badge/Astro-6.3.3-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
 >
-> [![Stars](https://img.shields.io/github/stars/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/stargazers)
-[![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/network/members)
-[![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
+> [![Stars](https://img.shields.io/github/stars/CuteLeaf/Firefly?style=social)](https://github.com/Eysnter/Firefly/stargazers)
+[![Forks](https://img.shields.io/github/forks/CuteLeaf/Firefly?style=social)](https://github.com/Eysnter/Firefly/network/members)
+[![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/Eysnter/Firefly/issues)
 > 
 > [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
 >
@@ -62,7 +62,7 @@
 >
 >**Подробнее о настройках макета и демонстрациях см.: [Детали системы макетов Firefly](https://firefly.cuteleaf.cn/posts/firefly-layout-system/)**
 >
->Firefly поддерживает многоязычный UI через i18n, но, кроме упрощенного китайского, остальные языки переведены ИИ. Если вы заметите ошибки, пожалуйста, отправьте [Pull Request](https://github.com/CuteLeaf/Firefly/pulls) для исправления.
+>Firefly поддерживает многоязычный UI через i18n, но, кроме упрощенного китайского, остальные языки переведены ИИ. Если вы заметите ошибки, пожалуйста, отправьте [Pull Request](https://github.com/Eysnter/Firefly/pulls) для исправления.
 
 ## ✨ Возможности
 
@@ -85,7 +85,7 @@
 - [x] **Настройка цвета темы** - Регулировка оттенка на 360°
 
 
-Если у вас есть полезные функции и оптимизации, пожалуйста, отправьте [Pull Request](https://github.com/CuteLeaf/Firefly/pulls)
+Если у вас есть полезные функции и оптимизации, пожалуйста, отправьте [Pull Request](https://github.com/Eysnter/Firefly/pulls)
 
 ## 🚀 Быстрый старт
 
@@ -98,11 +98,11 @@
 
 1. **Клонировать репозиторий:**
    ```bash
-   git clone https://github.com/Cuteleaf/Firefly.git
+   git clone https://github.com/Eysnter/Firefly.git
    cd Firefly
    ```
    
-   **Сначала создайте [Fork](https://github.com/CuteLeaf/Firefly/fork) в свой репозиторий, затем клонируйте (рекомендуется). Не забудьте нажать Star перед Fork!**
+   **Сначала создайте [Fork](https://github.com/Eysnter/Firefly/fork) в свой репозиторий, затем клонируйте (рекомендуется). Не забудьте нажать Star перед Fork!**
 
    ```bash
    git clone https://github.com/you-github-name/Firefly.git
@@ -140,8 +140,8 @@
 
    Команда установки: `pnpm install`
 
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/CuteLeaf/Firefly&project-name=Firefly&repository-name=Firefly)
-   [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/CuteLeaf/Firefly)
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Eysnter/Firefly&project-name=Firefly&repository-name=Firefly)
+   [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Eysnter/Firefly)
 
 ## 📖 Настройка
 
@@ -265,15 +265,15 @@ comment: true    # Включить комментарии
 
 **Уведомление об авторских правах:**
 - Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)
-- Copyright (c) 2025 [CuteLeaf](https://github.com/CuteLeaf) - [Firefly](https://github.com/CuteLeaf/Firefly)
+- Copyright (c) 2025 [CuteLeaf](https://github.com/Eysnter) - [Firefly](https://github.com/Eysnter/Firefly)
 
 В соответствии с лицензией MIT вы можете свободно использовать, изменять и распространять код, но обязаны сохранять вышеуказанное уведомление об авторских правах.
 
 ## 🍀 Участники
 
-Спасибо следующим участникам за их вклад в этот проект. Если у вас есть вопросы или предложения, пожалуйста, отправьте [Issue](https://github.com/CuteLeaf/Firefly/issues) или [Pull Request](https://github.com/CuteLeaf/Firefly/pulls).
+Спасибо следующим участникам за их вклад в этот проект. Если у вас есть вопросы или предложения, пожалуйста, отправьте [Issue](https://github.com/Eysnter/Firefly/issues) или [Pull Request](https://github.com/Eysnter/Firefly/pulls).
 
-><a href="https://github.com/CuteLeaf/Firefly/graphs/contributors">
+><a href="https://github.com/Eysnter/Firefly/graphs/contributors">
 >  <img src="https://contrib.rocks/image?repo=CuteLeaf/Firefly" />
 ></a>
 

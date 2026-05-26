@@ -4,16 +4,13 @@
 [English](./README_EN.md) | 中文
 
 
-<img src="./images/baizhouzi.avif" alt="Firefly" width="200" align="right" />
-
+</div>
 
 我是一名来自中国的 Java Web 学习者，目前居住在湖北省十堰市。
 专注于后端技术栈与 Web 应用开发，致力于构建稳定、高效的服务端应用。
 
 我喜欢开源和技术探索，希望用代码解决实际问题，并在这个过程中不断成长。
 我希望自己可以成为一个优秀的后端工程师，并创造出有价值的软件产品。
-
-右侧的是虚拟人物——[梓](https://github.com/Xuearia/Xuearia/blob/main/baizhouzi.png)，她将在虚拟世界中替我发声（模板致敬 [YunYouJun](https://www.yunyoujun.cn)）。
 
 - 🔭 我当前在学习和实践一些 [Java Web 项目](https://github.com/Eysnter?tab=repositories)
   - 例如：基于 Spring Boot 的 RESTful API、MyBatis-Plus 数据持久层实践、以及各类后端基础组件的封装与学习。

@@ -154,15 +154,17 @@ const stats = [
 
       const lastUpdateElements = document.querySelectorAll('[data-stat-id="last-update"]');
       lastUpdateElements.forEach((element) => {
+        const suffixElement = element.nextElementSibling;
+
         if (daysSinceLastUpdate === 0) {
           element.textContent = todayText;
-          if (element.nextElementSibling) {
-            element.nextElementSibling.style.display = 'none';
+          if (suffixElement instanceof HTMLElement) {
+            suffixElement.style.display = 'none';
           }
         } else {
           element.textContent = daysSinceLastUpdate.toString();
-          if (element.nextElementSibling) {
-            element.nextElementSibling.style.display = '';
+          if (suffixElement instanceof HTMLElement) {
+            suffixElement.style.display = '';
           }
         }
       });

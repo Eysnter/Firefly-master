@@ -49,15 +49,17 @@ function formatNumber(num: number): string {
 	return num.toLocaleString();
 }
 
-// 获取最新文章日期（用于客户端计算）
-const latestPost = posts.reduce((latest, post) => {
-	if (!latest) return post;
-	return post.data.published > latest.data.published ? post : latest;
-}, posts[0]);
+// 获取最后活动时间（取所有文章 published 和 updated 的最大值）
+const lastActiveDate = posts.reduce((latest, post) => {
+	const postDates = [post.data.published];
+	if (post.data.updated) {
+		postDates.push(post.data.updated);
+	}
+	const postLatest = new Date(Math.max(...postDates.map(d => d.getTime())));
+	return !latest || postLatest > latest ? postLatest : latest;
+}, null as Date | null);
 
-const lastPostDate = latestPost
-	? latestPost.data.published.toISOString()
-	: null;
+const lastPostDate = lastActiveDate?.toISOString() ?? null;
 
 const todayText = i18n(I18nKey.today);
 

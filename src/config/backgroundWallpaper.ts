@@ -75,7 +75,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			titleSize: "3.8rem",
 			// 主页横幅副标题
 			subtitle: [
-				"In Reddened Chrysalis, I Once Rest",
+				"With Your Daily Life, it is a Miracle!",
 				"From Shattered Sky, I Free Fall",
 				"Amidst Silenced Stars, I Deep Sleep",
 				"Upon Lighted Fyrefly, I Soon Gaze",

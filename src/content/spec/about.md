@@ -22,7 +22,8 @@
 
 #### 📊 GitHub Stats
 
-<img align="right" width="450" src="https://github-readme-stats.vercel.app/api?username=Eysnter&show_icons=true&icon_color=0078e7&title_color=0078e7&include_all_commits=true"/>
+![](https://github.com/Eysnter/Eysnter/raw/output/github-contribution-grid-snake.svg)
+
 
 <br clear="both"/>
 

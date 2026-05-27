@@ -34,7 +34,7 @@ export const friendsConfig: FriendLink[] = [
 	},
 	{
 		title: "Firefly Docs",
-		imgurl: "https://docs-firefly.cuteleaf.cn/logo.png",
+		imgurl: "https://img.eysnter.cn/file/博客/1779893800249_zi-2.png",
 		desc: "Firefly主题模板文档",
 		siteurl: "https://docs-firefly.cuteleaf.cn",
 		tags: ["Docs"],

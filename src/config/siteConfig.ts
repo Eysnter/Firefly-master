@@ -7,10 +7,10 @@ const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "Firefly",
+	title: "Eysnter",
 
 	// 站点副标题
-	subtitle: "Demo site",
+	subtitle: "的小站",
 
 	// 站点 URL
 	site_url: "https://firefly.cuteleaf.cn",
@@ -57,7 +57,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		{
 			// 图标文件路径
-			src: "/favicon/favicon.ico",
+			src: "https://img.eysnter.cn/file/博客/1779893809984_zi-1.png",
 			// 可选，指定主题 'light' | 'dark'
 			// theme: "light",
 			// 可选，图标大小
@@ -129,7 +129,7 @@ export const siteConfig: SiteConfig = {
 	// bangumi的数据为编译时获取的，所以不是实时数据，请配置bangumi.userId
 	pages: {
 		// 友链页面开关
-		friends: true,
+		friends: false,
 		// 赞助页面开关
 		sponsor: true,
 		// 留言板页面开关，需要配置评论系统

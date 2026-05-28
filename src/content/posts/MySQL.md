@@ -2,7 +2,7 @@
 title: MySQL笔记.md
 published: 2026-05-27
 description: ''
-image: 'https://img.eysnter.cn/file/博客/1779898761115_MySQL-icon.png'
+image: 'https://img.eysnter.cn/file/posts/posts2-notes/mysql/1779937001666_mysql.png'
 tags: [博客,笔记]
 category: '笔记'
 draft: false 

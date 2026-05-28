@@ -16,7 +16,7 @@ export const galleryConfig: GalleryConfig = {
     // passwordHint: 密码提示，设置后在输入密码错误时显示（可选，需配合password使用）
     // 每添加一个数组项就相当于添加了一个相册，记得在 public/gallery/ 目录下创建对应的子目录并放入图片
     {
-      id: "firefly-2026",
+      id: "Acg",
       name: "二次元",
       description:
         "「跨越次元的羁绊」——那些在屏幕彼端闪耀过的笑容与泪水，是我们永不褪色的青春物语。",
@@ -26,7 +26,7 @@ export const galleryConfig: GalleryConfig = {
     },
     {
       id: "encrypted-test",
-      name: "加密相册示例",
+      name: "加密相册",
       description:
         "⚠️ 此区域已展开「AT力场」防护。请输入正确的同步率密钥以解除结界，解锁被封印的珍贵记忆。",
       location: "第三新东京市·地下设施",

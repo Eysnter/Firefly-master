@@ -2,4 +2,4 @@
 # # 号开头的行为注释，空行会被忽略
 # 示例：
 
-https://img.eysnter.cn/file/WallpaperACG/1779960819485_莉莉.png
+https://img.eysnter.cn/file/Wallpaper/ACG/1779960819485_莉莉.png

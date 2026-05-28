@@ -1,12 +1,14 @@
 ---
 title: MySQL笔记.md
 published: 2026-05-27
+pinned: true
 description: ''
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/mysql/1779937001666_mysql.png'
 tags: [博客,笔记]
 category: '笔记'
 draft: false 
 lang: ''
+comment: true    # 是否允许评论
 ---
 
 

@@ -331,8 +331,7 @@ SELECT * FROM user;
 
 例子：
 
-```js "given text"
-
+```mysql
 -- 创建用户test，只能在当前主机localhost访问
 create user 'test'@'localhost' identified by '123456';
 -- 创建用户test，能在任意主机访问

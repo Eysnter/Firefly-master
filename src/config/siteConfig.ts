@@ -13,7 +13,7 @@ export const siteConfig: SiteConfig = {
 	subtitle: "的小站",
 
 	// 站点 URL
-	site_url: "https://firefly.cuteleaf.cn",
+	site_url: "https://eysnter.cn",
 
 	// 站点描述
 	description:
@@ -57,7 +57,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		{
 			// 图标文件路径
-			src: "https://img.eysnter.cn/file/博客/1779893809984_zi-1.png",
+			src: "../assets/images/icon/nav.ico",
 			// 可选，指定主题 'light' | 'dark'
 			// theme: "light",
 			// 可选，图标大小

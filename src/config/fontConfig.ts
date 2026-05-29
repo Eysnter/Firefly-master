@@ -1,11 +1,11 @@
 // 字体配置
 export const fontConfig = {
   // 是否启用自定义字体功能
-  enable: false,
+  enable: true,
   // 是否预加载字体文件
   preload: true,
   // 当前选择的字体，支持多个字体组合
-  selected: ["inter"],
+  selected: ["975maru-sc"],
 
   // 字体列表
   // 推荐使用可靠的 CDN 服务商提供的字体链接，它天然做了按需分片加载，且性能较好
@@ -75,6 +75,14 @@ export const fontConfig = {
       src: "https://cn-font.claude-code-best.win/packages/moon-stars-kai/dist/MoonStarsKaiT-Bold/result.css",
       family: "MiSans",
       weight: 600,
+      display: "swap" as const,
+      },
+    //圆体
+    "975maru-sc": {
+      id: "975maru-sc",
+      name: "975Maru SC",
+      src: "https://fontsapi.zeoseven.com/184/main/result.css",
+      family: "975Maru SC",
       display: "swap" as const,
     },
   },

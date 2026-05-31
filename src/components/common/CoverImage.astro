@@ -1,4 +1,5 @@
 ---
+// 导入 Astro 图片优化组件和节点路径工具
 import { Picture } from "astro:assets";
 import * as path from "node:path";
 import type { ImageMetadata } from "astro";
@@ -12,6 +13,7 @@ import {
 } from "@/utils/image-utils";
 import { url } from "@/utils/url-utils";
 
+// 组件属性定义：支持本地图片、远程图片、随机 Cover API 等
 interface Props {
 	id?: string;
 	src: string;
@@ -26,6 +28,7 @@ interface Props {
 	apiUrls?: string[];
 }
 
+// 读取 Astro 传入的 props，并提供默认值
 const {
 	id,
 	src,
@@ -43,7 +46,7 @@ const configQuality = getImageQuality();
 const fallbackFormat = getFallbackFormat();
 const className = Astro.props.class;
 
-// 判断图片类型
+// 判断图片来源类型：本地图片 / 公共目录图片 / 远程图片 / data URI
 const isLocal = !(
 	src.startsWith("/") ||
 	src.startsWith("http") ||
@@ -52,7 +55,7 @@ const isLocal = !(
 );
 const isPublic = src.startsWith("/");
 
-// 动态导入本地图片
+// 如果是本地图片，则使用 Astro 动态导入匹配的静态资源
 let img: ImageMetadata | null = null;
 if (isLocal) {
 	const files = import.meta.glob<ImageMetadata>(
@@ -74,7 +77,7 @@ if (isLocal) {
 	}
 }
 
-// 加载回退图片
+// 加载回退图片，仅在远程图片且回退图片位于非公共目录时使用静态导入
 let fallbackImg: ImageMetadata | null = null;
 const fallbackPath = coverImageConfig.randomCoverImage.fallback;
 const isFallbackPublic = fallbackPath?.startsWith("/");
@@ -94,27 +97,27 @@ if (fallbackPath && !isLocal && !isFallbackPublic) {
 	}
 }
 
-// 图片样式
+// 图片 CSS 类与样式
 const imageClass = "w-full h-full object-cover";
 const imageStyle = `object-position: ${position};`;
 
-// 响应式配置
+// 响应式图片处理参数，预览和非预览模式使用不同尺寸
 const widths = preview ? [320, 480, 640, 960] : [800, 1200, 1600, 2000];
 const sizes = preview
 	? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
 	: "(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px";
 const quality = preview ? Math.round(configQuality * 0.9) : configQuality;
 
-// 是否显示加载动画
+// 是否显示加载动画，默认可配置
 const showLoading = coverImageConfig.randomCoverImage.showLoading ?? true;
 
-// 检查回退图片是否需要 referrerpolicy
+// 判断是否需要为回退图片添加 referrerpolicy
 const fallbackReferrerPolicy =
 	isFallbackPublic && fallbackPath && shouldAddNoReferrer(url(fallbackPath))
 		? "no-referrer"
 		: undefined;
 
-// 检查远程图片是否需要 referrerpolicy
+// 判断是否需要为远程图片添加 referrerpolicy
 const remoteReferrerPolicy =
 	!isLocal && shouldAddNoReferrer(isPublic ? url(src) : src)
 		? "no-referrer"
@@ -210,6 +213,7 @@ const remoteReferrerPolicy =
 </div>
 
 <style>
+	/* 封面容器基础最小高度，保证小屏幕下有足够显示空间 */
 	.cover-image-container {
 		min-height: 150px;
 	}
@@ -266,7 +270,7 @@ const remoteReferrerPolicy =
 		}
 	}
 
-	/* 图片样式 */
+	/* 图片样式：填满容器并保持纵横比，超出部分裁剪 */
 	.cover-image-container img {
 		width: 100%;
 		height: 100%;
@@ -275,6 +279,7 @@ const remoteReferrerPolicy =
 </style>
 
 <script>
+	// 初始化封面图加载逻辑，支持远程 API 图像重试和加载状态显示
 	function initCoverImages() {
 		const containers = document.querySelectorAll('.cover-image-container');
 		containers.forEach((container) => {
@@ -284,9 +289,9 @@ const remoteReferrerPolicy =
 			const img = container.querySelector('img[data-cover-img]') as HTMLImageElement | null;
 			if (!img) return;
 
-			// 解析API URL列表，用于按顺序重试
+			// 解析 API URL 列表，用于按顺序重试远程图片加载
 			let apiUrls: string[] = [];
-			let currentApiIndex = 1; // 0号已由服务端设为img.src
+			let currentApiIndex = 1; // 0 号由服务端默认设置为 img.src
 			const apiUrlsAttr = container.getAttribute('data-api-urls');
 			if (apiUrlsAttr) {
 				try { apiUrls = JSON.parse(apiUrlsAttr); } catch (_e) { /* ignore */ }
@@ -301,12 +306,12 @@ const remoteReferrerPolicy =
 				container.setAttribute('data-error', 'true');
 			};
 
-			// 统一的错误处理：尝试下一个API或显示回退
+			// 错误处理：如果当前图片为远程图片，则尝试下一个 API，否则显示错误回退状态
 			const onError = () => {
 				if (img.dataset.remote !== 'true') return;
 
 				if (currentApiIndex < apiUrls.length) {
-					// 先绑定好事件，再更换src
+					// 先绑定事件，再更换 src，以保证重试行为正常触发
 					img.addEventListener('load', hideLoading, { once: true });
 					img.addEventListener('error', onError, { once: true });
 					img.src = apiUrls[currentApiIndex];
@@ -317,6 +322,7 @@ const remoteReferrerPolicy =
 			};
 
 			if (img.complete) {
+				// 如果图像已加载完成，直接根据 naturalWidth 判定加载结果
 				if (img.naturalWidth > 0) {
 					hideLoading();
 				} else {

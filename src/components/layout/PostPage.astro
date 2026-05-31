@@ -64,7 +64,7 @@ const initialLayoutClass =
     // 根据视口宽度确定有效的默认布局
     const effectiveDefault = window.innerWidth < 780 ? mobileDefaultLayout : defaultLayout;
     // 低于380px强制网格模式
-    const effectiveLayout = window.innerWidth < 380 ? 'grid' : (savedLayout || effectiveDefault);
+    const effectiveLayout = window.innerWidth < 550 ? 'grid' : (savedLayout || effectiveDefault);
 
     if (effectiveLayout !== defaultLayout) {
       const container = document.getElementById('post-list-container');
@@ -108,7 +108,7 @@ const initialLayoutClass =
     let currentLayout = savedLayout || effectiveDefault;
 
     // 低于380px强制网格模式
-    if (window.innerWidth < 380) {
+    if (window.innerWidth < 550) {
       currentLayout = "grid";
     }
 

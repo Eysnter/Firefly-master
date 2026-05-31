@@ -6,7 +6,6 @@ image: 'https://img.eysnter.cn/file/posts/posts2-notes/Git/1780206480345_git.png
 tags: [Git, 速查手册]
 category: ''
 draft: false 
-lang: ''
 pinned: true
 comment: true
 lang: zh-CN

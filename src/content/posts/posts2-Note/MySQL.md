@@ -1,14 +1,14 @@
 ---
-title: MySQL笔记.md
+title: MySQL 核心知识点与常用操作速查手册
 published: 2026-05-27
 pinned: true
-description: ''
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/mysql/1779937001666_mysql.png'
-tags: [博客,笔记]
-category: '笔记'
-draft: false 
-lang: ''
-comment: true    # 是否允许评论
+tags: [MySQL, 数据库, 速查手册]
+category: '技术参考'
+draft: false
+description: 本文是一份系统化的 MySQL 核心知识点与常用操作速查手册，涵盖基础 SQL 语法、高级函数、索引、事务原理、架构锁机制及主从复制、分库分表等运维实践。
+lang: zh-CN
+comment: true
 ---
 
 
@@ -1052,13 +1052,13 @@ EXPLAIN 各字段含义：
 ![](images/img-mysql/二叉树.png "二叉树")
 
 二叉树的缺点可以用红黑树来解决：
-![](](images/img-mysql/红黑树.png "红黑树")
+![](images/img-mysql/红黑树.png "红黑树")
 红黑树也存在大数据量情况下，层级较深，检索速度慢的问题。
 
 为了解决上述问题，可以使用 B-Tree 结构。
 B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节点的子节点个数）为5（5阶）的 b-tree 为例（每个节点最多存储4个key，5个指针）
 
-![](](images/img-mysql/B-Tree结构.png "B-Tree结构")
+![](images/img-mysql/B-Tree结构.png "B-Tree结构")
 
 > B-Tree 的数据插入过程动画参照：https://www.bilibili.com/video/BV1Kr4y1i7ru?p=68
 > 演示地址：https://www.cs.usfca.edu/~galles/visualization/BTree.html
@@ -1067,7 +1067,7 @@ B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节
 
 结构图：
 
-![](](images/img-mysql/B+Tree结构图.png "B+Tree结构图")
+![](images/img-mysql/B+Tree结构图.png "B+Tree结构图")
 
 > 演示地址：https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html
 
@@ -1078,14 +1078,14 @@ B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节
 
 MySQL 索引数据结构对经典的 B+Tree 进行了优化。在原 B+Tree 的基础上，增加一个指向相邻叶子节点的链表指针，就形成了带有顺序指针的 B+Tree，提高区间访问的性能。
 
-![](](images/img-mysql/结构图.png "MySQL B+Tree 结构图")
+![](images/img-mysql/结构图.png "MySQL B+Tree 结构图")
 
 #### Hash
 
 哈希索引就是采用一定的hash算法，将键值换算成新的hash值，映射到对应的槽位上，然后存储在hash表中。
 如果两个（或多个）键值，映射到一个相同的槽位上，他们就产生了hash冲突（也称为hash碰撞），可以通过链表来解决。
 
-![](](images/img-mysql/Hash索引原理图 "Hash索引原理图")
+![](images/img-mysql/Hash索引原理图 "Hash索引原理图")
 
 特点：
 
@@ -1124,8 +1124,8 @@ MySQL 索引数据结构对经典的 B+Tree 进行了优化。在原 B+Tree 的�
 
 演示图：
 
-![](](images/img-mysql/原理图.png "大致原理")
-![](](images/img-mysql/演示图.png "演示图")
+![](images/img-mysql/原理图.png "大致原理")
+![](images/img-mysql/演示图.png "演示图")
 
 聚集索引选取规则：
 
@@ -1385,7 +1385,7 @@ InnoDB 的行锁是针对索引加的锁，不是针对记录加的锁，并且�
 
 ## 视图/存储过程/触发器
 
-![](](images/img-mysql/视图等内容的总结.png)
+![](images/img-mysql/视图等内容的总结.png)
 
 ### 视图
 
@@ -2147,9 +2147,9 @@ MySQL中的锁，按照锁的粒度分，分为一下三类：
 
 演示图：
 
-![](](images/img-mysql/51083972978.png)
+![](images/img-mysql/51083972978.png)
 
-![](](images/img-mysql/fqweqwegqg.png)
+![](images/img-mysql/fqweqwegqg.png)
 
 特点：
 
@@ -2243,9 +2243,9 @@ MDL加锁过程是系统自动控制，无需显式使用，在访问一张表�
 
 #### AUTO-INC锁（补充）
 
-![](](images/img-mysql/qrer231r123r.png)
+![](images/img-mysql/qrer231r123r.png)
 
-![](](images/img-mysql/qewf23f.png)
+![](images/img-mysql/qewf23f.png)
 
 ### 行级锁
 
@@ -2289,11 +2289,11 @@ InnoDB实现了以下两种类型的行锁：
 
 #### Gap Lock（间隙锁）
 
-![](](images/img-mysql/qweg2431123qw.png)
+![](images/img-mysql/qweg2431123qw.png)
 
 #### Next-Key Lock（临键锁）
 
-![](](images/img-mysql/qwegfqew24.png)
+![](images/img-mysql/qwegfqew24.png)
 
 默认情况下，InnODB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 next-key 锁进行搜索和索引扫描，以防止幻读。
 
@@ -2305,33 +2305,33 @@ InnoDB实现了以下两种类型的行锁：
 
 ### 逻辑存储结构
 
-![](](images/img-mysql/ewqqeg423.png)
+![](images/img-mysql/ewqqeg423.png)
 
-![](](images/img-mysql/ewqg1341.png)
+![](images/img-mysql/ewqg1341.png)
 
 ### 架构
 
-![](](images/img-mysql//qewg13g423f.png)
+![](images/img-mysql//qewg13g423f.png)
 
 #### 内存架构
 
-![](](images/img-mysql/qwef12t132r.png)
+![](images/img-mysql/qwef12t132r.png)
 
-![](](images/img-mysql/910310644164.png)
+![](images/img-mysql/910310644164.png)
 
-![](](images/img-mysql/2633356152.png)
+![](images/img-mysql/2633356152.png)
 
-![](](images/img-mysql/21810694716.png)
+![](images/img-mysql/21810694716.png)
 
 #### 磁盘结构
 
-![](](images/img-mysql/71896219103.png)
+![](images/img-mysql/71896219103.png)
 
-![](](images/img-mysql/6345845897.png)
+![](images/img-mysql/6345845897.png)
 
 #### 后台线程
 
-![](](images/img-mysql/1192969375.png)
+![](images/img-mysql/1192969375.png)
 
 ### 事务原理
 
@@ -2348,7 +2348,7 @@ InnoDB实现了以下两种类型的行锁：
 
 特性原理分类图：
 
-![](](images/img-mysql/10723932987.png)
+![](images/img-mysql/10723932987.png)
 
 #### redo log
 
@@ -2358,7 +2358,7 @@ InnoDB实现了以下两种类型的行锁：
 
 Buffer Pool在产生脏页数据的时候，会先将数据存储到 redo log buffer 再存储到 redo log 中进行磁盘持久化存储，在内存出现异常（比如突然断电）时，通过redo log中持久化的数据进行回滚。过程如下图：
 
-![](](images/img-mysql/7521579557.png)
+![](images/img-mysql/7521579557.png)
 
 redo log 要写到磁盘，数据也要写磁盘，为什么要多此一举?
 
@@ -2394,7 +2394,7 @@ Undo log 存储：undo log 采用段的方式进行管理和记录，存放在�
 
 #### 三个隐藏字段
 
-![](](images/img-mysql/9225237599.png)
+![](images/img-mysql/9225237599.png)
 
 #### undo log
 
@@ -2412,7 +2412,7 @@ Undo log 存储：undo log 采用段的方式进行管理和记录，存放在�
 - **快照读取结束**：
   - 当所有依赖于该undo log的快照读取操作结束后，undo log才会被删除。这意味着如果有一个事务正在进行快照读取，并且依赖于某个undo log，那么这个undo log会一直保留直到该事务结束。
 
-![](](images/img-mysql/921810810932.png)
+![](images/img-mysql/921810810932.png)
 
 #### readview
 
@@ -2427,9 +2427,9 @@ ReadView中包含了四个核心字段:
 |   max_trx_id   | 预分配事务ID，当前最大事务ID+1（因为事务ID是自增的） |
 | creator_trx_id |                ReadView创建者的事务ID                |
 
-![](](images/img-mysql/84711022753.png)
+![](images/img-mysql/84711022753.png)
 
-![](](images/img-mysql/6934998817.png)
+![](images/img-mysql/6934998817.png)
 
 依次比较 undo log 日志中版本数据链，找到可以进行访问的版本数据。
 
@@ -2450,27 +2450,27 @@ Mysql数据库安装完成后，自带了一下四个数据库，具体作用如
 
 #### mysql
 
-![](](images/img-mysql/3233394951.png)
+![](images/img-mysql/3233394951.png)
 
 #### mysqladmin
 
-![](](images/img-mysql/10103131010198.png)
+![](images/img-mysql/10103131010198.png)
 
 #### mysqlbinlog
 
-![](](images/img-mysql/1285451886.png)
+![](images/img-mysql/1285451886.png)
 
 #### mysqlshow
 
-![](](images/img-mysql/8210310352105.png)
+![](images/img-mysql/8210310352105.png)
 
 #### mysqldump
 
-![](](images/img-mysql/479211610103.png)
+![](images/img-mysql/479211610103.png)
 
 #### mysqlimport/source
 
-![](](images/img-mysql/34108898837.png)
+![](images/img-mysql/34108898837.png)
 
 
 
@@ -2576,31 +2576,31 @@ log_queries_not_using_indexes = 1
 
 ## 主从复制
 
- ![](](images/img-mysql/58131011726.png)
+ ![](images/img-mysql/58131011726.png)
 
-![](](images/img-mysql/4454682776.png)
+![](images/img-mysql/4454682776.png)
 
 ### 原理
 
-![](](images/img-mysql/7410105910882.png)
+![](images/img-mysql/7410105910882.png)
 
 ### 搭建实现
 
 #### 主库配置
 
-![](](images/img-mysql/21103533211.png)
+![](images/img-mysql/21103533211.png)
 
-![](](images/img-mysql/24794193710.png)
+![](images/img-mysql/24794193710.png)
 
-![](](images/img-mysql/91294866110.png)
+![](images/img-mysql/91294866110.png)
 
 #### 从库配置
 
-![](](images/img-mysql/10617439921.png)
+![](images/img-mysql/10617439921.png)
 
-![](](images/img-mysql/21053341798.png)
+![](images/img-mysql/21053341798.png)
 
-![](](images/img-mysql/6153782135.png)
+![](images/img-mysql/6153782135.png)
 
 #### 测试
 
@@ -2623,35 +2623,35 @@ insert into tb_user(id, name, sex) valurs (null, 'Tom', '1'), (null, 'Trigger', 
 
 ### 介绍
 
-![](](images/img-mysql/4765397657.png)
+![](images/img-mysql/4765397657.png)
 
-![](](images/img-mysql/35239910325.png)
+![](images/img-mysql/35239910325.png)
 
-![](](images/img-mysql/106169108266.png)
+![](images/img-mysql/106169108266.png)
 
-![](](images/img-mysql/4616215143.png)
+![](images/img-mysql/4616215143.png)
 
-![](](images/img-mysql/86213810658.png)
+![](images/img-mysql/86213810658.png)
 
 ### Mycat概述
 
-![](](images/img-mysql/81010325101039.png)
+![](images/img-mysql/81010325101039.png)
 
-![](](images/img-mysql/6382138721.png)
+![](images/img-mysql/6382138721.png)
 
-![](](images/img-mysql/101795210673.png)
+![](images/img-mysql/101795210673.png)
 
 ### Mycat入门
 
-![](](images/img-mysql/96457210797.png)
+![](images/img-mysql/96457210797.png)
 
-![](](images/img-mysql/1891042610310.png)
+![](images/img-mysql/1891042610310.png)
 
-![](](images/img-mysql/qwe1324t14t.png)
+![](images/img-mysql/qwe1324t14t.png)
 
-![](](images/img-mysql/10197188896.png)
+![](images/img-mysql/10197188896.png)
 
-![](](images/img-mysql/59710648531.png)
+![](images/img-mysql/59710648531.png)
 
 ### Mycat配置
 
@@ -2665,134 +2665,134 @@ schema.xml作为MyCat中最重要的配置文件之一,涵盖了MyCat的逻辑�
 - datanode标签
 - datahost标签
 
-![](](images/img-mysql/32368131027.png)
+![](images/img-mysql/32368131027.png)
 
-![](](images/img-mysql/7484479134.png)
+![](images/img-mysql/7484479134.png)
 
-![](](images/img-mysql/10769359339.png)
+![](images/img-mysql/10769359339.png)
 
-![](](images/img-mysql/91315810623.png)
+![](images/img-mysql/91315810623.png)
 
 #### rule.xml
 
-![](](images/img-mysql/951010415971.png)
+![](images/img-mysql/951010415971.png)
 
-![](](images/img-mysql/84271093639.png)
+![](images/img-mysql/84271093639.png)
 
-![](](images/img-mysql/3853211256.png)
+![](images/img-mysql/3853211256.png)
 
 ### Mycat分片
 
 #### 垂直分库
 
-![](](images/img-mysql/9325751819.png)
+![](images/img-mysql/9325751819.png)
 
-![](](images/img-mysql/21931016227.png)
+![](images/img-mysql/21931016227.png)
 
-![](](images/img-mysql/9852726692.png)
+![](images/img-mysql/9852726692.png)
 
-![](](images/img-mysql/58109378671.png)
+![](images/img-mysql/58109378671.png)
 
 #### 水平分表
 
-![](](images/img-mysql/1269361453.png)
+![](images/img-mysql/1269361453.png)
 
-![](](images/img-mysql/9977715254.png)
+![](images/img-mysql/9977715254.png)
 
-![](](images/img-mysql/131081045236.png)
+![](images/img-mysql/131081045236.png)
 
 #### 分片规则
 
 ##### 范围分片
 
-![](](images/img-mysql/34510781883.png)
+![](images/img-mysql/34510781883.png)
 
-![](](images/img-mysql/2654319698.png)
+![](images/img-mysql/2654319698.png)
 
 ##### 取模分片
 
-![](](images/img-mysql/22173110191.png)
+![](images/img-mysql/22173110191.png)
 
-![](](images/img-mysql/7347361194.png)
+![](images/img-mysql/7347361194.png)
 
 ##### 一致性hash算法
 
-![](](images/img-mysql/73610917872.png)
+![](images/img-mysql/73610917872.png)
 
-![](](images/img-mysql/3171425417.png)
+![](images/img-mysql/3171425417.png)
 
 ##### 枚举分片
 
-![](](images/img-mysql/667103121103.png)
+![](images/img-mysql/667103121103.png)
 
-![](](images/img-mysql/11088699372.png)
+![](images/img-mysql/11088699372.png)
 
 ##### 应用指定算法
 
-![](](images/img-mysql/2632725279.png)
+![](images/img-mysql/2632725279.png)
 
-![](](images/img-mysql/1452119317.png)
+![](images/img-mysql/1452119317.png)
 
 ##### 固定hash算法
 
-![](](images/img-mysql/2375113118.png)
+![](images/img-mysql/2375113118.png)
 
-![](](images/img-mysql/1368697562.png)
+![](images/img-mysql/1368697562.png)
 
 ##### 字符串hash解析
 
-![](](images/img-mysql/53710618932.png)
+![](images/img-mysql/53710618932.png)
 
-![](](images/img-mysql/8619959324.png)
+![](images/img-mysql/8619959324.png)
 
 ##### 按天分片
 
-![](](images/img-mysql/1010769110977.png)
+![](images/img-mysql/1010769110977.png)
 
-![](](images/img-mysql/109109981999.png)
+![](images/img-mysql/109109981999.png)
 
 ##### 按自然月分片
 
-![](](images/img-mysql/4762746916.png)
+![](images/img-mysql/4762746916.png)
 
-![](](images/img-mysql/22673141012.png)
+![](images/img-mysql/22673141012.png)
 
 ### Mycat管理及监控
 
-![](](images/img-mysql/73451065142.png)
+![](images/img-mysql/73451065142.png)
 
-![](](images/img-mysql/7348156477.png)
+![](images/img-mysql/7348156477.png)
 
 ## 读写分离
 
-![](](images/img-mysql/52510452433.png)
+![](images/img-mysql/52510452433.png)
 
 ### 介绍
 
-![](](images/img-mysql/10918829811.png)
+![](images/img-mysql/10918829811.png)
 
 ### 一主一从读写分离
 
-![](](images/img-mysql/52287271210.png)
+![](images/img-mysql/52287271210.png)
 
-![](](images/img-mysql/4564143383.png)
+![](images/img-mysql/4564143383.png)
 <!--  -->
 
 ### 双主双从
 
-![](](images/img-mysql/245101066682.png)
+![](images/img-mysql/245101066682.png)
 
-![](](images/img-mysql/6338368756.png)
+![](images/img-mysql/6338368756.png)
 
-![](](images/img-mysql/2677654314.png)
+![](images/img-mysql/2677654314.png)
 <!-- -->
-![](](images/img-mysql/105101448841.png)
+![](images/img-mysql/105101448841.png)
 
-![](](images/img-mysql/7237222812.png)
+![](images/img-mysql/7237222812.png)
 
-![](](images/img-mysql/6246592973.png)
+![](images/img-mysql/6246592973.png)
 
-![](](images/img-mysql/12919109752.png)
+![](images/img-mysql/12919109752.png)
 
 测试：
 
@@ -2819,9 +2819,7 @@ insert into tb user(id,name,sex) values(6,'erry','1');
 
 ### 双主双从读写分离
 
-![](](images/img-mysql/img\8536419478.png)
 
-![](](images/img-mysql/img\15610682864.png)
 
 测试：
 

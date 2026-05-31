@@ -111,9 +111,7 @@
   </a>
 </div>
 
-> 💡 以上图标来自开源项目 [GitHub 个人主页图标合集](https://github.com/LibreSpark/LibreBadges)，感谢作者的整理！
 
----
 
 
 你可以在侧边栏找到联系我的方式，关注我以发现更多有趣的事物。

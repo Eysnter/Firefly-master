@@ -9,8 +9,9 @@ draft: false
 lang: ''
 pinned: true
 comment: true
+lang: zh-CN
 ---
-![git.png](https://img.eysnter.cn/file/posts/posts2-notes/Git/1780206480345_git.png)
+
 ## 一. 安装 git 后基本配置
 #### 绑定Git 的全局用户身份信息
 ```bash
@@ -121,7 +122,7 @@ git reset --hard <CommitID>
 ### 三、状态与信息查看指令（确认状态再动手）
 
 #### 1. 查看当前状态
-```Bash
+```bash
 # 查看工作区和暂存区最详细的状态（有哪些文件被修改了、哪些未追踪）
 git status
 
@@ -130,7 +131,7 @@ git status -s
 ```
 
 #### 2. 查看分支与远程信息
-```Bash
+```bash
 # 查看所有本地分支（当前所在分支前面会有 * 号并高亮）
 git branch
 
@@ -145,7 +146,7 @@ git remote -v
 ```
 
 #### 3. 查看提交历史与日志
-```Bash
+```bash
 # 查看详细的提交历史（包含作者、日期、完整的 CommitID 和提交日志）
 git log
 

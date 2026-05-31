@@ -861,8 +861,7 @@ SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对�
 
 MySQL体系结构：
 
-![](images/img-mysql/MySQL体系结构.png "结构图")
-![](images/img-mysql/MySQL体系结构层级含义.png "层级描述")
+
 
 存储引擎就是存储数据、建立索引、更新/查询数据等技术的实现方式。存储引擎是基于表而不是基于库的，所以存储引擎也可以被称为表引擎。
 默认存储引擎是InnoDB。
@@ -1049,16 +1048,16 @@ EXPLAIN 各字段含义：
 
 #### B-Tree
 
-![](images/img-mysql/二叉树.png "二叉树")
+
 
 二叉树的缺点可以用红黑树来解决：
-![](images/img-mysql/红黑树.png "红黑树")
+
 红黑树也存在大数据量情况下，层级较深，检索速度慢的问题。
 
 为了解决上述问题，可以使用 B-Tree 结构。
 B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节点的子节点个数）为5（5阶）的 b-tree 为例（每个节点最多存储4个key，5个指针）
 
-![](images/img-mysql/B-Tree结构.png "B-Tree结构")
+
 
 > B-Tree 的数据插入过程动画参照：https://www.bilibili.com/video/BV1Kr4y1i7ru?p=68
 > 演示地址：https://www.cs.usfca.edu/~galles/visualization/BTree.html
@@ -1067,7 +1066,7 @@ B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节
 
 结构图：
 
-![](images/img-mysql/B+Tree结构图.png "B+Tree结构图")
+
 
 > 演示地址：https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html
 
@@ -1078,7 +1077,7 @@ B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节
 
 MySQL 索引数据结构对经典的 B+Tree 进行了优化。在原 B+Tree 的基础上，增加一个指向相邻叶子节点的链表指针，就形成了带有顺序指针的 B+Tree，提高区间访问的性能。
 
-![](images/img-mysql/结构图.png "MySQL B+Tree 结构图")
+
 
 #### Hash
 

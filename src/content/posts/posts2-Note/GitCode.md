@@ -2,7 +2,7 @@
 title: Git 安装后必备配置与高频核心命令速查指南
 published: 2026-05-31
 description: 本文介绍 Git 安装后必备的配置和命令，帮助小白快速掌握 Git 的常用命令
-image: ''
+image: 'https://img.eysnter.cn/file/posts/posts2-notes/Git/1780206480345_git.png'
 tags: [Git, 速查手册]
 category: ''
 draft: false 
@@ -10,7 +10,7 @@ lang: ''
 pinned: true
 comment: true
 ---
-
+![git.png](https://img.eysnter.cn/file/posts/posts2-notes/Git/1780206480345_git.png)
 ## 一. 安装 git 后基本配置
 #### 绑定Git 的全局用户身份信息
 ```bash

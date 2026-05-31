@@ -7,6 +7,8 @@ tags: [Git, 速查手册]
 category: ''
 draft: false 
 lang: ''
+pinned: true
+comment: true
 ---
 
 ## 一. 安装 git 后基本配置

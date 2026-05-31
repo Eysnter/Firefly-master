@@ -30,6 +30,7 @@ ssh-keygen -t ed25519 -C "your@email.com" -f ~/.ssh/id_ed25519_gitee
 # 查看所有配置
 git config –-list
 ```
+![git2.png](https://img.eysnter.cn/file/posts/posts2-notes/Git/1780210753680_git2.png)
 
 #### 配置 config 文件
 **进阶提示**：生成多个 SSH 密钥后，建议在 `~/.ssh/` 目录下创建一个 `config` 文件来管理它们，否则系统默认只会读取 `id_rsa` 或 `id_ed25519`

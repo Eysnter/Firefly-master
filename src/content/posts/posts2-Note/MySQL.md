@@ -2,7 +2,7 @@
 title: MySQL 核心知识点与常用操作速查手册
 published: 2026-05-27
 pinned: true
-image: 'https://img.eysnter.cn/file/posts/posts2-notes/mysql/1779937001666_mysql.png'
+image: 'https://img.eysnter.cn/file/posts/posts2-notes/mysql/1780326427413_mysql.png'
 tags: [MySQL, 数据库, 速查手册]
 category: '技术参考'
 draft: false

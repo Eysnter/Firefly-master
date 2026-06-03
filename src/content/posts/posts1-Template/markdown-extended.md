@@ -13,12 +13,12 @@ draft: false
 
 您可以添加链接到 GitHub 仓库的动态卡片，在页面加载时，仓库信息会从 GitHub API 获取。
 
-::github{repo="CuteLeaf/Firefly"}
+::github{repo="CuteLeaf/Eysnter"}
 
-使用代码 `::github{repo="CuteLeaf/Firefly"}` 创建 GitHub 仓库卡片。
+使用代码 `::github{repo="CuteLeaf/Eysnter"}` 创建 GitHub 仓库卡片。
 
 ```markdown
-::github{repo="CuteLeaf/Firefly"}
+::github{repo="CuteLeaf/Eysnter"}
 ```
 
 ## 提醒框(Admonitions)配置

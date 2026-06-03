@@ -1,10 +1,10 @@
 ---
-title: Java基础
+title: 1️⃣ JavaSE(类型.运算符.表达式)
 published: 2026-05-27
 pinned: false
-image: 'https://img.eysnter.cn/file/posts/posts2-notes/JavaSE/1780497832948_JavaSE-1.jpg'
-tags: [JavaSE]
-category: 'JavaSE,笔记'
+image: 'https://img.eysnter.cn/file/posts/posts2-notes/JavaSE/1780499976120_JavaSE-1.jpg'
+tags: [JavaSE,知识点]
+category: 'JavaSE'
 draft: false
 description: 阐述 Java 基础语法，核心包含基本数据类型、变量转换及运算符表达式的计算规则。
 lang: zh-CN

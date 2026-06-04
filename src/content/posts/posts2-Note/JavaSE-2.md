@@ -1,7 +1,7 @@
 ---
 title: 2️⃣ JavaSE(流程控制.循环.数组.方法)
 published: 2026-05-27
-pinned: false
+pinned: true
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/JavaSE/1780497837065_JavaSE-2.jpg'
 tags: [JavaSE,知识点]
 category: 'JavaSE'
@@ -9,6 +9,7 @@ draft: false
 description: 讲解 Java 逻辑结构，涵盖条件分支、循环流控制、数组内存分配及方法的定义与重载。
 lang: zh-CN
 comment: true
+
 ---
 # 一、流程控制语句
 ## 一、if 判断结构

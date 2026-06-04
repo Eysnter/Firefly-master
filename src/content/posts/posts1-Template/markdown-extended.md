@@ -6,6 +6,7 @@ description: "了解 Firefly 中的 Markdown 功能"
 image: ""
 tags: [演示, 示例, Markdown, Firefly]
 draft: false
+category: 博客指南
 ---
 
 ## GitHub 仓库卡片

@@ -1,7 +1,7 @@
 ---
 title: 1️⃣ JavaSE(类型.运算符.表达式)
 published: 2026-05-27
-pinned: false
+pinned: true
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/JavaSE/1780499976120_JavaSE-1.jpg'
 tags: [JavaSE,知识点]
 category: 'JavaSE'

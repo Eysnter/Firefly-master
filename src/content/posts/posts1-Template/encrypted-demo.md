@@ -5,6 +5,7 @@ description: 这是一篇密码保护的示例文章，用于演示文章加密�
 tags: [示例, 密码保护]
 password: "123456"
 passwordHint: "示例文章密码123456"
+category: 博客指南
 ---
 
 ## 成功解锁了这篇文章！

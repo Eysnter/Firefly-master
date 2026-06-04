@@ -30,7 +30,7 @@ graph TD;
 - **隐藏细节**
 
 1. 如果对一个 `boolean` 类型的变量进行真假判断，严禁写 == `true`，直接将变量放入小括号中即可。
-2.<span style="background:#fdbfff"> 如果 `if` 语句块中只有一条语句，可以省略大括号 `{}`，但它只控制紧随其后的那一行代码（开发中**强烈不建议省略**）。</span>
+2. <span style="background: #fdbfff "> 如果 `if` 语句块中只有一条语句，可以省略大括号 `{}`，但它只控制紧随其后的那一行代码（开发中**强烈不建议省略**）。</span>
 
 - **<font color="#8064a2">实战演练 1：电商满减优惠券校验</font>**
 ```java
@@ -616,7 +616,7 @@ int number = r.nextInt(随机数的范围);
 
 **代码示例：**
 
-```java
+```java title="RandomDemo.java"
  // 1. 导包
 import java.util.Random;
 public class RandomDemo {
@@ -633,7 +633,7 @@ public class RandomDemo {
 ```
 
 - **<font color=" #8064a2 "> 实战演练 10: 猜数字小游戏</font>**
-```java
+```java title="guessTheNumbers.java"
 public class guessTheNumbers {  
     public static void main(String[] args) {  
     
@@ -737,8 +737,8 @@ for (int i = 0; i < arr.length; i++) {
 }
 ```
 - **<font color=" #8064a2 "> 实战演练 11: 定义数组存储学生年龄, 姓名, 身高</font>**
-```java
-public class 数组演示4 {  
+```java title="arrTest.java"
+public class arrTest {  
     public static void main(String[] args) {  
   		//定义三个数组
         String[] names = {"张三", "李四", "王五", "赵六"};  
@@ -780,11 +780,11 @@ public class 数组演示4 {
     - **动态初始化**：<span style="background:rgba(255, 183, 139, 0.55)">只知道要存入多少个元素</span>，<span style="background:rgba(240, 167, 216, 0.55)">但数据内容还在未知阶段</span>（需要后续键盘录入或运行时计算得出）时使用。
 
 - **<font color=" #8064a2 "> 实战演练 12: 统计个数</font>**
-```java
+```java title="arrTest.java"
 需求：定义一个数组，存储1,2,3,4,5,6,7,8,9,10
 遍历数组得到每一个元素，统计数组里面一共有多少个能被3整除的数字
 
-public class 数组演示5 {  
+public class arrTest {  
     public static void main(String[] args) {  
         //分析：  
         //1.定义一个数组 存储1,2,3,4,5,6,7,8,9,10  
@@ -808,86 +808,49 @@ public class 数组演示5 {
 ### 练习 1：求和
 
 需求：定义一个数组，存储 1,2,3,4,5
-
 遍历数组得到每一个元素，求数组里面所有的数据和
-
-代码示例：
-
+**代码示例：**
 ```java
-/*定义一个数组，存储1,2,3,4,5
-        遍历数组得到每一个元素，求数组里面所有的数据和*/
-
-
-//分析：
-//1.定义一个数组，并添加数据1,2,3,4,5
-int[] arr = {1,2,3,4,5};
-
 //求和变量
 int sum = 0;
-//2.遍历数组得到每一个数据，累加求和
+int[] arr = {1,2,3,4,5};
 for (int i = 0; i < arr.length; i++) {
-    //i 依次表示数组里面的每一个索引
-    //arr[i] 依次表示数组里面的每一个元素
     sum = sum + arr[i];
 }
-
 //当循环结束之后，sum的值就是累加之后的结果
 System.out.println(sum);
 ```
 
 ### 练习 2：统计个数
 
-需求：定义一个数组，存储 1,2,3,4,5,6,7,8,9,10
-
+**需求**：定义一个数组，存储 1,2,3,4,5,6,7,8,9,10
 遍历数组得到每一个元素，统计数组里面一共有多少个能被 3 整除的数字
-
-代码示例：
-
+**代码示例：**
 ```java
-//分析：
-//1.定义一个数组 存储1,2,3,4,5,6,7,8,9,10
 int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-//定义一个变量，用来统计次数
 int count = 0;
-//2.遍历数组得到每一个元素
 for (int i = 0; i < arr.length; i++) {
-    //i 表示数组里面的每一个索引
-    //arr[i] 表示数组里面的每一个元素
-    //3.判断当前的元素是否为3的倍数，如果是那么统计变量就需要自增一次。
     if(arr[i] % 3 == 0){
         // System.out.println(arr[i]);
         count++;
     }
 }
-//当循环结束之后，就表示数组里面所有的数字都判断完毕了，直接打印count即可
 System.out.println("数组中能被3整除的数字有" + count + "个");
 ```
 
 ### 练习 3：变化数据
 
-需求：
-
+**需求**：
 定义一个数组，存储 1,2,3,4,5,6,7,8,9,10
-
 遍历数组得到每一个元素。
 
-要求：
-
+**要求**：
 1，如果是奇数，则将当前数字扩大两倍
-
 2，如果是偶数，则将当前数字变成二分之一
-
-代码示例：
-
+**代码示例：**
 ```java
-//分析：
-//1.定义一个数组，存1,2,3,4,5,6,7,8,9,10
 int[] arr = {1,2,3,4,5,6,7,8,9,10};
-//2.遍历数组得到每一个元素
 for (int i = 0; i < arr.length; i++) {
-    //i 依次表示数组里面的每一个索引
-    //arr[i] 依次表示数组里面的每一个元素
-    //3.对每一个元素进行判断
     if(arr[i] % 2 == 0){
         //偶数 变成二分之一
         arr[i] = arr[i] / 2;
@@ -896,9 +859,7 @@ for (int i = 0; i < arr.length; i++) {
         arr[i] = arr[i] * 2;
     }
 }
-
 //遍历数组
-//一个循环尽量只做一件事情。
 for (int i = 0; i < arr.length; i++) {
     System.out.println(arr[i]);
 }
@@ -906,43 +867,27 @@ for (int i = 0; i < arr.length; i++) {
 
 ### 练习 4：求最值
 
-需求：求数组中的最大值
+**需求**：求数组中的最大值
 
-代码示例：
-
+**代码示例：**
 ```java
-//定义数组求最大值：33,5,22,44,55
-
-//扩展问题：
-//1.根据求最大值的思路，自己改写一下求最小智
-//2.为什么max要记录为arr[0],默认值不能为0吗？
-//不能写0
-//max的初始化值一定要是数组中的值。
-//3.循环中开始条件一定是0吗？
-//循环的开始条件如果为0，那么第一次循环的时候是自己跟自己比了一下，对结果没有任何影响，但是效率偏低
-//为了提高效率，减少一次循环的次数，循环开始条件可以写1.
-
-
-//1.定义数组用来存储5个值
+//1.存储5个值
 int[] arr = {33,5,22,44,55};
 //2.定义一个变量max用来存储最大值
-//临时认为0索引的数据是最大的
 int max = arr[0];
-//3.循环获取数组中的每一个元素
-//拿着每一个元素跟max进行比较
+//3.遍历，并与max比较
 for (int i = 1; i < arr.length; i++) {
-    //i 索引  arr[i] 元素
     if(arr[i] > max){
         max = arr[i];
     }
 }
-//4.当循环结束之后，max记录的就是数组中的最大值
-System.out.println(max);//55
+//4.循环结束，max为数组中的最大值
+System.out.println(max);	// 55
 ```
 
 ### 练习 5：统计个数
 
-需求：生成 10 个 1~100 之间的随机数存入数组。
+**需求**：生成 10 个 1~100 之间的随机数存入数组。
 
 1）求出所有数据的和
 
@@ -950,10 +895,8 @@ System.out.println(max);//55
 
 3）统计有多少个数据比平均值小
 
-代码示例：
-
+**代码示例：**
 ```java
-//分析：
 //1.定义数组
 int[] arr = new int[10];
 //2.把随机数存入到数组当中
@@ -966,8 +909,6 @@ for (int i = 0; i < arr.length; i++) {
     //数组名[索引] = 数据;
     arr[i] = number;
 }
-
-
 // 1）求出所有数据的和
 //定义求和变量
 int sum = 0;
@@ -978,12 +919,9 @@ for (int i = 0; i < arr.length; i++) {
 }
 System.out.println("数组中所有数据的和为：" + sum);
 
-
 //2）求所有数据的平均数
 int avg = sum / arr.length;
 System.out.println("数组中平均数为：" + avg);
-
-
 
 //3）统计有多少个数据比平均值小
 int count = 0;
@@ -992,11 +930,8 @@ for (int i = 0; i < arr.length; i++) {
         count++;
     }
 }
-
 //当循环结束之后，就表示我已经找到了所有的比平均数小的数据
 System.out.println("在数组中，一共有" + count + "个数据，比平均数小");
-
-
 
 //遍历数组，验证答案
 for (int i = 0; i < arr.length; i++) {
@@ -1006,14 +941,13 @@ for (int i = 0; i < arr.length; i++) {
 
 ### 练习 6：交换数据
 
-需求：定义一个数组，存入 1,2,3,4,5。按照要求交换索引对应的元素。
+**需求**：定义一个数组，存入 1,2,3,4,5。按照要求交换索引对应的元素。
 
 交换前：1,2,3,4,5
 
 交换后：5,2,3,4,1
 
-代码示例：
-
+**代码示例：**
 ```java
 //1.定义数组存储数据
 int[] arr = {1,2,3,4,5};
@@ -1032,10 +966,9 @@ for (int i = 0; i < arr.length; i++) {
 
 ### 练习 7：打乱数据 
 
-需求：定义一个数组，存入 1~5。要求打乱数组中所有数据的顺序。
+**需求**：定义一个数组，存入 1~5。要求打乱数组中所有数据的顺序。
 
-代码示例：
-
+**代码示例：**
 ```java
 //1.定义数组存储1~5
 int[] arr = {1, 2, 3, 4, 5};
@@ -1073,7 +1006,7 @@ for (int i = 0; i < arr.length; i++) {
 方法（Method）是程序中**最小的执行单元**。合理的利用方法定义可以极大减少代码的冗余，提升可读性和复用性。
 ## 一、方法的定义和调用
 
-### 1、 无参数方法的声明与调用
+### 1、无参数的方法
 
 ```java
 // 定义格式
@@ -1084,8 +1017,33 @@ public static void 方法名() {
 // 调用格式
 方法名();
 ```
--  ⚠️ **顺序法则**：Java 中的<mark style="background: #d2cbff ">方法必须</mark>**<mark style="background: #d2cbff ">先定义后调用</mark>**，否则代码编译会抛出找不到符号的异常。**<font color="#d83931">方法之间严禁进行嵌套定义</font>**。
-### 2、 带参数方法的声明、形参与实参
+-  ⚠️ **顺序法则**：Java 中的<mark style="background: #d2cbff ">方法必须</mark>**<mark style="background: #d2cbff ">先定义后调用</mark>**，否则代码编译会抛出找不到符号的异常。**<font color=" #d83931 ">方法之间严禁进行嵌套定义</font>**。
+
+**<font color=" #8064a2 ">实战演练 12：比较最大值</font>**
+```java title="MethodTest.java"
+// 需求：设计一个方法用于打印两个数中的较大数
+public class MethodTest {
+    public static void main(String[] args) {
+        // 在main()方法中调用定义好的方法
+        getMax();
+    }
+
+    // 定义一个方法，用于打印两个数字中的较大数，例如getMax()
+    public static void getMax() {
+        // 方法中定义两个变量，用于保存两个数字
+        int a = 10;
+        int b = 20;
+
+        // 使用分支语句分两种情况对两个数字的大小关系进行处理
+        if(a > b) {
+            System.out.println(a);
+        } else {
+            System.out.println(b);
+        }
+    }
+}
+```
+### 2、带形参与实参的方法
 
 ```java
 // 定义格式
@@ -1102,3 +1060,465 @@ public static void 方法名(数据类型 变量名1, 数据类型 变量名2) {
     - **实参 (Actual Parameter)**：方法调用时实际传入的具体常量值或已经被赋值的变量。
 
 - **参数传递底线**：调用时传入的参数**个数**、**数据类型顺序**必须与方法定义阶段设置的要求**百分之百契合**。
+
+**<font color=" #8064a2 ">实战演练 13：驾驶证考核资格判定</font>**
+```java title="DeiveCheck.java"
+public class DriveCheck {
+    public static void main(String[] args) {
+        checkDriverEligibility(16); // 传入常量作为实参
+
+        int myAge = 25;
+        checkDriverEligibility(myAge); // 传入变量作为实参
+    }
+
+    public static void checkDriverEligibility(int age) {
+        if (age >= 18 && age <= 70) {
+            System.out.println("您的年龄为 " + age + " 岁，符合驾照报考的年龄准入要求！");
+        } else {
+            System.out.println("抱歉，年龄为 " + age + " 岁不符合驾驶报考要求。");
+        }
+    }
+}
+```
+- **控制台运行输出结果：
+```bash
+抱歉，年龄为 16 岁不符合驾驶报考要求。
+您的年龄为 25 岁，符合驾照报考的年龄准入要求！
+```
+
+### 3、带返回值方法
+- **定义格式**：
+```java
+public static 返回值类型 方法名 ( 参数 ) { 
+	return 数据 ;
+}
+```
+- **注意**：方法定义时 `return` 后面的返回值必须与方法定义上的“返回值类型”完美匹配，否则程序将报错。、
+
+- **调用格式**：
+```java
+方法名( 参数 ); // 孤立调用，返回值无实际意义
+数据类型 变量名 = 方法名( 参数 ); // 推荐：定义对应的变量接收结果
+```
+
+- **注意**：非 void 方法通常推荐使用变量进行接收，否则该方法返回的值将被直接丢弃，变得毫无物理意义。
+    
+**<font color=" #8064a2 ">实战演练 14：电商折扣</font>**
+```java title="PromoOptimizing.java"
+// 需求：设计一个方法筛选电商最优折扣。传入直减券折扣和比例折算折扣，计算并返回能够让用户节省最多钱的最大优惠力度。
+public class PromoOptimizing {
+	public static void main(String[] args) {
+		// 调用最优折扣方法并使用变量接收最终返回的最大节省额度
+		double bestSaving = selectBestDiscount(20.0, 15.5);
+		System.out.println("系统自动为您选取的最大减免额度为：" + bestSaving + " 元");
+
+		// 也可以在打印中直接输出方法执行结果
+		System.out.println("实时折扣校验值：" + selectBestDiscount(25.0, 30.5) + " 元");
+	}
+
+	// 定义求最优折扣金额的方法并返回较大值
+	public static double selectBestDiscount(double optionA, double optionB) {
+		if (optionA > optionB) {
+			return optionA; // 选项 A 优惠大，返回 optionA
+		} else {
+			return optionB; // 选项 B 优惠大，返回 optionB
+		}
+	}
+}
+```
+    
+- **控制台运行输出结果**：
+```bash
+系统自动为您选取的最大减免额度为：20.0 元
+实时折扣校验值：30.5 元
+```
+
+**<font color=" #8064a2 ">实战演练 15：数据中心服务器功耗</font>**
+```java title="DataCenterEnergyDemo.java"
+ // 需求：定义一个方法统计绿色数据中心单台服务器机架的实时小时能耗。根据方法运算结果，在主入口中滚动累加计算整个数据机房机柜的总能耗。
+public class DataCenterEnergyDemo {
+	public static void main(String[] args) {
+		// 滚动累加计算 4 个不同算力机架的小时总耗能
+		double rack1 = getRackEnergy(4.5, 2.1, 1.2); // 传入 CPU, 内存, 散热风扇能耗（千瓦时）
+		double rack2 = getRackEnergy(5.0, 2.5, 1.5);
+		double rack3 = getRackEnergy(3.8, 1.8, 1.0);
+		double rack4 = getRackEnergy(6.2, 3.0, 2.0);
+
+		// 汇总整个计算房能耗
+		double totalEnergy = rack1 + rack2 + rack3 + rack4;
+		System.out.println("绿色计算房内机柜群的总小时耗电量为：" + totalEnergy + " KWh");
+	}
+
+	// 计算单台机柜功耗方法：形参为 cpu, ram, fan 功耗，返回值 double
+	public static double getRackEnergy(double cpuPower, double ramPower, double fanPower) {
+		double total = cpuPower + ramPower + fanPower;
+		return total; // 因为主入口需要汇总 4 台机架的值，所以必须使用 return 将 total 返回
+	}
+}
+```
+
+- **控制台运行输出结果**：
+```bash
+绿色计算房内机柜群的总小时耗电量为：36.4 KWh
+```
+
+**<font color=" #8064a2 ">实战演练 16：原油罐容量对比</font>**
+```java title="OilTankCompare.java"
+// 需求：圆柱形原油储备罐在实际工程中极为常见。请键盘录入两个油罐底面半径（整数），假设两个储油罐高度恒定为 10 米，求对比计算两储罐容量并输出哪个储油罐存储能力更大。
+import java.util.Scanner;
+public class OilTankCompare {
+	public static void main(String[] args) {
+		// 键盘录入两个原油罐半径
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入一号原油储罐底面半径：");
+		int r1 = sc.nextInt();
+
+		System.out.println("请输入二号原油储罐底面半径：");
+		int r2 = sc.nextInt();
+
+		double volume1 = getVolume(r1);
+		double volume2 = getVolume(r2);
+
+		if(volume1 > volume2){
+			System.out.println("一号原油储备罐容量更大！");
+		} else {
+			System.out.println("二号原油储备罐容量更大！");
+		}
+	}
+
+	// 根据半径计算恒定高为 10 米的圆柱体储油罐容积：V = π * r^2 * h
+	public static double getVolume(int radii) {
+		double volume = 3.14 * radii * radii * 10.0;
+		return volume;
+	}
+}
+```
+    
+- **控制台运行输出结果**：
+```bash
+请输入一号原油储罐底面半径：
+4
+请输入二号原油储罐底面半径：
+5
+二号原油储备罐容量更大！
+```
+
+## 二、方法重载
+
+### 1、 什么是方法重载？
+
+方法重载指**在同一个类中**定义的多个方法之间的关系，只要它们同时满足下列条件，便相互构成重载：
+
+- 多个方法**在同一个类中**。
+- 多个方法**具有相同的方法名**。
+- 多个方法的**参数不相同**：参数**个数不同**，或**数据类型不同**，或**不同类型的参数顺序不同**。
+    
+
+> ⚠️ **非判定红线（高频雷区）**：
+> 
+> 1. 重载仅针对同一个类中方法的名称与参数列表进行识别，**与方法的返回值类型无任何毛线关系**！不能通过返回值类型来判定两个方法是否构成重载。
+>     
+> 2. 与访问修饰符无关。
+>     
+
+- **<font color="#92d050">正确重载范例</font>**：
+
+```java
+public class OverloadDemo {
+    public static void fn(int a) {
+        // 方法体
+    }
+    public static int fn(double a) { // 正确：参数类型不同 (即使返回值变了也无碍)
+        // 方法体
+        return 0;
+    }
+}
+
+public class OverloadDemo2 {
+    public static float fn(int a) {
+        // 方法体
+        return 0.0f;
+    }
+    public static int fn(int a , int b) { // 正确：参数数量不同
+        // 方法体
+        return 0;
+    }
+}
+```
+
+- **<font color="#c00000">错误重载范例</font>**：
+```java
+public class OverloadErrorDemo {
+    public static void fn(int a) {
+        // 方法体
+    }
+    public static int fn(int a) { /* 错误原因：仅返回值类型不同，重载与返回值无关！报错！ */
+        // 方法体
+        return 0;
+    }
+}
+
+public class OverloadErrorDemo2 {
+    public static void fn(int a) {
+        // 方法体
+    }
+} 
+public class OverloadErrorDemo3 {
+    public static int fn(double a) { /* 错误原因：这是两个不同的类下的 fn 方法，完全不构成重载 */
+        // 方法体
+        return 0;
+    }
+}
+```
+
+### 2、重载演示
+
+- **练习需求**：使用方法重载的思想，设计比较两个整数是否相同的方法，兼容全整数类型（`byte`, `short`, `int`, `long`）。
+```java title="MethodTest.java"
+// 需求：比较两个整数是否相同
+public class MethodTest {
+    public static void main(String[] args) {
+        // 调用方法
+        System.out.println(compare(10, 20));
+        System.out.println(compare((byte) 10, (byte) 20));
+        System.out.println(compare((short) 10, (short) 20));
+        System.out.println(compare(10L, 20L));
+    }
+
+    // int
+    public static boolean compare(int a, int b) {
+        System.out.println("int");
+        return a == b;
+    }
+
+    // byte
+    public static boolean compare(byte a, byte b) {
+        System.out.println("byte");
+        return a == b;
+    }
+
+    // short
+    public static boolean compare(short a, short b) {
+        System.out.println("short");
+        return a == b;
+    }
+
+    // long
+    public static boolean compare(long a, long b) {
+        System.out.println("long");
+        return a == b;
+    }
+}
+```
+
+- **控制台运行输出结果**：
+```bash
+int
+false
+byte
+false
+short
+false
+long
+false
+```
+
+## 三、 方法传递参数的核心原理
+
+Java 中的参数传递，其本质全部都是 **值传递 (Value Passing)**。但在基本数据类型与引用数据类型中，其表现行为完全不同。
+### 1、 基本数据类型的值传递
+
+- **机制**：传递的是变量中存储的**真实数据值**。
+    
+- **原理**：<mark style="background:rgba(205, 244, 105, 0.55)">方法被调用时，会在栈内存中为该方法开辟一片<font color="#00b0f0">独立的栈帧空间</font></mark>，并在其中<mark style="background:rgba(205, 244, 105, 0.55)">创建形参变量</mark>，接收实参的值拷贝（副本）。因此，**<mark style="background:rgba(255, 183, 139, 0.55)">在方法内部修改形参的值，绝不会影响到 main 方法中实参的值</mark>**。
+    
+- **内存图景说明**：
+```mermaid
+graph TD
+	subgraph Stack ['栈内存 Stack']
+		subgraph changeFrame ['change方法栈帧']
+			a['形参 a = 20']
+			comment1['修改形参值，不波及main方法']
+			a -.-> comment1
+			style a fill:#ffdddd,stroke:#ff8888,stroke-width:1px
+			style comment1 fill:#fff,stroke:#ccc,stroke-dasharray: 5 5
+		end
+		subgraph mainFrame ['main方法栈帧']
+			num['实参 number = 10']
+			style num fill:#ddeeff,stroke:#88bbff,stroke-width:1px
+		end
+	end
+	style Stack fill:#fafafa,stroke:#333,stroke-width:1px
+	style changeFrame fill:#fff5f5,stroke:#ffcccc,stroke-width:1px
+	style mainFrame fill:#f0f5ff,stroke:#ccddee,stroke-width:1px
+```
+**代码示例：**
+```java title="ValuePassDemo.java"
+public class ValuePassDemo {
+    public static void main(String[] args) {
+        int number = 10;
+        System.out.println("调用方法前，number = " + number); // 10
+        change(number);
+        System.out.println("调用方法后，number = " + number); // 10 (并未发生任何改变)
+    }
+
+    public static void change(int a) {
+        a = 20; // 仅修改了 change 方法栈帧中形参 a 的临时副本值
+    }
+}
+```
+
+### 2、 引用数据类型的地址传递
+
+- **机制**：传递的是变量中存储的**内存物理地址值**。
+    
+- **原理**：方法调用时，拷贝的是地址值（指针副本）。此时，形参和实参中存储的地址值完全一致，**它们在堆内存中指向同一块数组/对象空间**。因此，**在方法内部通过形参修改数组内部的值，main 方法中实参的数据也会随之改变**。
+    
+- **内存图景说明**：
+```mermaid
+graph TD
+    subgraph STACK ["栈内存 - Stack"]
+        subgraph MAIN_FRAME ["main 方法栈帧"]
+            arr_main["实参: arr\n(存储地址: 0x7a81)"]
+        end
+        
+        subgraph CHANGE_FRAME ["change 方法栈帧"]
+            arr_change["形参: arr\n(拷贝的地址副本: 0x7a81)"]
+        end
+    end
+
+    subgraph HEAP ["堆内存 - Heap"]
+        ARRAY["数组对象 (地址: 0x7a81)\n━━━━━━━━━━━━━━━━━━\n索引: [0] | [1] | [2]\n原值:  10  |  20  |  30\n修改:  99  |      |    "]
+    end
+
+    arr_main -->|"1. 初始化指向"| ARRAY
+    arr_main -.->|"2. 方法调用: 拷贝地址值"| arr_change
+    arr_change -->|"3. arr[0]=99 通过相同地址直接修改"| ARRAY
+
+    style STACK fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style HEAP fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style MAIN_FRAME fill:#fff,stroke:#4caf50,stroke-width:1px
+    style CHANGE_FRAME fill:#fff,stroke:#ff9800,stroke-width:1px
+    style ARRAY fill:#fff,stroke:#333,stroke-width:1px
+```
+**代码示例：**
+```java title="ReferencePassDemo.java"
+public class ReferencePassDemo {
+    public static void main(String[] args) {
+        int[] arr = {10, 20, 30};
+        System.out.println("调用方法前，arr[0] = " + arr[0]); // 10
+        change(arr);
+        System.out.println("调用方法后，arr[0] = " + arr[0]); // 99 (发生了永久改变)
+    }
+
+    public static void change(int[] arr) {
+        arr[0] = 99; // 通过共享的地址值，直接修改了堆内存中真正的数组首位元素
+    }
+}
+```
+
+## 四、方法操作数组练习
+
+### 1、 精巧、不换行格式化遍历数组
+
+- **需求**：设计一个方法用于数组遍历，要求遍历的结果是在一行上漂亮的呈现。例如：`[11, 22, 33, 44, 55]`
+    
+- **思路要点**：
+    - 输出内容不换行：`System.out.print("内容");`
+    - 输出内容并换行：`System.out.println("内容");`
+    - 只换行不打印：`System.out.println();`
+        
+```java title="PrintArrayDemo.java"
+public class PrintArrayDemo {
+    public static void main(String[] args) {
+        int[] arr = {11, 22, 33, 44, 55};
+        printArr(arr);
+    }
+
+    // 实现高精遍历方法
+    public static void printArr(int[] arr) {
+        System.out.print("["); // 头部大括号
+        for (int i = 0; i < arr.length; i++) {
+            if (i == arr.length - 1) {
+                // 如果是最后一个元素，拼接大括号并换行结束
+                System.out.println(arr[i] + "]");
+            } else {
+                // 否则用逗号分隔，且不换行
+                System.out.print(arr[i] + ", ");
+            }
+        }
+    }
+}
+```
+
+- **控制台运行输出结果**：
+```bash
+[11, 22, 33, 44, 55]
+```
+
+### 2、 数组求最大值
+
+- **需求**：设计一个方法用于获取数组中元素的最大值
+```java title="ArrayMaxDemo.java"
+public class ArrayMaxDemo {
+    public static void main(String[] args) {
+        // 定义一个数组，用静态初始化完成数组元素初始化
+        int[] arr = {12, 45, 98, 73, 60};
+
+        // 调用获取最大值方法，用变量接收返回结果
+        int number = getMax(arr);
+
+        // 把结果输出在控制台
+        System.out.println("数组最大值为：" + number);
+    }
+
+    // 求最值方法：返回值 int，参数为 int[] arr
+    public static int getMax(int[] arr) {
+        int max = arr[0]; // 初始判定 max = arr[0]
+
+        for(int i = 1; i < arr.length; i++) {
+            if(arr[i] > max) {
+                max = arr[i]; // 更新最大值
+            }
+        }
+        return max;
+    }
+}
+```
+
+- **控制台运行输出结果**：
+```
+数组最大值为：98
+```
+
+### 3、 获取数字索引
+
+- **需求**：定义一个方法获取数字在数组中的索引位置，将结果返回给调用处，如果有重复的，只要获取第一个即可。
+```java title="IndexSearchDemo.java"
+public class IndexSearchDemo {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5, 3};
+        int index = contains(arr, 3);
+        System.out.println("该数据首次出现的位置索引是：" + index); // 2
+    }
+
+    // 获取 target 在 arr 中的首次出现的索引位置，找不到则返回 -1
+    public static int contains(int[] arr, int target) {
+        // 遍历 arr 得到每一个元素
+        for (int i = 0; i < arr.length; i++) {
+            // 拿着每一个元素跟 target 比较
+            if(arr[i] == target){
+                // 如果相等，表示找到了，立即返回索引并提前终止方法
+                return i;
+            }
+        }
+        // 当循环全部结束之后，如果还不能返回索引，证明目标数据不存在
+        return -1;
+    }
+}
+```
+
+- **控制台运行输出结果**：
+```bash
+该数据首次出现的位置索引是：2
+```

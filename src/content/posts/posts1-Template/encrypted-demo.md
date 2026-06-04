@@ -3,7 +3,6 @@ title: 加密文章
 published: 2026-06-01
 description: 这是一篇密码保护的示例文章，用于演示文章加密功能。
 tags: [示例, 密码保护]
-category: 文章示例
 password: "123456"
 passwordHint: "示例文章密码123456"
 ---

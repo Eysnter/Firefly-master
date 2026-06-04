@@ -3,7 +3,7 @@ title: MySQL 核心知识点与常用操作速查手册
 published: 2026-05-27
 pinned: true
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/mysql/1780326427413_mysql.png'
-tags: [MySQL, 数据库, 速查手册]
+tags: [MySQL, 数据库, 笔记]
 category: '技术参考'
 draft: false
 description: 本文是一份系统化的 MySQL 核心知识点与常用操作速查手册，涵盖基础 SQL 语法、高级函数、索引、事务原理、架构锁机制及主从复制、分库分表等运维实践。

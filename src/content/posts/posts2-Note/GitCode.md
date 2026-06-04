@@ -3,8 +3,8 @@ title: Git 安装后必备配置与高频核心命令速查指南
 published: 2026-05-31
 description: 本文介绍 Git 安装后必备的配置和命令，帮助小白快速掌握 Git 的常用命令
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/Git/1780206480345_git.png'
-tags: [Git, 速查手册]
-category: ''
+tags: [Git, 笔记]
+category: '技术参考'
 draft: false 
 pinned: true
 comment: true

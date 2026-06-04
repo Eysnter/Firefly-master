@@ -412,15 +412,16 @@ export type CoverImageConfig = {
 
 // 组件配置类型定义
 export type WidgetComponentType =
-	| "profile"
-	| "announcement"
-	| "categories"
-	| "tags"
-	| "sidebarToc"
-	| "advertisement"
-	| "stats"
-	| "calendar"
-	| "music";
+  | "profile"
+  | "announcement"
+  | "categories"
+  | "tags"
+  | "sidebarToc"
+  | "advertisement"
+  | "stats"
+  | "calendar"
+  | "quoteOfTheDay"
+  | "music";
 
 export type WidgetComponentConfig = {
 	type: WidgetComponentType; // 组件类型
@@ -815,3 +816,5 @@ export type GalleryConfig = {
 	albums: GalleryAlbum[];
 	columnWidth?: number; // 瀑布流最小列宽(px)，默认 240，浏览器根据容器宽度自动计算列数
 };
+
+

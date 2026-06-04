@@ -23,6 +23,9 @@ enum I18nKey {
 	announcement = "announcement",
 	announcementClose = "announcementClose",
 
+	// 分类页面
+	allCategories = "allCategories",
+
 	comments = "comments",
 	commentSection = "commentSection",
 	commentSubtitle = "commentSubtitle",

@@ -421,7 +421,8 @@ export type WidgetComponentType =
   | "stats"
   | "calendar"
   | "quoteOfTheDay"
-  | "music";
+  | "music"
+  | "schedule";
 
 export type WidgetComponentConfig = {
 	type: WidgetComponentType; // 组件类型

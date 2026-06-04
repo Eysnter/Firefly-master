@@ -6,6 +6,7 @@ import Calendar from "@/components/widget/Calendar.astro";
 import Categories from "@/components/widget/Categories.astro";
 import Music from "@/components/widget/Music.astro";
 import Profile from "@/components/widget/Profile.astro";
+import Schedule from "@/components/widget/Schedule.astro";
 import SidebarTOC from "@/components/widget/SidebarTOC.astro";
 import SiteStats from "@/components/widget/SiteStats.astro";
 import QuoteOfTheDay from "@/components/widget/QuoteOfTheDay.astro"; // 引入今日一言组件
@@ -51,6 +52,7 @@ const componentMap = {
   calendar: Calendar,
   music: Music,
   quoteOfTheDay: QuoteOfTheDay,
+  schedule: Schedule,
 } satisfies Record<WidgetComponentType, typeof Profile>;
 
 // 获取侧边栏位置

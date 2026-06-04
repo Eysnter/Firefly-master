@@ -33,14 +33,14 @@ export const friendsConfig: FriendLink[] = [
 		enabled: true, // 是否启用
 	},
 	{
-		title: "Firefly Docs",
-		imgurl: "https://img.eysnter.cn/file/博客/1779893800249_zi-2.png",
-		desc: "Firefly主题模板文档",
-		siteurl: "https://docs-firefly.cuteleaf.cn",
+		title: "站点名称：十三",
+		imgurl: "https://blog.nw177.cn/assets/avatar.webp",
+		desc: "站点描述：欲买桂花同载酒，终不似，少年游。",
+		siteurl: "https://blog.nw177.cn",
 		tags: ["Docs"],
 		weight: 9,
 		enabled: true,
-	},
+    },
 	{
 		title: "Astro",
 		imgurl: "https://avatars.githubusercontent.com/u/44914786?v=4&s=640",

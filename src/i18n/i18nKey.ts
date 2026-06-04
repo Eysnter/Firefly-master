@@ -13,6 +13,8 @@ enum I18nKey {
 
 	tags = "tags",
 	categories = "categories",
+	allCategories = "allCategories",
+	allTags = "allTags",
 	recentPosts = "recentPosts",
 	postList = "postList",
 	tableOfContents = "tableOfContents",
@@ -22,9 +24,6 @@ enum I18nKey {
 	// 公告栏
 	announcement = "announcement",
 	announcementClose = "announcementClose",
-
-	// 分类页面
-	allCategories = "allCategories",
 
 	comments = "comments",
 	commentSection = "commentSection",
@@ -80,6 +79,8 @@ enum I18nKey {
 	license = "license",
 	friends = "friends",
 	friendsDescription = "friendsDescription",
+	searchFriends = "searchFriends",
+	friendsEmpty = "friendsEmpty",
 	guestbook = "guestbook",
 	guestbookDescription = "guestbookDescription",
 	bangumi = "bangumi",
@@ -282,6 +283,7 @@ enum I18nKey {
 	calendarOctober = "calendarOctober",
 	calendarNovember = "calendarNovember",
 	calendarDecember = "calendarDecember",
+	calendarHeatmapWeek = "calendarHeatmapWeek",
 
 	shareArticle = "shareArticle",
 	generatingPoster = "generatingPoster",

@@ -6,6 +6,7 @@ tags: [示例, 密码保护]
 password: "123456"
 passwordHint: "示例文章密码123456"
 category: 博客指南
+draft: true
 ---
 
 ## 成功解锁了这篇文章！

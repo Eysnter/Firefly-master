@@ -56,8 +56,8 @@ async function parsePlaylistsFromConfig() {
   }
 }
 
-async function fetchPlaylistSongs(playlistId, trans) {
-  const apiUrl = `https://163.hyc.moe?server=netease&type=playlist&id=${playlistId}`;
+async function fetchPlaylistSongs(playlistId, trans, server = 'netease') {
+  const apiUrl = `https://163.hyc.moe?server=${server}&type=playlist&id=${playlistId}`;
   console.log(`  Fetching playlist ${playlistId}...`);
   try {
     const res = await fetch(apiUrl);
@@ -186,7 +186,7 @@ async function fetchMusicDuration() {
           songs = [];
         }
       } else {
-        songs = await fetchPlaylistSongs(pl.id, trans);
+        songs = await fetchPlaylistSongs(pl.id, trans, pl.server);
         console.log(`  ${pl.name || pl.id}: ${songs.length} songs`);
       }
 

@@ -255,6 +255,11 @@ export const siteConfig: SiteConfig = {
       { id: "17957661244", name: "孙燕姿", server: "netease" },
       { id: "17966019560", name: "告五人", server: "netease" },
       { id: "17924204831", name: "纯音乐", server: "netease" },
+      {
+        id: "1nm9t5aG2V2",
+        name: "中文歌",
+        server: "netease",
+      },
     ],
   },
 

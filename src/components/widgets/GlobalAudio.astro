@@ -125,6 +125,38 @@ const initialSong = musicList[0] || {};
 
             // Listen for future navigations
             document.addEventListener('astro:page-load', () => this.handlePageLoad());
+
+            // Also listen via swup hooks (more reliable — fires AFTER DOM replacement)
+            const bindSwup = () => {
+                if (window.swup?.hooks) {
+                    window.swup.hooks.on('content:replaced', () => {
+                        this.handlePageLoad();
+                    });
+                } else {
+                    document.addEventListener('swup:enable', () => {
+                        window.swup.hooks.on('content:replaced', () => {
+                            this.handlePageLoad();
+                        });
+                    });
+                }
+            };
+            bindSwup();
+
+            // MutationObserver fallback: detect when main player widget enters the DOM
+            this._mainPlayerObserver = new MutationObserver(() => {
+                // Reset stale reference if container was removed from DOM
+                if (this.container && !this.container.isConnected) {
+                    this.container = null;
+                    this._mainPlayerBound = false;
+                }
+                const el = document.querySelector('[data-playlist-songs]');
+                if (el && !this.container) {
+                    this.container = el;
+                    this._bindMainPlayer();
+                    this.updateUI();
+                }
+            });
+            this._mainPlayerObserver.observe(document.body, { childList: true, subtree: true });
         }
 
         handlePageLoad() {
@@ -132,18 +164,9 @@ const initialSong = musicList[0] || {};
             this.bindGlobalAudioEvents();
             this.bindMiniPlayerEvents();
 
-            // Check for Main Player widget
+            // Check for Main Player widget (MutationObserver also watches for this)
             this.container = document.querySelector('[data-playlist-songs]');
-            if (!this.container) {
-                // Retry after a frame — swup may not have finished replacing content
-                requestAnimationFrame(() => {
-                    this.container = document.querySelector('[data-playlist-songs]');
-                    if (this.container) {
-                        this._bindMainPlayer();
-                        this.updateUI();
-                    }
-                });
-            } else {
+            if (this.container) {
                 this._bindMainPlayer();
             }
 
@@ -172,6 +195,9 @@ const initialSong = musicList[0] || {};
         }
 
         _bindMainPlayer() {
+            if (this._mainPlayerBound) return;
+            this._mainPlayerBound = true;
+
             // Bind Main Player UI
             this.playBtn = document.getElementById('play-btn');
             this.prevBtn = document.getElementById('prev-btn');

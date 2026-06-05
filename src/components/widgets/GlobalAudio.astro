@@ -1,13 +1,16 @@
 ---
 import { musicList } from "@/data/music";
+import { musicPlayerConfig } from "@/config/musicConfig";
 // 默认播放第一首
 const initialPlaylist = JSON.stringify(musicList);
 const initialSong = musicList[0] || {};
+const showMini = musicPlayerConfig.showMiniPlayer ?? false;
 ---
 <div transition:persist="firefly-global-audio-wrapper">
     <!-- 全局音频元素，持久化 -->
     <audio id="global-audio-player"></audio>
 
+    {showMini && (
     <!-- 迷你播放器容器，只在非音乐页面显示 -->
     <div id="mini-player-container" class="fixed bottom-8 left-8 z-[999] flex flex-col items-start gap-4 pointer-events-none opacity-0 transition-opacity duration-300">
         <!-- 展开的卡片 -->
@@ -56,6 +59,7 @@ const initialSong = musicList[0] || {};
             </div>
         </button>
     </div>
+    )}
 </div>
 
 <script define:vars={{ initialPlaylist }} is:inline>

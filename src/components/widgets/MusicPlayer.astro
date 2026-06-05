@@ -74,7 +74,7 @@ const playlistSongsData = JSON.stringify(playlistSongs);
           <!-- Title & Artist -->
           <div class="text-center space-y-1.5 w-full max-w-[260px]">
             <h2 id="player-title" class="text-lg font-bold text-gray-700 dark:text-gray-300 tracking-tight truncate">{currentTitle || "Loading..."}</h2>
-            <p id="player-artist" class="font-mono text-sm font-bold uppercase tracking-widest truncate" style="color: oklch(var(--p)); text-shadow: 0 0 15px oklch(var(--p) / 0.5);">{currentArtist || "Loading..."}</p>
+            <p id="player-artist" class="font-mono text-sm font-bold uppercase tracking-widest truncate" style="color: var(--primary); text-shadow: 0 0 15px color-mix(in oklch, var(--primary) 50%, transparent);">{currentArtist || "Loading..."}</p>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ const playlistSongsData = JSON.stringify(playlistSongs);
         <div class="flex items-center gap-3 px-4">
           <span id="current-time" class="w-10 text-right text-xs font-mono font-bold text-gray-500">0:00</span>
           <div class="flex-1 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full relative overflow-hidden cursor-pointer shadow-inner" id="progress-container">
-            <div id="progress-bar" class="absolute top-0 left-0 h-full transition-all duration-100 ease-linear" style="width: 0%; background-color: oklch(var(--p));"></div>
+            <div id="music-progress-bar" class="absolute top-0 left-0 h-full transition-all duration-100 ease-linear" style="width: 0%; background-color: var(--primary);"></div>
           </div>
           <span id="total-time" class="w-10 text-xs font-mono font-bold text-gray-500">0:00</span>
         </div>
@@ -93,24 +93,24 @@ const playlistSongsData = JSON.stringify(playlistSongs);
           <!-- 歌单列表 Box -->
           <div class="bg-white dark:bg-gray-900 shadow-inner rounded-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
             <div class="flex items-center gap-2 px-3 py-2.5 border-b border-gray-200 dark:border-gray-700/50 bg-black/5 dark:bg-white/5">
-              <div class="w-1 h-4 rounded-full shrink-0" style="background-color: oklch(var(--p));"></div>
-              <span class="text-sm font-extrabold tracking-wide" style="color: oklch(var(--p));">歌单列表</span>
+              <div class="w-1 h-4 rounded-full shrink-0" style="background-color: var(--primary);"></div>
+              <span class="text-sm font-extrabold tracking-wide" style="color: var(--primary);">歌单列表</span>
             </div>
             <div class="overflow-y-auto hide-scrollbar h-[8.25rem] [overscroll-behavior-y:contain]" id="playlist-list-scroll">
               {
                 playlists && playlists.length > 0 ? (
                   <ul class="p-2 grid grid-cols-2 gap-1.5" id="playlist-list-entries">
                     {playlists.map((pl, index) => (
-                      <li class={`playlist-entry-item group flex items-center gap-1.5 p-2 rounded-xl transition-all cursor-pointer ${index === 0 ? 'playlist-active border-0' : 'border border-transparent hover:bg-black/5 dark:hover:bg-white/5 hover:border-gray-200 dark:border-gray-700/50'}`} data-playlist-index={index} data-playlist-id={pl.id} style={index === 0 ? `background-color: oklch(var(--p) / 0.15);` : ''}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class={`shrink-0 ${index === 0 ? '' : 'text-gray-500 dark:text-gray-400'}`} style={index === 0 ? `color: oklch(var(--p));` : ''}>
+                      <li class={`playlist-entry-item group flex items-center gap-1.5 p-2 rounded-xl transition-all cursor-pointer ${index === 0 ? 'playlist-active border-0' : 'border border-transparent hover:bg-black/5 dark:hover:bg-white/5 hover:border-gray-200 dark:border-gray-700/50'}`} data-playlist-index={index} data-playlist-id={pl.id} style={index === 0 ? `background-color: color-mix(in oklch, var(--primary) 15%, transparent);` : ''}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class={`shrink-0 ${index === 0 ? '' : 'text-gray-500 dark:text-gray-400'}`} style={index === 0 ? `color: var(--primary);` : ''}>
                           <path d="M9 18V5l12-2v13"></path>
                           <circle cx="6" cy="18" r="3"></circle>
                           <circle cx="18" cy="16" r="3"></circle>
                         </svg>
                         <div class="flex-1 min-w-0">
-                          <h3 class={`font-extrabold truncate text-sm leading-tight ${index === 0 ? '' : 'text-gray-700 dark:text-gray-300'}`} style={index === 0 ? `color: oklch(var(--p));` : ''}>{pl.name || `歌单 ${pl.id}`}</h3>
+                          <h3 class={`font-extrabold truncate text-sm leading-tight ${index === 0 ? '' : 'text-gray-700 dark:text-gray-300'}`} style={index === 0 ? `color: var(--primary);` : ''}>{pl.name || `歌单 ${pl.id}`}</h3>
                         </div>
-                        <span class={`text-xs font-bold shrink-0 ${index === 0 ? '' : 'text-gray-500 dark:text-gray-400'}`} style={index === 0 ? `color: oklch(var(--p));` : ''}>{playlistCounts[pl.id] || 0}首</span>
+                        <span class={`text-xs font-bold shrink-0 ${index === 0 ? '' : 'text-gray-500 dark:text-gray-400'}`} style={index === 0 ? `color: var(--primary);` : ''}>{playlistCounts[pl.id] || 0}首</span>
                       </li>
                     ))}
                   </ul>
@@ -238,11 +238,11 @@ const playlistSongsData = JSON.stringify(playlistSongs);
                 <line x1="5" x2="5" y1="19" y2="5"></line>
               </svg>
             </button>
-            <button id="play-btn" class="rounded-full w-14 h-14 flex items-center justify-center cursor-pointer transition-all active:scale-95 hover:scale-105" style="background-color: oklch(var(--p)); color: white;">
+            <button id="play-btn" class="rounded-full w-14 h-14 flex items-center justify-center cursor-pointer transition-all active:scale-95 hover:scale-105" style="background-color: var(--primary); color: white;">
               <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play fill-current ml-0.5">
                 <polygon points="6 3 20 12 6 21 6 3"></polygon>
               </svg>
-              <svg id="icon-pause" class="hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause fill-current">
+              <svg id="icon-pause" class="hidden lucide lucide-pause fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
               </svg>
@@ -269,7 +269,7 @@ const playlistSongsData = JSON.stringify(playlistSongs);
               <path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path>
             </svg>
             <div class="w-28 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full relative overflow-hidden cursor-pointer" id="volume-control">
-              <div id="volume-bar" class="absolute top-0 left-0 h-full" style="width: 100%; background-color: oklch(var(--p));"></div>
+              <div id="volume-bar" class="absolute top-0 left-0 h-full" style="width: 100%; background-color: var(--primary);"></div>
             </div>
           </div>
         </div>
@@ -301,12 +301,12 @@ const playlistSongsData = JSON.stringify(playlistSongs);
       transform: scale(1.12);
     }
     .lyric-active {
-        color: oklch(var(--p)) !important;
+        color: var(--primary) !important;
         opacity: 1 !important;
-        text-shadow: 0 0 20px oklch(var(--p) / 0.6);
+        text-shadow: 0 0 20px color-mix(in oklch, var(--primary) 60%, transparent);
     }
     .lyric-word-active {
-      text-shadow: 0 0 12px oklch(var(--p) / 0.45);
+      text-shadow: 0 0 12px color-mix(in oklch, var(--primary) 45%, transparent);
     }
   </style>
 </div>

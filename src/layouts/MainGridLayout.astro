@@ -149,6 +149,23 @@ const showBannerPageTitle =
 	!isHomePageCheck &&
 	!isPostPage &&
 	!!title;
+
+// 非主页横幅文本配置
+const pageTextConfig = backgroundWallpaper.common?.pageText;
+const pageTextEnable = pageTextConfig?.enable ?? true;
+const showPageText =
+	(isBannerMode || isFullscreenMode) &&
+	isBackgroundEnabled &&
+	!isHomePageCheck &&
+	!isPostPage &&
+	pageTextEnable;
+
+// 非主页副标题：优先使用当前页面路径对应的副标题，否则使用默认副标题
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const pageSubtitleRaw = pageTextConfig?.pages?.[currentPath] ?? pageTextConfig?.subtitle;
+const pageSubtitle = Array.isArray(pageSubtitleRaw)
+	? pageSubtitleRaw[Math.floor(Math.random() * pageSubtitleRaw.length)]
+	: pageSubtitleRaw;
 // 手机端非首页不显示banner的CSS类
 const mobileNonHomeBannerClass = !isHomePageCheck ? "mobile-hide-banner" : "";
 
@@ -676,9 +693,24 @@ const bannerCarouselInterval = Math.max(
     {showBannerPageTitle && (
         <div class="banner-page-title-overlay absolute inset-0 z-20 hidden lg:flex items-center justify-center pointer-events-none">
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
-                <div class="banner-page-title font-bold text-white leading-tight inline-flex items-center justify-center gap-3">
-                    {/* <Icon name="material-symbols:bookmark-rounded" class="banner-page-title-icon" /> */}
-                    <span class="banner-page-title-text">{title}</span>
+                <div class="flex flex-col">
+                    <div class="banner-page-title font-bold text-white leading-tight" style={pageTextConfig?.titleSize ? `--page-title-size: ${pageTextConfig.titleSize}` : undefined}>
+                        <span class="banner-page-title-text">{title}</span>
+                    </div>
+                    {showPageText && pageSubtitle && (
+                        <div class="banner-page-subtitle text-white/90 leading-snug mt-2 lg:mt-4" style={{ fontSize: pageTextConfig?.subtitleSize || "1.5rem" }}>
+                            {pageTextConfig?.typewriter?.enable ? (
+                                <TypewriterText
+                                    text={pageSubtitleRaw}
+                                    speed={pageTextConfig.typewriter.speed}
+                                    deleteSpeed={pageTextConfig.typewriter.deleteSpeed}
+                                    pauseTime={pageTextConfig.typewriter.pauseTime}
+                                />
+                            ) : (
+                                pageSubtitle
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

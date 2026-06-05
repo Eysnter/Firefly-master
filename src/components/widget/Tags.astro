@@ -6,7 +6,8 @@ import { sidebarLayoutConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { getTagList } from "@/utils/content-utils";
-import { getTagUrl } from "@/utils/url-utils";
+import { getTagUrl, url } from "@/utils/url-utils";
+import { Icon } from "astro-icon/components";
 
 const tags = await getTagList();
 
@@ -30,6 +31,9 @@ const className = Astro.props.class;
 const style = Astro.props.style;
 ---
 <WidgetLayout name={i18n(I18nKey.tags)} id="tags" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT} useExpandedButtonSpacing={true} class={className} style={style}>
+    <a slot="title-icon" href={url("/tags/")} title={i18n(I18nKey.tags)} class="btn-plain rounded-md p-1 active:scale-90 transition-transform text-neutral-400 hover:text-(--primary)">
+        <Icon name="material-symbols:arrow-outward-rounded" class="text-[1.1rem]" />
+    </a>
     <div class="flex gap-2 flex-wrap">
         {tags.map(t => (
             <ButtonTag href={getTagUrl(t.name)} label={`View all posts with the ${t.name.trim()} tag`}>

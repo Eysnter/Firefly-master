@@ -605,6 +605,21 @@ export type BackgroundWallpaperConfig = {
 				pauseTime: number; // 完整显示后的暂停时间（毫秒）
 			};
 		};
+		// 非主页横幅标题配置（归档、关于、友链等页面）
+		pageText?: {
+			enable?: boolean; // 是否启用非主页横幅标题，默认true
+			titleSize?: string; // 标题字体大小，如 "2.5rem"
+			subtitleSize?: string; // 副标题字体大小，如 "1.5rem"
+			subtitle?: string | string[]; // 默认副标题（未配置具体页面时使用）
+			typewriter?: {
+				enable: boolean; // 是否启用打字机效果
+				speed: number; // 打字速度（毫秒）
+				deleteSpeed: number; // 删除速度（毫秒）
+				pauseTime: number; // 完整显示后的暂停时间（毫秒）
+			};
+			// 按页面路径配置副标题，key 为 URL 路径（如 "/archive"），value 为副标题
+			pages?: Record<string, string | string[]>;
+		};
 		navbar?: {
 			transparentMode?: "semi" | "full" | "semifull"; // 导航栏透明模式
 			enableBlur?: boolean; // 是否开启毛玻璃模糊效果

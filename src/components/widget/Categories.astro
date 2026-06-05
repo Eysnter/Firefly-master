@@ -6,6 +6,7 @@ import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { getCategoryList } from "@/utils/content-utils";
 import { url } from "@/utils/url-utils";
+import { Icon } from "astro-icon/components";
 
 const categories = await getCategoryList();
 
@@ -36,6 +37,9 @@ const archivePath = url("/archive/");
 <WidgetLayout name={i18n(I18nKey.categories)} id="categories" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
                 class={className} style={style}
 >
+    <a slot="title-icon" href={url("/categories/")} title={i18n(I18nKey.categories)} class="btn-plain rounded-md p-1 active:scale-90 transition-transform text-neutral-400 hover:text-(--primary)">
+        <Icon name="material-symbols:arrow-outward-rounded" class="text-[1.1rem]" />
+    </a>
     <div id="categories-widget-data" class="hidden" data-archive-path={archivePath}></div>
     {categories.map((c) =>
         <ButtonLink

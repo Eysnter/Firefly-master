@@ -95,6 +95,36 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
         pauseTime: 3000,
       },
     },
+    // 非主页横幅标题配置（归档、关于、友链、留言板等页面）
+    pageText: {
+      // 是否启用非主页横幅标题
+      enable: true,
+      // 标题字体大小
+      titleSize: "6.2rem",
+      // 副标题字体大小
+      subtitleSize: "2.5rem",
+      // 默认副标题（未配置具体页面时使用）
+      subtitle: "📖 在这里探索更多内容",
+      // 打字机效果
+      typewriter: {
+        enable: false,
+        speed: 100,
+        deleteSpeed: 50,
+        pauseTime: 3000,
+      },
+      // 按页面路径配置副标题，key 为 URL 路径
+      pages: {
+        "/archive": "📚 回顾过去的文字与时光",
+        "/about": "👋 了解更多关于我的故事",
+        "/friends": "🤝 互联的世界，温暖的链接",
+        "/guestbook": "💬 留下你的足迹与心声",
+        "/gallery": "📷 定格美好瞬间",
+        "/sponsor": "❤️ 感谢每一份支持与鼓励",
+        "/bangumi": "🎬 追番记录与二次元日常",
+        "/tags": "🏷️ 按标签浏览文章",
+        "/categories": "📂 按分类浏览文章",
+      },
+    },
     // 导航栏配置
     navbar: {
       // 导航栏透明模式："semi" 半透明，"full" 完全透明，"semifull" 动态透明
@@ -102,7 +132,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
       // 是否开启毛玻璃模糊效果，开启可能会影响页面性能，如果不开启则是半透明，请根据自己的喜好开启
       enableBlur: true,
       // 毛玻璃模糊度
-      blur: 1,
+      blur: 2,
     },
     // 水波纹动画效果配置，开启会影响页面性能，请根据自己的喜好开启
     waves: {

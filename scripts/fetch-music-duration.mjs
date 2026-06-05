@@ -186,10 +186,11 @@ async function fetchMusicDuration() {
           songs = [];
         }
       } else {
-        songs = await fetchPlaylistSongs(pl.id, trans, pl.server);
+        songs = await fetchPlaylistSongs(pl.id, trans);
         console.log(`  ${pl.name || pl.id}: ${songs.length} songs`);
       }
 
+        
       playlistCounts[pl.id] = songs.length;
       playlistSongs[pl.id] = [];
 

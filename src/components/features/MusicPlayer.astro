@@ -38,8 +38,8 @@ const widgetId =
 
     <!-- Top Row: Cover & Info -->
 <div class="flex items-center gap-2 mb-2 px-1">
-    <!-- Circular Cover -->
-    <div class="relative shrink-0 w-14 h-14 group">
+    <!-- Circular Cover (clickable -> music page) -->
+    <div class="relative shrink-0 w-14 h-14 group cursor-pointer music-cover-link hover:scale-105 transition-transform">
             <div class="w-full h-full rounded-full overflow-hidden shadow-lg border-2 border-white dark:border-neutral-700 relative z-10 bg-(--primary)/10 flex items-center justify-center">
             <Icon name="material-symbols:music-note-rounded" class="text-2xl text-(--primary) opacity-40 absolute" aria-hidden="true" />
             <img class="music-cover w-full h-full object-cover animate-spin-slow relative z-10 opacity-0 transition-opacity duration-300" src="" alt={i18n(I18nKey.musicCover)} style="animation-play-state: paused;" />
@@ -49,8 +49,8 @@ const widgetId =
     <!-- Info Section -->
     <div class="flex-1 min-w-0 flex flex-col overflow-hidden">
         <div class="flex items-center justify-between overflow-hidden gap-2">
-            <div class="flex-1 min-w-0 overflow-hidden relative">
-                <h3 class="music-title font-bold text-base text-neutral-800 dark:text-neutral-100 leading-tight truncate">
+            <div class="flex-1 min-w-0 overflow-hidden relative cursor-pointer music-title-link">
+                <h3 class="music-title font-bold text-base text-neutral-800 dark:text-neutral-100 leading-tight truncate hover:text-(--primary) transition-colors">
                     {i18n(I18nKey.music)}
                 </h3>
             </div>
@@ -643,6 +643,12 @@ const widgetId =
     ui.cover.addEventListener('error', function () {
         ui.cover.classList.add('opacity-0');
     });
+
+    // ── Click cover/title to navigate to music page ─────────
+    var coverLink = widget.querySelector('.music-cover-link');
+    var titleLink = widget.querySelector('.music-title-link');
+    if (coverLink) coverLink.addEventListener('click', function () { window.location.href = '/music'; });
+    if (titleLink) titleLink.addEventListener('click', function () { window.location.href = '/music'; });
 
     // ── Cleanup on DOM removal ───────────────────────────────
     var observer = new MutationObserver(function (mutations) {

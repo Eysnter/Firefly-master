@@ -160,9 +160,20 @@ const initialSong = musicList[0] || {};
         }
 
         handlePageLoad() {
+            // Save playback state before DOM updates
+            const wasPlaying = this.audio && !this.audio.paused;
+            const savedTime = this.audio ? this.audio.currentTime : 0;
+            const savedSrc = this.audio ? this.audio.src : '';
+
             // Re-acquire all DOM references to handle persistence failures or DOM updates
             this.bindGlobalAudioEvents();
             this.bindMiniPlayerEvents();
+
+            // Restore audio source if it was lost during page transition
+            if (this.audio && !this.audio.src && savedSrc) {
+                this.audio.src = savedSrc;
+                this.audio.currentTime = savedTime;
+            }
 
             // Check for Main Player widget (MutationObserver also watches for this)
             this.container = document.querySelector('[data-playlist-songs]');
@@ -173,6 +184,11 @@ const initialSong = musicList[0] || {};
             // Sync playback status with audio element
             if (this.audio && !this.audio.paused) {
                  this.isPlaying = true;
+            }
+
+            // Resume playback if it was playing before page transition
+            if (wasPlaying && this.audio && this.audio.paused) {
+                this.audio.play().catch(() => {});
             }
 
             // Update UI State (syncs both Mini and Main players)

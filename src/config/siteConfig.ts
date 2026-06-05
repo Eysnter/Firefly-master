@@ -246,6 +246,7 @@ export const siteConfig: SiteConfig = {
   music: {
     // 歌单配置
     playlists: [
+      { id: "17924204831", name: "纯音乐", server: "netease" },
       { id: "17933567326", name: "我的喜欢", server: "netease" },
       { id: "zhoujielun", name: "周杰伦", server: "netease", type: "custom" },
       { id: "17964946766", name: "陶喆", server: "netease" },
@@ -254,12 +255,6 @@ export const siteConfig: SiteConfig = {
       { id: "17957136689", name: "林俊杰", server: "netease" },
       { id: "17957661244", name: "孙燕姿", server: "netease" },
       { id: "17966019560", name: "告五人", server: "netease" },
-      { id: "17924204831", name: "纯音乐", server: "netease" },
-      {
-        id: "1nm9t5aG2V2",
-        name: "中文歌",
-        server: "netease",
-      },
     ],
   },
 

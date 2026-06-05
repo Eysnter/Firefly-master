@@ -183,8 +183,92 @@ const widgetId =
     var widget = document.getElementById(widgetId);
     if (!widget) return;
 
-    var mgr = window.__fireflyMusic;
-    if (!mgr) return;
+    // ── Adapter: use globalMusicPlayer (shared with music page & mini player) ──
+    var gmp = window.globalMusicPlayer;
+    if (!gmp || !gmp.audio) return;
+
+    function formatTime(seconds) {
+        if (!seconds || isNaN(seconds)) return '0:00';
+        var min = Math.floor(seconds / 60);
+        var sec = Math.floor(seconds % 60);
+        return min + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    // Adapter that wraps globalMusicPlayer with the same API as __fireflyMusic
+    var mgr = {
+        init: function() { /* already initialized by GlobalAudio */ },
+        getState: function() {
+            var audio = gmp.audio;
+            var song = gmp.playlist[gmp.currentIndex] || {};
+            return {
+                initialized: true,
+                playlist: gmp.playlist.map(function(s) {
+                    return { name: s.title || 'Unknown', artist: s.artist || 'Unknown', url: s.url, pic: s.cover || '', lrc: s.lrc || '' };
+                }),
+                currentIndex: gmp.currentIndex || 0,
+                track: { name: song.title || 'Unknown', artist: song.artist || 'Unknown', pic: song.cover || '' },
+                isPlaying: gmp.isPlaying || false,
+                playMode: gmp.isShuffle ? 2 : (gmp.repeatMode === 'one' ? 1 : 0),
+                volume: audio ? audio.volume : 0.7,
+                isMuted: audio ? audio.muted : false,
+                currentTime: audio ? audio.currentTime : 0,
+                duration: audio ? (audio.duration || 0) : 0,
+                progress: audio && audio.duration ? (audio.currentTime / audio.duration) * 100 : 0,
+                currentTimeStr: formatTime(audio ? audio.currentTime : 0),
+                durationStr: formatTime(audio ? audio.duration : 0),
+                lyrics: gmp.lyrics || [],
+                currentLrcIndex: gmp.lastActiveIndex >= 0 ? gmp.lastActiveIndex : -1,
+                error: null
+            };
+        },
+        togglePlay: function() { gmp.togglePlay(); },
+        playNext: function() { gmp.nextSong(false); },
+        playPrev: function() { gmp.prevSong(); },
+        cyclePlayMode: function() { gmp.toggleRepeat(); },
+        setVolume: function(val) { if (gmp.audio) gmp.audio.volume = val; },
+        toggleMute: function() { if (gmp.audio) gmp.audio.muted = !gmp.audio.muted; },
+        seek: function(pct) { if (gmp.audio && gmp.audio.duration) gmp.audio.currentTime = pct * gmp.audio.duration; },
+        seekToTime: function(t) { if (gmp.audio) gmp.audio.currentTime = t; },
+        playTrackByIndex: function(idx) { gmp.loadSong(idx, true); }
+    };
+
+    // Emit fm:* events from globalMusicPlayer audio events so the UI stays in sync
+    function emit(name, detail) { window.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); }
+    var audio = gmp.audio;
+    audio.addEventListener('timeupdate', function() {
+        if (isNaN(audio.duration)) return;
+        emit('fm:time', { currentTime: audio.currentTime, duration: audio.duration, progress: (audio.currentTime / audio.duration) * 100, currentTimeStr: formatTime(audio.currentTime), durationStr: formatTime(audio.duration) });
+        if (gmp.lyrics && gmp.lyrics.length > 0 && gmp.lastActiveIndex >= 0) {
+            emit('fm:lrc-index', { index: gmp.lastActiveIndex });
+        }
+    });
+    audio.addEventListener('play', function() { emit('fm:play-state', { isPlaying: true }); });
+    audio.addEventListener('pause', function() { emit('fm:play-state', { isPlaying: false }); });
+    audio.addEventListener('ended', function() { gmp.nextSong(true); });
+
+    // Emit fm:init so the sidebar widget renders the playlist
+    emit('fm:init', { playlist: mgr.getState().playlist, playMode: mgr.getState().playMode, volume: mgr.getState().volume, isMuted: mgr.getState().isMuted });
+
+    // Track & lyrics change detection
+    var lastTrackIndex = -1;
+    var lastLyricsLen = -1;
+    setInterval(function() {
+        // Track changed
+        if (gmp.currentIndex !== lastTrackIndex) {
+            lastTrackIndex = gmp.currentIndex;
+            lastLyricsLen = -1; // reset lyrics check
+            var song = gmp.playlist[gmp.currentIndex] || {};
+            emit('fm:track', { index: gmp.currentIndex, track: { name: song.title || 'Unknown', artist: song.artist || 'Unknown', pic: song.cover || '' } });
+        }
+        // Lyrics loaded
+        var curLyricsLen = (gmp.lyrics || []).length;
+        if (curLyricsLen !== lastLyricsLen) {
+            lastLyricsLen = curLyricsLen;
+            if (curLyricsLen > 0) {
+                emit('fm:lyrics', { lyrics: gmp.lyrics, status: 'loaded' });
+            }
+        }
+    }, 300);
 
     // ── UI element refs ──────────────────────────────────────
     var ui = {

@@ -160,7 +160,7 @@ export const siteConfig: SiteConfig = {
       // 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
       masonry: false,
       // 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
-      columnWidth: 320,
+      columnWidth: 330,
     },
   },
 

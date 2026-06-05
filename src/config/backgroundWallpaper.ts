@@ -177,6 +177,12 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
       // 是否允许用户通过控制面板切换横幅轮播
       switchable: true,
     },
+    // 随机图API配置，设置后自动启用无刷新轮播（双层淡入淡出，无需刷新页面）
+    // 与 src 配置互斥，优先使用 randomImage
+    randomImage: {
+      url: "https://t.alcy.cc/ycy", // 随机图API地址
+      interval: 8000, // 轮播间隔（毫秒）
+    },
   },
   // 全屏透明覆盖模式特有配置
   overlay: {

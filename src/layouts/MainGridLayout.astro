@@ -143,6 +143,12 @@ const showBannerPostMeta =
 const showBannerDim = (isBannerMode || isFullscreenMode) && isBackgroundEnabled;
 const dimOpacity = backgroundWallpaper.common?.dimOpacity ?? 0.15;
 
+// 随机图API配置
+const randomImageConfig = backgroundWallpaper.banner?.randomImage;
+const useRandomImage = !!randomImageConfig?.url;
+const randomImageUrl = randomImageConfig?.url || '';
+const randomImageInterval = randomImageConfig?.interval ?? 6000;
+
 const showBannerPageTitle =
 	(isBannerMode || isFullscreenMode) &&
 	isBackgroundEnabled &&
@@ -330,6 +336,13 @@ const bannerCarouselInterval = Math.max(
 				: `top: -${BANNER_HEIGHT_EXTEND}vh`
 }>
     <!-- 背景图片显示 -->
+    {useRandomImage ? (
+    <!-- 随机图API模式：双层淡入淡出 -->
+    <div class="relative h-full w-full" id="banner-random-container" data-random-url={randomImageUrl} data-random-interval={randomImageInterval}>
+        <div id="banner-bg-current" class="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 transition-opacity duration-1000" style={`background-image: url(${randomImageUrl}?t=${Date.now()})`}></div>
+        <div id="banner-bg-next" class="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 opacity-0 transition-opacity duration-1000"></div>
+    </div>
+    ) : (
     <div class="relative h-full w-full" id="banner-images-container"
          data-mobile-count={backgroundImages.mobile.length}
          data-desktop-count={backgroundImages.desktop.length}
@@ -401,8 +414,86 @@ const bannerCarouselInterval = Math.max(
             </template>
         ))}
     </div>
+    )}
 
-    <!-- 客户端随机选择图片脚本 -->
+    <!-- 随机图API轮播脚本 -->
+    {useRandomImage && (
+    <script is:inline data-swup-ignore-script define:vars={{ randomImageUrl, randomImageInterval }}>
+        (function randomImageCarousel() {
+            var container = document.getElementById('banner-random-container');
+            if (!container) return;
+
+            var bgCurrent = document.getElementById('banner-bg-current');
+            var bgNext = document.getElementById('banner-bg-next');
+            if (!bgCurrent || !bgNext) return;
+
+            var TRANSITION_DURATION = 1000;
+            var timer = null;
+            var isAnimating = false;
+
+            var getRandomUrl = function() { return randomImageUrl + '?t=' + Date.now(); };
+
+            var preloadImage = function(url) {
+                return new Promise(function(resolve, reject) {
+                    var img = new Image();
+                    img.onload = function() { resolve(url); };
+                    img.onerror = reject;
+                    img.src = url;
+                });
+            };
+
+            var switchImage = async function() {
+                if (isAnimating) return;
+                if (document.hidden) return;
+
+                try {
+                    var nextUrl = getRandomUrl();
+                    await preloadImage(nextUrl);
+                    isAnimating = true;
+
+                    bgNext.style.backgroundImage = 'url(' + nextUrl + ')';
+                    bgNext.classList.remove('opacity-0');
+
+                    setTimeout(function() {
+                        bgCurrent.style.backgroundImage = 'url(' + nextUrl + ')';
+                        bgNext.style.transition = 'none';
+                        bgNext.classList.add('opacity-0');
+                        bgNext.offsetHeight;
+                        bgNext.style.transition = '';
+                        isAnimating = false;
+                    }, TRANSITION_DURATION);
+                } catch (e) {
+                    isAnimating = false;
+                }
+            };
+
+            var startCarousel = function() {
+                stopCarousel();
+                timer = setInterval(switchImage, randomImageInterval);
+            };
+
+            var stopCarousel = function() {
+                if (timer) { clearInterval(timer); timer = null; }
+            };
+
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    entry.isIntersecting ? startCarousel() : stopCarousel();
+                });
+            });
+            observer.observe(container);
+
+            document.addEventListener('astro:before-swap', function() {
+                stopCarousel();
+                observer.disconnect();
+            }, { once: true });
+
+            startCarousel();
+        })();
+    </script>
+    )}
+
+    <!-- 客户端随机选择图片脚本（静态图片模式） -->
     <script is:inline data-swup-ignore-script>
         (function randomizeBannerImage() {
             var container = document.getElementById('banner-images-container');

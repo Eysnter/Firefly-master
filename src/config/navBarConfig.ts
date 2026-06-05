@@ -46,6 +46,13 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		url: "/my/",
 		icon: "material-symbols:person",
 		children: [
+			// 音乐页面
+			{
+				name: "音乐",
+				url: "/music/",
+				icon: "material-symbols:music-note-rounded",
+			},
+
 			// 根据配置决定是否添加相册，在siteConfig关闭pages.gallery时导航栏不显示相册
 			...(siteConfig.pages.gallery ? [LinkPreset.Gallery] : []),
 

@@ -162,6 +162,16 @@ export type SiteConfig = {
 		 */
 		noReferrerDomains?: string[];
 	};
+
+	// 音乐配置
+	music?: {
+		playlists?: {
+			id: string;
+			name: string;
+			server?: string;
+			type?: string;
+		}[];
+	};
 };
 
 export type Favicon = {

@@ -224,8 +224,8 @@ const widgetId =
         playNext: function() { var g = getGmp(); if (g) g.nextSong(false); },
         playPrev: function() { var g = getGmp(); if (g) g.prevSong(); },
         cyclePlayMode: function() { var g = getGmp(); if (g) g.toggleRepeat(); },
-        setVolume: function(val) { var g = getGmp(); if (g && g.audio) g.audio.volume = val; },
-        toggleMute: function() { var g = getGmp(); if (g && g.audio) g.audio.muted = !g.audio.muted; },
+        setVolume: function(val) { var g = getGmp(); if (g && g.audio) { g.audio.volume = val; emit('fm:volume', { volume: val, isMuted: g.audio.muted }); } },
+        toggleMute: function() { var g = getGmp(); if (g && g.audio) { g.audio.muted = !g.audio.muted; emit('fm:volume', { volume: g.audio.volume, isMuted: g.audio.muted }); } },
         seek: function(pct) { var g = getGmp(); if (g && g.audio && g.audio.duration) g.audio.currentTime = pct * g.audio.duration; },
         seekToTime: function(t) { var g = getGmp(); if (g && g.audio) g.audio.currentTime = t; },
         playTrackByIndex: function(idx) { var g = getGmp(); if (g) g.loadSong(idx, true); }
@@ -288,17 +288,6 @@ const widgetId =
         // Re-check in case audio element changes
         setInterval(bindAudioEvents, 1000);
     }
-
-    // Emit initial state
-    setTimeout(function() {
-        var s = mgr.getState();
-        if (s.initialized) {
-            emit('fm:init', { playlist: s.playlist, playMode: s.playMode, volume: s.volume, isMuted: s.isMuted });
-            if (s.track) emit('fm:track', { index: s.currentIndex, track: s.track });
-            emit('fm:play-state', { isPlaying: s.isPlaying });
-            if (s.lyrics.length > 0) emit('fm:lyrics', { lyrics: s.lyrics, status: 'loaded' });
-        }
-    }, 100);
 
     // ── UI element refs ──────────────────────────────────────
     var ui = {
@@ -646,6 +635,40 @@ const widgetId =
     on('fm:error', function (e) {
         ui.title.innerText = e.detail.message || cfg.i18n.error;
     });
+
+    // ── Emit initial state AFTER listeners are registered ─────
+    function emitInitialState() {
+        var s = mgr.getState();
+        if (!s.initialized) return;
+        setLoading(false);
+        renderPlaylist(s.playlist, s.currentIndex);
+        if (s.track) updateTrackUI(s.track);
+        updatePlayStateUI(s.isPlaying);
+        updateModeUI(s.playMode);
+        updateVolumeUI(s.volume, s.isMuted);
+        if (s.lyrics.length > 0) renderLyricsUI(s.lyrics, 'loaded');
+        if (s.currentLrcIndex >= 0) updateLrcHighlight(s.currentLrcIndex);
+        if (s.duration > 0) {
+            ui.progressBar.style.width = s.progress + '%';
+            ui.progressThumb.style.left = s.progress + '%';
+            ui.currentTime.innerText = s.currentTimeStr;
+            ui.totalTime.innerText = s.durationStr;
+        }
+        if (s.track && s.track.pic) {
+            ui.cover.src = s.track.pic;
+            ui.cover.classList.remove('opacity-0');
+        }
+        ui.cover.style.animationPlayState = s.isPlaying ? 'running' : 'paused';
+    }
+
+    // Try immediately, then retry until globalMusicPlayer is ready
+    emitInitialState();
+    var _initRetry = setInterval(function() {
+        if (getGmp() && getGmp().audio) {
+            emitInitialState();
+            clearInterval(_initRetry);
+        }
+    }, 200);
 
     // ── Button click delegates ───────────────────────────────
     ui.btnPlay.addEventListener('click', function () { mgr.togglePlay(); });

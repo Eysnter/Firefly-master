@@ -1,0 +1,200 @@
+---
+import { getCollection } from "astro:content";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import postOrderConfig from "@/config/postOrder.json";
+
+const postOrder: Record<string, number> = postOrderConfig as Record<string, number>;
+
+const allPosts = await getCollection("posts", ({ data }) => {
+  return import.meta.env.PROD ? data.draft !== true : true;
+});
+
+// 按当前排序排列
+const sortedPosts = allPosts.sort((a, b) => {
+  if (a.data.pinned && !b.data.pinned) return -1;
+  if (!a.data.pinned && b.data.pinned) return 1;
+  const orderA = postOrder[a.id];
+  const orderB = postOrder[b.id];
+  const hasA = orderA !== undefined;
+  const hasB = orderB !== undefined;
+  if (hasA && hasB) return orderA - orderB;
+  if (hasA) return -1;
+  if (hasB) return 1;
+  return new Date(b.data.published).getTime() - new Date(a.data.published).getTime();
+});
+
+const postsData = sortedPosts.map((p, i) => ({
+  id: p.id,
+  title: p.data.title,
+  category: p.data.category || "",
+  pinned: p.data.pinned,
+  published: p.data.published.toISOString().slice(0, 10),
+  hasCustomOrder: postOrder[p.id] !== undefined,
+}));
+---
+
+<MainGridLayout>
+  <div class="card-base px-6 py-8 max-w-3xl mx-auto w-full">
+    <h1 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">文章排序</h1>
+    <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+      拖拽文章调整顺序，点击「保存排序」生成配置。排序优先级：置顶 → 自定义顺序 → 发布日期。
+    </p>
+
+    <div class="flex gap-2 mb-4">
+      <button id="btn-save" class="btn-plain rounded-lg px-4 py-2 text-sm font-medium bg-(--primary) text-white hover:opacity-90 transition-opacity">
+        保存排序
+      </button>
+      <button id="btn-reset" class="btn-plain rounded-lg px-4 py-2 text-sm font-medium border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+        恢复默认
+      </button>
+    </div>
+
+    <!-- 提示框 -->
+    <div id="save-toast" class="hidden mb-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-sm text-emerald-700 dark:text-emerald-300">
+      <p class="font-semibold mb-2">✅ 排序已保存！请将以下内容复制到 <code class="bg-emerald-100 dark:bg-emerald-800 px-1.5 py-0.5 rounded text-xs">src/config/postOrder.json</code></p>
+      <pre id="json-output" class="bg-emerald-100/50 dark:bg-emerald-900/50 p-3 rounded-lg text-xs overflow-x-auto max-h-48 whitespace-pre-wrap break-all"></pre>
+      <button id="btn-copy" class="mt-2 text-xs text-emerald-600 dark:text-emerald-400 hover:underline">📋 复制到剪贴板</button>
+    </div>
+
+    <!-- 文章列表 -->
+    <div id="post-list" class="space-y-1">
+      {postsData.map((post, index) => (
+        <div
+          class="post-item flex items-center gap-3 p-3 rounded-xl border border-transparent hover:border-neutral-200 dark:hover:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 cursor-grab active:cursor-grabbing transition-all group"
+          data-id={post.id}
+          draggable="true"
+        >
+          <div class="flex items-center justify-center w-6 text-neutral-400 dark:text-neutral-500 text-xs font-mono drag-handle">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+          </div>
+          <span class="order-num text-xs font-mono text-neutral-400 dark:text-neutral-500 w-6 text-right flex-shrink-0">{index + 1}</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              {post.pinned && <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 font-medium flex-shrink-0">置顶</span>}
+              <span class="post-title text-sm text-neutral-800 dark:text-neutral-200 truncate">{post.title}</span>
+            </div>
+            <div class="flex items-center gap-2 mt-0.5">
+              {post.category && <span class="text-[10px] text-neutral-400">{post.category}</span>}
+              <span class="text-[10px] text-neutral-400">{post.published}</span>
+              {post.hasCustomOrder && <span class="text-[10px] px-1 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-500">自定义</span>}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</MainGridLayout>
+
+<script>
+  const list = document.getElementById("post-list") as HTMLElement;
+  const btnSave = document.getElementById("btn-save") as HTMLButtonElement;
+  const btnReset = document.getElementById("btn-reset") as HTMLButtonElement;
+  const saveToast = document.getElementById("save-toast") as HTMLElement;
+  const jsonOutput = document.getElementById("json-output") as HTMLElement;
+  const btnCopy = document.getElementById("btn-copy") as HTMLButtonElement;
+
+  let dragSrc: HTMLElement | null = null;
+
+  // 拖拽事件
+  list.addEventListener("dragstart", (e) => {
+    const item = (e.target as HTMLElement).closest(".post-item") as HTMLElement | null;
+    if (!item) return;
+    dragSrc = item;
+    item.classList.add("opacity-40", "scale-[0.98]");
+    (e as DragEvent).dataTransfer!.effectAllowed = "move";
+    (e as DragEvent).dataTransfer!.setData("text/plain", item.dataset.id || "");
+  });
+
+  list.addEventListener("dragend", (e) => {
+    const item = (e.target as HTMLElement).closest(".post-item") as HTMLElement | null;
+    if (item) item.classList.remove("opacity-40", "scale-[0.98]");
+    document.querySelectorAll(".post-item").forEach(el => el.classList.remove("border-blue-400", "dark:border-blue-500"));
+    dragSrc = null;
+  });
+
+  list.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    (e as DragEvent).dataTransfer!.dropEffect = "move";
+    const target = (e.target as HTMLElement).closest(".post-item") as HTMLElement | null;
+    if (!target || target === dragSrc) return;
+    document.querySelectorAll(".post-item").forEach(el => el.classList.remove("border-blue-400", "dark:border-blue-500"));
+    target.classList.add("border-blue-400", "dark:border-blue-500");
+  });
+
+  list.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const target = (e.target as HTMLElement).closest(".post-item") as HTMLElement | null;
+    if (!target || !dragSrc || target === dragSrc) return;
+    target.classList.remove("border-blue-400", "dark:border-blue-500");
+
+    const items = Array.from(list.children) as HTMLElement[];
+    const fromIdx = items.indexOf(dragSrc);
+    const toIdx = items.indexOf(target);
+
+    if (fromIdx < toIdx) {
+      target.after(dragSrc);
+    } else {
+      target.before(dragSrc);
+    }
+    updateOrderNumbers();
+  });
+
+  function updateOrderNumbers() {
+    const items = Array.from(list.querySelectorAll(".post-item")) as HTMLElement[];
+    items.forEach((item, i) => {
+      const num = item.querySelector(".order-num");
+      if (num) num.textContent = String(i + 1);
+    });
+  }
+
+  function getOrderMap(): Record<string, number> {
+    const items = Array.from(list.querySelectorAll(".post-item")) as HTMLElement[];
+    const map: Record<string, number> = {};
+    items.forEach((item, i) => {
+      if (item.dataset.id) map[item.dataset.id] = i;
+    });
+    return map;
+  }
+
+  // 保存排序
+  btnSave.addEventListener("click", () => {
+    const orderMap = getOrderMap();
+    const json = JSON.stringify(orderMap, null, 2);
+    localStorage.setItem("postOrder", json);
+    jsonOutput.textContent = json;
+    saveToast.classList.remove("hidden");
+  });
+
+  // 恢复默认
+  btnReset.addEventListener("click", () => {
+    localStorage.removeItem("postOrder");
+    location.reload();
+  });
+
+  // 复制 JSON
+  btnCopy.addEventListener("click", () => {
+    navigator.clipboard.writeText(jsonOutput.textContent || "").then(() => {
+      btnCopy.textContent = "✅ 已复制";
+      setTimeout(() => { btnCopy.textContent = "📋 复制到剪贴板"; }, 2000);
+    });
+  });
+
+  // 页面加载时恢复 localStorage 中的排序
+  function restoreSavedOrder() {
+    const saved = localStorage.getItem("postOrder");
+    if (!saved) return;
+    try {
+      const orderMap = JSON.parse(saved) as Record<string, number>;
+      const items = Array.from(list.querySelectorAll(".post-item")) as HTMLElement[];
+      const sorted = items.sort((a, b) => {
+        const orderA = orderMap[a.dataset.id!] ?? 9999;
+        const orderB = orderMap[b.dataset.id!] ?? 9999;
+        return orderA - orderB;
+      });
+      sorted.forEach(item => list.appendChild(item));
+      updateOrderNumbers();
+    } catch {}
+  }
+
+  restoreSavedOrder();
+</script>

@@ -34,6 +34,8 @@ const { headings: _headings = [], class: className, style } = Astro.props;
 /* SidebarTOC 特定样式 */
 .toc-scroll-container
 	max-height: calc(100vh - 20rem)
+	height: auto
+	min-height: 0
 </style>
 
 <script>
@@ -60,7 +62,7 @@ const { headings: _headings = [], class: className, style } = Astro.props;
       window.SidebarTOC.manager = new TOCManager({
         contentId: "sidebar-toc-content",
         indicatorId: "sidebar-active-indicator",
-        maxLevel: 3,
+        maxLevel: 4,
         scrollOffset: 80,
       });
 

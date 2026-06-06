@@ -9,6 +9,8 @@ declare global {
 	interface ITOCManager {
 		init: () => void;
 		cleanup: () => void;
+		expandAll: () => void;
+		collapseAll: () => void;
 	}
 
 	interface Window {
@@ -23,6 +25,7 @@ declare global {
 		};
 		toggleFloatingTOC: () => void;
 		tocInternalNavigation: boolean;
+		_tocDelegationBound: boolean;
 		// swup is defined in global.d.ts
 		// biome-ignore lint/suspicious/noExplicitAny: External library without types
 		spine: any;
@@ -30,6 +33,7 @@ declare global {
 		// __fireflyMusic type is defined in global.d.ts
 		semifullScrollHandler?: (() => void) | undefined;
 		initSemifullScrollDetection?: () => void;
+		tocManager: ITOCManager | null;
 	}
 }
 

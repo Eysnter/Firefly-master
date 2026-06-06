@@ -13,6 +13,13 @@ export interface TOCConfig {
 	scrollOffset?: number;
 }
 
+interface TOCGroup {
+	heading: HTMLElement;
+	depth: number;
+	id: string;
+	children: TOCGroup[];
+}
+
 export class TOCManager {
 	private tocItems: HTMLElement[] = [];
 	private observer: IntersectionObserver | null = null;
@@ -22,6 +29,7 @@ export class TOCManager {
 	private contentId: string;
 	private indicatorId: string;
 	private scrollOffset: number;
+	private collapsedIds: Set<string> = new Set();
 
 	constructor(config: TOCConfig) {
 		this.contentId = config.contentId;
@@ -30,9 +38,8 @@ export class TOCManager {
 		this.scrollOffset = config.scrollOffset || 80;
 	}
 
-	/**
-	 * 查找文章内容容器
-	 */
+	// ==================== 基础工具方法 ====================
+
 	private getContentContainer(): Element | null {
 		return (
 			document.querySelector(".custom-md") ||
@@ -41,22 +48,14 @@ export class TOCManager {
 		);
 	}
 
-	/**
-	 * 查找所有标题
-	 */
 	private getAllHeadings(): HTMLElement[] {
 		const contentContainer = this.getContentContainer();
-		if (!contentContainer) {
-			return [];
-		}
+		if (!contentContainer) return [];
 		return Array.from(
 			contentContainer.querySelectorAll("h1, h2, h3, h4, h5, h6"),
 		);
 	}
 
-	/**
-	 * 计算最小深度
-	 */
 	private calculateMinDepth(headings: HTMLElement[]): number {
 		let minDepth = 10;
 		headings.forEach((heading) => {
@@ -66,9 +65,6 @@ export class TOCManager {
 		return minDepth;
 	}
 
-	/**
-	 * 过滤标题
-	 */
 	private filterHeadings(headings: HTMLElement[]): HTMLElement[] {
 		return Array.from(headings).filter((heading) => {
 			const depth = Number.parseInt(heading.tagName.charAt(1), 10);
@@ -76,9 +72,6 @@ export class TOCManager {
 		});
 	}
 
-	/**
-	 * 获取标题的纯文本内容（排除 script/style 标签的文本）
-	 */
 	private getCleanTextContent(element: HTMLElement): string {
 		const clone = element.cloneNode(true) as HTMLElement;
 		for (const el of clone.querySelectorAll("script, style")) {
@@ -87,9 +80,6 @@ export class TOCManager {
 		return clone.textContent || "";
 	}
 
-	/**
-	 * 转义 HTML 属性值，避免标题中的引号破坏属性
-	 */
 	private escapeHtmlAttr(value: string): string {
 		return value
 			.replace(/&/g, "&amp;")
@@ -99,29 +89,170 @@ export class TOCManager {
 			.replace(/>/g, "&gt;");
 	}
 
-	/**
-	 * 生成徽章内容
-	 */
 	private generateBadgeContent(depth: number, heading1Count: number): string {
-		if (depth === this.minDepth) {
-			return heading1Count.toString();
+		const rel = depth - this.minDepth;
+		if (rel === 0) {
+			return `<span class="toc-badge w-5 h-5 rounded-full bg-[var(--toc-badge-bg,#fde8eb)] text-[var(--primary)] text-[10px] font-bold">${heading1Count}</span>`;
 		}
-		if (depth === this.minDepth + 1) {
-			return '<span class="toc-badge-dot"></span>';
+		if (rel === 1) {
+			return '<span class="w-1.5 h-1.5 rounded-full bg-[var(--primary)] flex-shrink-0"></span>';
 		}
-		return '<span class="toc-badge-dot toc-badge-dot-sm"></span>';
+		if (rel === 2) {
+			return '<span class="w-2.5 h-2.5 rounded-full border border-[var(--primary)] bg-white flex-shrink-0"></span>';
+		}
+		if (rel === 3) {
+			return '<span class="text-gray-400 text-[10px] flex-shrink-0">-</span>';
+		}
+		if (rel === 4) {
+			return '<span class="text-gray-400 text-[10px] flex-shrink-0">•</span>';
+		}
+		return '<span class="text-[var(--primary)] text-[9px] flex-shrink-0">*</span>';
 	}
 
-	/**
-	 * 空状态文案
-	 */
 	private getEmptyStateHTML(): string {
 		return `<div class="text-center py-8 text-gray-500 dark:text-gray-400"><p>${i18n(I18nKey.tocEmpty)}</p></div>`;
 	}
 
+	private getHeadingText(heading: HTMLElement): string {
+		let text = this.getCleanTextContent(heading)
+			.replace(/#+\s*$/, "")
+			.trim();
+
+		if (!text) {
+			const dataSubtitles = heading.getAttribute("data-subtitles");
+			if (dataSubtitles) {
+				try {
+					const subtitles = JSON.parse(dataSubtitles);
+					text = Array.isArray(subtitles) ? subtitles[0] : subtitles;
+				} catch {
+					// ignore
+				}
+			}
+		}
+
+		if (!text) {
+			text =
+				heading.id === "banner-subtitle"
+					? "Banner Subtitle"
+					: heading.id || "Heading";
+		}
+
+		return text;
+	}
+
+	// ==================== 树形分组 ====================
+
+	private buildTOCGroups(headings: HTMLElement[]): TOCGroup[] {
+		const groups: TOCGroup[] = [];
+		let currentGroup: TOCGroup | null = null;
+
+		headings.forEach((heading) => {
+			const depth = Number.parseInt(heading.tagName.charAt(1), 10);
+			if (!heading.id) return;
+
+			const group: TOCGroup = {
+				heading,
+				depth,
+				id: heading.id,
+				children: [],
+			};
+
+			if (depth === this.minDepth) {
+				groups.push(group);
+				currentGroup = group;
+			} else if (currentGroup) {
+				let parent = currentGroup;
+				while (parent.children.length > 0) {
+					const lastChild = parent.children[parent.children.length - 1];
+					if (lastChild.depth < depth) {
+						parent = lastChild;
+					} else {
+						break;
+					}
+				}
+				parent.children.push(group);
+			}
+		});
+
+		return groups;
+	}
+
+	// ==================== HTML 渲染 ====================
+
 	/**
-	 * 生成TOC HTML
+	 * 渲染单个 TOC 项（无子级）
 	 */
+	private renderItem(heading: HTMLElement, depth: number, heading1Count: number): string {
+		const depthLevel = depth - this.minDepth;
+		const badgeContent = this.generateBadgeContent(depth, heading1Count);
+		const text = this.getHeadingText(heading);
+		const escaped = this.escapeHtmlAttr(text);
+		const textSize = depthLevel >= 4 ? "text-[11px]" : depthLevel >= 2 ? "text-xs" : "text-sm";
+		const textColor = depthLevel >= 3 ? "text-gray-400" : depthLevel >= 1 ? "text-gray-500" : "text-gray-700";
+		const italic = depthLevel >= 5 ? " italic" : "";
+		const fontWeight = depthLevel <= 1 ? " font-medium" : "";
+		const padding = depthLevel >= 4 ? "p-1" : depthLevel >= 2 ? "p-1.5" : "p-2";
+
+		return `
+        <li class="toc-item" data-heading-id="${heading.id}">
+          <div class="toc-link-wrapper ${padding} rounded-lg" data-target="${heading.id}">
+            <a href="#${heading.id}" class="toc-link flex items-center gap-${depthLevel >= 3 ? "1.5" : "2"} flex-1 min-w-0 pr-2" aria-label="${escaped}" title="${escaped}">
+              ${badgeContent}
+              <span class="toc-link-text ${textSize} ${textColor}${italic}${fontWeight} truncate">${text}</span>
+            </a>
+          </div>
+        </li>`;
+	}
+
+	/**
+	 * 渲染可折叠的分组（有子级）
+	 */
+	private renderGroup(group: TOCGroup, heading1Count: number): string {
+		const hasChildren = group.children.length > 0;
+
+		if (!hasChildren) {
+			return this.renderItem(group.heading, group.depth, heading1Count);
+		}
+
+		const depthLevel = group.depth - this.minDepth;
+		const badgeContent = this.generateBadgeContent(group.depth, heading1Count);
+		const text = this.getHeadingText(group.heading);
+		const escaped = this.escapeHtmlAttr(text);
+		const isCollapsed = this.collapsedIds.has(group.id);
+		const isExpanded = !isCollapsed;
+		const textSize = depthLevel >= 4 ? "text-[11px]" : depthLevel >= 2 ? "text-xs" : "text-sm";
+		const textColor = depthLevel >= 3 ? "text-gray-400" : depthLevel >= 1 ? "text-gray-500" : "text-gray-700";
+		const fontWeight = depthLevel <= 1 ? " font-medium" : "";
+		const padding = depthLevel >= 4 ? "p-1" : depthLevel >= 2 ? "p-1.5" : "p-2";
+		const arrowSize = depthLevel >= 3 ? "w-2.5 h-2.5" : "w-3.5 h-3.5";
+		const btnPadding = depthLevel >= 3 ? "p-0.5" : "p-1";
+
+		// 子项 HTML
+		const childrenHtml = group.children
+			.map((child) => this.renderGroup(child, 0))
+			.join("");
+
+		return `
+        <li class="toc-item has-sub${isExpanded ? " expanded" : ""}" data-heading-id="${group.id}">
+          <div class="toc-link-wrapper ${padding} rounded-lg" data-target="${group.heading.id}">
+            <a href="#${group.heading.id}" class="toc-link flex items-center gap-${depthLevel >= 3 ? "1.5" : "2"} flex-1 min-w-0 pr-2" aria-label="${escaped}" title="${escaped}">
+              ${badgeContent}
+              <span class="toc-link-text ${textSize} ${textColor}${fontWeight} truncate">${text}</span>
+            </a>
+            <button class="arrow-btn ${btnPadding} rounded-md" data-collapse-id="${group.id}" aria-label="Toggle">
+              <svg class="arrow-icon ${arrowSize} stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div class="toc-sub-wrapper">
+            <div class="toc-sub-content">
+              <ul class="space-y-1">${childrenHtml}</ul>
+            </div>
+          </div>
+        </li>`;
+	}
+
 	public generateTOCHTML(): string {
 		const headings = this.getAllHeadings();
 
@@ -136,63 +267,14 @@ export class TOCManager {
 			return this.getEmptyStateHTML();
 		}
 
+		const groups = this.buildTOCGroups(filteredHeadings);
+
 		let tocHTML = "";
 		let heading1Count = 1;
 
-		filteredHeadings.forEach((heading) => {
-			const depth = Number.parseInt(heading.tagName.charAt(1), 10);
-			const depthLevel =
-				depth === this.minDepth ? 0 : depth === this.minDepth + 1 ? 1 : 2;
-
-			if (!heading.id) {
-				return;
-			}
-
-			const badgeContent = this.generateBadgeContent(depth, heading1Count);
-			if (depth === this.minDepth) {
-				heading1Count++;
-			}
-
-			let headingText = this.getCleanTextContent(heading)
-				.replace(/#+\s*$/, "")
-				.trim();
-
-			// Fallback for empty text (e.g. dynamic subtitle)
-			if (!headingText) {
-				const dataSubtitles = heading.getAttribute("data-subtitles");
-				if (dataSubtitles) {
-					try {
-						const subtitles = JSON.parse(dataSubtitles);
-						headingText = Array.isArray(subtitles) ? subtitles[0] : subtitles;
-					} catch {
-						// ignore
-					}
-				}
-			}
-
-			if (!headingText) {
-				headingText =
-					heading.id === "banner-subtitle"
-						? "Banner Subtitle"
-						: heading.id || "Heading";
-			}
-
-			const escapedHeadingText = this.escapeHtmlAttr(headingText);
-
-			tocHTML += `
-        <a 
-          href="#${heading.id}" 
-			  class="toc-item toc-level-${depthLevel}"
-          data-heading-id="${heading.id}"
-		  aria-label="${escapedHeadingText}"
-		  title="${escapedHeadingText}"
-        >
-			  <div class="toc-badge ${depth === this.minDepth ? "toc-badge-index" : ""}">
-            ${badgeContent}
-          </div>
-			  <div class="toc-label ${depth <= this.minDepth + 1 ? "toc-label-primary" : "toc-label-secondary"}">${headingText}</div>
-        </a>
-      `;
+		groups.forEach((group) => {
+			tocHTML += this.renderGroup(group, heading1Count);
+			heading1Count++;
 		});
 
 		tocHTML += `<div id="${this.indicatorId}" style="opacity: 0;" class="toc-active-indicator"></div>`;
@@ -200,177 +282,151 @@ export class TOCManager {
 		return tocHTML;
 	}
 
-	/**
-	 * 更新TOC内容
-	 */
-	public updateTOCContent(): void {
+	// ==================== 折叠/展开 ====================
+
+	private notifyScrollResize(): void {
 		const tocContent = document.getElementById(this.contentId);
 		if (!tocContent) return;
 
-		tocContent.innerHTML = this.generateTOCHTML();
-		this.tocItems = Array.from(
-			document.querySelectorAll(`#${this.contentId} a`),
-		);
+		const scrollContainer = tocContent.closest(".toc-scroll-container") as HTMLElement | null;
+		if (!scrollContainer) return;
+
+		scrollContainer.offsetHeight;
+		window.dispatchEvent(new Event("resize"));
 	}
 
-	/**
-	 * 获取可见的标题ID
-	 */
-	private getVisibleHeadingIds(): string[] {
-		const headings = this.getAllHeadings();
-		const visibleHeadingIds: string[] = [];
+	private toggleCollapse(id: string): void {
+		const tocContent = document.getElementById(this.contentId);
+		if (!tocContent) return;
 
-		headings.forEach((heading) => {
-			if (heading.id) {
-				const rect = heading.getBoundingClientRect();
-				const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+		const itemEl = tocContent.querySelector(
+			`.toc-item[data-heading-id="${id}"]`,
+		) as HTMLElement | null;
+		if (!itemEl) return;
 
-				if (isVisible) {
-					visibleHeadingIds.push(heading.id);
-				}
-			}
-		});
+		const isExpanded = itemEl.classList.contains("expanded");
 
-		// 如果没有可见标题，选择最接近屏幕顶部的标题
-		if (visibleHeadingIds.length === 0 && headings.length > 0) {
-			let closestHeading: string | null = null;
-			let minDistance = Number.POSITIVE_INFINITY;
+		if (isExpanded) {
+			// ── 折叠 ──
+			this.collapsedIds.add(id);
+			itemEl.classList.remove("expanded");
+		} else {
+			// ── 展开 ──
+			this.collapsedIds.delete(id);
+			itemEl.classList.add("expanded");
 
-			headings.forEach((heading) => {
-				if (heading.id) {
-					const rect = heading.getBoundingClientRect();
-					const distance = Math.abs(rect.top);
-
-					if (distance < minDistance) {
-						minDistance = distance;
-						closestHeading = heading.id;
-					}
+			// 恢复子项之前的折叠状态
+			const childItems = itemEl.querySelectorAll(
+				":scope > .toc-sub-wrapper > .toc-sub-content .toc-item.has-sub",
+			);
+			childItems.forEach((child) => {
+				const childId = child.getAttribute("data-heading-id");
+				if (childId && this.collapsedIds.has(childId)) {
+					child.classList.remove("expanded");
 				}
 			});
-
-			if (closestHeading) {
-				visibleHeadingIds.push(closestHeading);
-			}
 		}
 
-		return visibleHeadingIds;
+		this.saveCollapsedState(tocContent);
+		setTimeout(() => this.notifyScrollResize(), 310);
 	}
 
 	/**
-	 * 更新活动状态
+	 * 展开所有分组
 	 */
-	public updateActiveState(): void {
-		if (!this.tocItems || this.tocItems.length === 0) return;
-
-		// 移除所有活动状态
-		this.tocItems.forEach((item) => {
-			item.classList.remove("visible");
-		});
-
-		const visibleHeadingIds = this.getVisibleHeadingIds();
-
-		// 找到对应的TOC项并添加活动状态
-		const activeItems = this.tocItems.filter((item) => {
-			const headingId = item.dataset.headingId;
-			return headingId && visibleHeadingIds.includes(headingId);
-		});
-
-		// 添加活动状态
-		activeItems.forEach((item) => {
-			item.classList.add("visible");
-		});
-
-		// 更新活动指示器
-		this.updateActiveIndicator(activeItems);
-	}
-
-	/**
-	 * 更新活动指示器
-	 */
-	private updateActiveIndicator(activeItems: HTMLElement[]): void {
-		const indicator = document.getElementById(this.indicatorId);
-		if (!indicator || !this.tocItems.length) return;
-
-		if (activeItems.length === 0) {
-			indicator.style.opacity = "0";
-			return;
-		}
-
+	public expandAll(): void {
 		const tocContent = document.getElementById(this.contentId);
 		if (!tocContent) return;
 
-		const contentRect = tocContent.getBoundingClientRect();
-		const firstActive = activeItems[0];
-		const lastActive = activeItems[activeItems.length - 1];
-
-		const firstRect = firstActive.getBoundingClientRect();
-		const lastRect = lastActive.getBoundingClientRect();
-
-		const top = firstRect.top - contentRect.top;
-		const height = lastRect.bottom - firstRect.top;
-
-		indicator.style.top = `${top}px`;
-		indicator.style.height = `${height}px`;
-		indicator.style.opacity = "1";
-
-		// 自动滚动到活动项
-		if (firstActive) {
-			this.scrollToActiveItem(firstActive);
-		}
+		this.collapsedIds.clear();
+		tocContent.querySelectorAll(".toc-item.has-sub").forEach((item) => {
+			item.classList.add("expanded");
+		});
+		this.saveCollapsedState(tocContent);
+		this.notifyScrollResize();
 	}
 
 	/**
-	 * 滚动到活动项
+	 * 折叠所有分组
 	 */
-	private scrollToActiveItem(activeItem: HTMLElement): void {
-		if (!activeItem) return;
+	public collapseAll(): void {
+		const tocContent = document.getElementById(this.contentId);
+		if (!tocContent) return;
 
-		const tocContainer = document
-			.querySelector(`#${this.contentId}`)
-			?.closest(".toc-scroll-container");
-		if (!tocContainer) return;
-
-		// 清除之前的定时器
-		if (this.scrollTimeout) {
-			clearTimeout(this.scrollTimeout);
-		}
-
-		// 使用节流机制
-		this.scrollTimeout = window.setTimeout(() => {
-			const containerRect = tocContainer.getBoundingClientRect();
-			const itemRect = activeItem.getBoundingClientRect();
-
-			// 只在元素不在可视区域时才滚动
-			const isVisible =
-				itemRect.top >= containerRect.top &&
-				itemRect.bottom <= containerRect.bottom;
-
-			if (!isVisible) {
-				const itemOffsetTop = (activeItem as HTMLElement).offsetTop;
-				const containerHeight = tocContainer.clientHeight;
-				const itemHeight = activeItem.clientHeight;
-
-				// 计算目标滚动位置，将元素居中显示
-				const targetScroll =
-					itemOffsetTop - containerHeight / 2 + itemHeight / 2;
-
-				tocContainer.scrollTo({
-					top: targetScroll,
-					behavior: "smooth",
-				});
+		tocContent.querySelectorAll(".toc-item.has-sub").forEach((item) => {
+			const id = item.getAttribute("data-heading-id");
+			if (id) {
+				this.collapsedIds.add(id);
+				item.classList.remove("expanded");
 			}
-		}, 100);
+		});
+		this.saveCollapsedState(tocContent);
+		this.notifyScrollResize();
 	}
 
-	/**
-	 * 处理点击事件
-	 */
-	public handleClick(event: Event): void {
-		event.preventDefault();
-		const target = event.currentTarget as HTMLAnchorElement;
-		const id = decodeURIComponent(
-			target.getAttribute("href")?.substring(1) || "",
+	private saveCollapsedState(container: HTMLElement | null): void {
+		if (!container) return;
+		container.setAttribute(
+			"data-collapsed",
+			JSON.stringify(Array.from(this.collapsedIds)),
 		);
+	}
+
+	private restoreCollapsedState(container: HTMLElement): void {
+		const saved = container.getAttribute("data-collapsed");
+		if (saved) {
+			try {
+				const ids = JSON.parse(saved) as string[];
+				this.collapsedIds = new Set(ids);
+			} catch {
+				this.collapsedIds = new Set();
+			}
+		}
+	}
+
+	// ==================== 事件绑定 ====================
+
+	private setupEventDelegation(): void {
+		if (window._tocDelegationBound) return;
+		window._tocDelegationBound = true;
+
+		document.body.addEventListener("click", (e) => {
+			const clickTarget = e.target as HTMLElement;
+
+			const tocContent = clickTarget.closest(`#${this.contentId}`);
+			if (!tocContent) return;
+
+			// ── 路径 A：点击了折叠箭头 ──
+			const arrow = clickTarget.closest(".arrow-btn") as HTMLElement | null;
+			if (arrow) {
+				e.preventDefault();
+				e.stopPropagation();
+				const collapseId = arrow.getAttribute("data-collapse-id");
+				if (collapseId) {
+					window.tocInternalNavigation = true;
+					this.toggleCollapse(collapseId);
+				}
+				return;
+			}
+
+			// ── 路径 B：点击了链接行 ──
+			const wrapper = clickTarget.closest(".toc-link-wrapper") as HTMLElement | null;
+			if (wrapper) {
+				e.preventDefault();
+				const anchor = wrapper.querySelector("a.toc-link") as HTMLAnchorElement | null;
+				if (anchor) {
+					window.tocInternalNavigation = true;
+					this.navigateToHeading(anchor);
+				}
+			}
+		});
+	}
+
+	private navigateToHeading(anchor: HTMLAnchorElement): void {
+		const href = anchor.getAttribute("href");
+		if (!href) return;
+
+		const id = decodeURIComponent(href.substring(1));
 		const targetElement = document.getElementById(id);
 
 		if (targetElement) {
@@ -386,9 +442,171 @@ export class TOCManager {
 		}
 	}
 
-	/**
-	 * 设置IntersectionObserver
-	 */
+	// ==================== 活动状态跟踪 ====================
+
+	public updateTOCContent(): void {
+		const tocContent = document.getElementById(this.contentId);
+		if (!tocContent) return;
+
+		this.restoreCollapsedState(tocContent);
+		tocContent.innerHTML = this.generateTOCHTML();
+
+		// 渲染后，根据 collapsedIds 恢复展开/折叠状态
+		this.collapsedIds.forEach((id) => {
+			const item = tocContent.querySelector(`.toc-item[data-heading-id="${id}"]`);
+			item?.classList.remove("expanded");
+		});
+
+		this.tocItems = Array.from(
+			tocContent.querySelectorAll(".toc-link-wrapper[data-target]"),
+		);
+
+		if (this.collapsedIds.size > 0) {
+			requestAnimationFrame(() => this.notifyScrollResize());
+		}
+	}
+
+	private getVisibleHeadingIds(): string[] {
+		const headings = this.getAllHeadings();
+		const visibleHeadingIds: string[] = [];
+
+		headings.forEach((heading) => {
+			if (heading.id) {
+				const rect = heading.getBoundingClientRect();
+				const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+				if (isVisible) {
+					visibleHeadingIds.push(heading.id);
+				}
+			}
+		});
+
+		if (visibleHeadingIds.length === 0 && headings.length > 0) {
+			let closestHeading: string | null = null;
+			let minDistance = Number.POSITIVE_INFINITY;
+
+			headings.forEach((heading) => {
+				if (heading.id) {
+					const rect = heading.getBoundingClientRect();
+					const distance = Math.abs(rect.top);
+					if (distance < minDistance) {
+						minDistance = distance;
+						closestHeading = heading.id;
+					}
+				}
+			});
+
+			if (closestHeading) {
+				visibleHeadingIds.push(closestHeading);
+			}
+		}
+
+		return visibleHeadingIds;
+	}
+
+	public updateActiveState(): void {
+		if (!this.tocItems || this.tocItems.length === 0) return;
+
+		this.tocItems.forEach((item) => {
+			item.classList.remove("active");
+		});
+
+		const visibleHeadingIds = this.getVisibleHeadingIds();
+
+		const activeItems = this.tocItems.filter((item) => {
+			const targetId = item.dataset.target;
+			return targetId && visibleHeadingIds.includes(targetId);
+		});
+
+		activeItems.forEach((item) => {
+			item.classList.add("active");
+
+			// 智能递归展开：确保所有父级菜单展开，使当前高亮项可见
+			let parent = item.closest(".toc-item");
+			while (parent) {
+				const parentGroup = parent.parentElement?.closest(".toc-item.has-sub");
+				if (parentGroup) {
+					if (!parentGroup.classList.contains("expanded")) {
+						const parentId = parentGroup.getAttribute("data-heading-id");
+						if (parentId) {
+							this.collapsedIds.delete(parentId);
+							parentGroup.classList.add("expanded");
+						}
+					}
+					parent = parentGroup;
+				} else {
+					break;
+				}
+			}
+		});
+
+		// 合并高亮条 + 滚动到可见
+		this.updateActiveIndicator(activeItems);
+	}
+
+	private updateActiveIndicator(activeItems: HTMLElement[]): void {
+		const indicator = document.getElementById(this.indicatorId);
+		if (!indicator) return;
+
+		if (activeItems.length === 0) {
+			indicator.style.opacity = "0";
+			return;
+		}
+
+		const tocContent = document.getElementById(this.contentId);
+		if (!tocContent) return;
+
+		const scrollContainer = tocContent.closest(".toc-scroll-container") as HTMLElement | null;
+		const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+
+		const firstActive = activeItems[0];
+		const lastActive = activeItems[activeItems.length - 1];
+
+		const top = (firstActive as HTMLElement).offsetTop - scrollTop;
+		const height = (lastActive as HTMLElement).offsetTop + (lastActive as HTMLElement).offsetHeight - (firstActive as HTMLElement).offsetTop;
+
+		indicator.style.top = `${top}px`;
+		indicator.style.height = `${height}px`;
+		indicator.style.opacity = "1";
+
+		this.scrollToActiveItem(firstActive);
+	}
+
+	private scrollToActiveItem(activeItem: HTMLElement): void {
+		if (!activeItem) return;
+
+		const tocContainer = document
+			.querySelector(`#${this.contentId}`)
+			?.closest(".toc-scroll-container");
+		if (!tocContainer) return;
+
+		if (this.scrollTimeout) {
+			clearTimeout(this.scrollTimeout);
+		}
+
+		this.scrollTimeout = window.setTimeout(() => {
+			const containerRect = tocContainer.getBoundingClientRect();
+			const itemRect = activeItem.getBoundingClientRect();
+
+			const isVisible =
+				itemRect.top >= containerRect.top &&
+				itemRect.bottom <= containerRect.bottom;
+
+			if (!isVisible) {
+				const itemOffsetTop = (activeItem as HTMLElement).offsetTop;
+				const containerHeight = tocContainer.clientHeight;
+				const itemHeight = activeItem.clientHeight;
+
+				const targetScroll =
+					itemOffsetTop - containerHeight / 2 + itemHeight / 2;
+
+				tocContainer.scrollTo({
+					top: targetScroll,
+					behavior: "smooth",
+				});
+			}
+		}, 100);
+	}
+
 	public setupObserver(): void {
 		const headings = this.getAllHeadings();
 
@@ -411,20 +629,15 @@ export class TOCManager {
 				this.observer?.observe(heading);
 			}
 		});
+
+		// TOC 容器滚动时重算指示器位置
+		const tocContent = document.getElementById(this.contentId);
+		const scrollContainer = tocContent?.closest(".toc-scroll-container") as HTMLElement | null;
+		if (scrollContainer) {
+			scrollContainer.addEventListener("scroll", () => this.updateActiveState(), { passive: true });
+		}
 	}
 
-	/**
-	 * 绑定点击事件
-	 */
-	public bindClickEvents(): void {
-		this.tocItems.forEach((item) => {
-			item.addEventListener("click", this.handleClick.bind(this));
-		});
-	}
-
-	/**
-	 * 清理
-	 */
 	public cleanup(): void {
 		if (this.observer) {
 			this.observer.disconnect();
@@ -436,20 +649,14 @@ export class TOCManager {
 		}
 	}
 
-	/**
-	 * 初始化
-	 */
 	public init(): void {
 		this.updateTOCContent();
-		this.bindClickEvents();
+		this.setupEventDelegation();
 		this.setupObserver();
 		this.updateActiveState();
 	}
 }
 
-/**
- * 检查是否为文章页面
- */
 export function isPostPage(): boolean {
 	return window.location.pathname.includes("/posts/");
 }

@@ -35,10 +35,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		links.push(LinkPreset.Friends);
 	}
 
-	// 根据配置决定是否添加留言板，在siteConfig关闭pages.guestbook时导航栏不显示留言板
-	if (siteConfig.pages.guestbook) {
-		links.push(LinkPreset.Guestbook);
-    }
         (links.push({
           name: "音乐",
           url: "/music/",
@@ -55,6 +51,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
               // 根据配置决定是否添加番组计划，在siteConfig关闭pages.bangumi时导航栏不显示番组计划
               ...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []),
+
+              // 根据配置决定是否添加留言板，在siteConfig关闭pages.guestbook时导航栏不显示留言板
+              ...(siteConfig.pages.guestbook ? [LinkPreset.Guestbook] : []),
             ],
           }));
 

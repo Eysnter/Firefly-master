@@ -41,10 +41,13 @@ export const getStaticPaths = (async () => {
       return postCategory === category.name;
     });
 
-    // 按日期排序
+    // 排序：置顶 → 权重 → 日期
     categoryPosts.sort((a, b) => {
       if (a.data.pinned && !b.data.pinned) return -1;
       if (!a.data.pinned && b.data.pinned) return 1;
+      const wA = a.data.weight ?? 0;
+      const wB = b.data.weight ?? 0;
+      if (wA !== wB) return wB - wA;
       return new Date(b.data.published).getTime() - new Date(a.data.published).getTime();
     });
 

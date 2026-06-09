@@ -2,12 +2,8 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils";
-import postOrderConfig from "@/config/postOrder.json";
 
-// 自定义排序配置 { slug: orderNumber }
-const postOrder: Record<string, number> = postOrderConfig as Record<string, number>;
-
-// Retrieve posts and sort them: pinned → custom order → date
+// Retrieve posts and sort them: pinned → weight(desc) → date(desc)
 async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
@@ -18,15 +14,10 @@ async function getRawSortedPosts() {
 		if (a.data.pinned && !b.data.pinned) return -1;
 		if (!a.data.pinned && b.data.pinned) return 1;
 
-		// 2. 自定义排序（order 值越小越靠前）
-		const orderA = postOrder[a.id];
-		const orderB = postOrder[b.id];
-		const hasA = orderA !== undefined;
-		const hasB = orderB !== undefined;
-
-		if (hasA && hasB) return orderA - orderB;
-		if (hasA) return -1;
-		if (hasB) return 1;
+		// 2. 权重排序（weight 越大越靠前）
+		const weightA = a.data.weight ?? 0;
+		const weightB = b.data.weight ?? 0;
+		if (weightA !== weightB) return weightB - weightA;
 
 		// 3. 按发布日期倒序兜底
 		const dateA = new Date(a.data.published);

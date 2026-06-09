@@ -1,9 +1,16 @@
 ---
 import { getCollection } from "astro:content";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import postOrderConfig from "@/config/postOrder.json";
+import fs from "node:fs";
+import path from "node:path";
 
-const postOrder: Record<string, number> = postOrderConfig as Record<string, number>;
+const jsonPath = path.resolve("./src/config/postOrder.json");
+const rawOrder = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+// key 统一转小写
+const postOrder: Record<string, number> = {};
+for (const [k, v] of Object.entries(rawOrder)) {
+  postOrder[k.toLowerCase()] = v as number;
+}
 
 const allPosts = await getCollection("posts", ({ data }) => {
   return import.meta.env.PROD ? data.draft !== true : true;

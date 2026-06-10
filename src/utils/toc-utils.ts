@@ -30,6 +30,8 @@ export class TOCManager {
 	private indicatorId: string;
 	private scrollOffset: number;
 	private collapsedIds: Set<string> = new Set();
+	private isUserScrollingTOC = false;
+	private tocScrollResetTimeout: number | null = null;
 
 	constructor(config: TOCConfig) {
 		this.contentId = config.contentId;
@@ -552,23 +554,21 @@ export class TOCManager {
 			return;
 		}
 
-		const tocContent = document.getElementById(this.contentId);
-		if (!tocContent) return;
-
-		const scrollContainer = tocContent.closest(".toc-scroll-container") as HTMLElement | null;
-		const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
-
 		const firstActive = activeItems[0];
 		const lastActive = activeItems[activeItems.length - 1];
 
-		const top = (firstActive as HTMLElement).offsetTop - scrollTop;
+		// offsetTop 已经相对于 offsetParent (.toc-content)，无需减去 scrollTop
+		const top = (firstActive as HTMLElement).offsetTop;
 		const height = (lastActive as HTMLElement).offsetTop + (lastActive as HTMLElement).offsetHeight - (firstActive as HTMLElement).offsetTop;
 
 		indicator.style.top = `${top}px`;
 		indicator.style.height = `${height}px`;
 		indicator.style.opacity = "1";
 
-		this.scrollToActiveItem(firstActive);
+		// 用户正在手动滚动 TOC 时，不强制跳回活动项
+		if (!this.isUserScrollingTOC) {
+			this.scrollToActiveItem(firstActive);
+		}
 	}
 
 	private scrollToActiveItem(activeItem: HTMLElement): void {
@@ -634,7 +634,14 @@ export class TOCManager {
 		const tocContent = document.getElementById(this.contentId);
 		const scrollContainer = tocContent?.closest(".toc-scroll-container") as HTMLElement | null;
 		if (scrollContainer) {
-			scrollContainer.addEventListener("scroll", () => this.updateActiveState(), { passive: true });
+			scrollContainer.addEventListener("scroll", () => {
+				this.isUserScrollingTOC = true;
+				if (this.tocScrollResetTimeout) clearTimeout(this.tocScrollResetTimeout);
+				this.tocScrollResetTimeout = window.setTimeout(() => {
+					this.isUserScrollingTOC = false;
+				}, 200);
+				this.updateActiveState();
+			}, { passive: true });
 		}
 	}
 
@@ -646,6 +653,10 @@ export class TOCManager {
 		if (this.scrollTimeout) {
 			clearTimeout(this.scrollTimeout);
 			this.scrollTimeout = null;
+		}
+		if (this.tocScrollResetTimeout) {
+			clearTimeout(this.tocScrollResetTimeout);
+			this.tocScrollResetTimeout = null;
 		}
 	}
 

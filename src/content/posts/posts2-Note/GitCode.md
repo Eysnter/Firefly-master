@@ -6,7 +6,6 @@ image: 'https://img.eysnter.cn/file/posts/posts2-notes/Git/1780206480345_git.png
 tags: [Git, 笔记]
 category: '技术参考'
 draft: false 
-pinned: true
 comment: true
 lang: zh-CN
 ---

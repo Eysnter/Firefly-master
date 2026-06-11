@@ -1,0 +1,2415 @@
+你好
+
+
+当前的导航栏我非常喜欢,默认使用当前第一个样式
+
+以下是一些优化建议:
+1，资源不需要下拉列表，把资源下拉列表的3个移入导航,把先前导航内标题删除
+把默认开关灯按钮移到中文转换按钮右边中间加分隔线
+2，
+1️⃣点击导航eysnter.cn左侧的图标可以打开一个可爱的弹窗(手帐风)，这个弹窗是用来配置导航栏样式的，里面要至少有10种不同的样式(请用心设置样式, (默认的三个样式直接加进来,不要更改的代码),再创造一些让人眼前一亮的样式)，可以供我切换,对了log的设计请加上发光设计。
+2️⃣要有 字体样式的配置。
+字体的颜色的配置。
+字体的风格。
+同时要有导航栏边框的样式配置，比如导航栏四角的角度。
+3️⃣还有导航栏宽度配置，全宽还是自适应，自适应状态下导航栏居中，四角圆润,只有导航栏自适应的情况下卡可以修改四角的角度。
+4️⃣，配置的样式应该要保存在浏览器里，下次打开浏览器时改变的样式依旧可见
+
+3，1️⃣导航栏也要有在代码中的配置区域，可以根据导航栏样式的英文名称定义默认导航栏样式（注释好每个风格的英文名)。
+2️⃣配置代码区域也要有导航栏角度的设置，以及导航栏默认是否全宽和自适应，以true和false来配置。
+
+4.代码记得注释好 
+
+导航栏风格,有的有些bug,请自己查看
+
+请优化导航栏的样式风格
+
+1.活动加载器,默认跟随鼠标,而不是点击(可以在导航栏配置里配置),导航栏自适应,不需要下降(上方不留空)
+
+2.活动加载器的背景角度应该也要可以设置,并且可以设置全色 还是边框
+
+3.每个不同样式的导航栏主题,网站图标和网站标题的风格应该不一样
+
+4.导航栏配置应该加入,标题字体粗细,和自定义颜色
+
+5.导航栏配置标题改成 Eysnter的导航配置
+
+6.下拉列表显示不完全,边框圆角也有多余背景,请修复
+
+7.log加上发光设计,点击log可以返回主页eysnter.cn
+
+10.将这些也加入代码配置中,代码注释也要注释好
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Eysnter.cn - Nav Demo Premium</title>
+
+  <!-- FontAwesome 6 -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Cute Font: TsangerYuMo W05 -->
+
+  <link rel="stylesheet" href="https://fontsapi.zeoseven.com/479/w05/result.css">
+
+  
+
+  <style>
+
+    /* ===== CSS 变量设计：支持多主题动态切换 ===== */
+
+    :root {
+
+      /* 预设1：极致毛玻璃 (Frost Glass) - 默认 */
+
+      --glass-bg: rgba(255, 255, 255, 0.45);
+
+      --glass-border: rgba(255, 255, 255, 0.5);
+
+      --glass-blur: blur(24px) saturate(190%);
+
+      --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+      --font-nav: system-ui, -apple-system, sans-serif;
+
+      --color-brand: #333333;
+
+      --color-brand-sub: #4f8bae;
+
+      --color-nav-text: #555555;
+
+      --color-nav-hover: #4f8bae;
+
+      --indicator-bg: rgba(230, 242, 247, 0.65);
+
+      --indicator-border: 1px solid rgba(79, 139, 174, 0.15);
+
+      --indicator-shadow: 0 4px 12px rgba(79, 139, 174, 0.08);
+
+      --transition-bezier: cubic-bezier(0.25, 1, 0.5, 1);
+
+    }
+
+
+
+    /* ===== Reset & Base ===== */
+
+    * {
+
+      margin: 0;
+
+      padding: 0;
+
+      box-sizing: border-box;
+
+    }
+
+
+
+    body {
+
+      font-family: var(--font-nav);
+
+      background: #fdfefe;
+
+      color: #333;
+
+      min-height: 180vh;
+
+      overflow-x: hidden;
+
+      transition: background 0.5s ease, font-family 0.5s ease;
+
+      position: relative;
+
+    }
+
+
+
+    /* 网格背景装饰 */
+
+    body::before {
+
+      content: '';
+
+      position: fixed;
+
+      top: 0;
+
+      left: 0;
+
+      width: 100%;
+
+      height: 100%;
+
+      z-index: -2;
+
+      background-image: radial-gradient(rgba(79, 139, 174, 0.07) 1.5px, transparent 1.5px);
+
+      background-size: 32px 32px;
+
+      pointer-events: none;
+
+    }
+
+
+
+    /* Decorative Orbs in background */
+
+    .bg-orb {
+
+      position: fixed;
+
+      border-radius: 50%;
+
+      filter: blur(100px);
+
+      z-index: -1;
+
+      opacity: 0.5;
+
+      pointer-events: none;
+
+      transition: all 0.8s ease;
+
+    }
+
+    .orb-1 {
+
+      top: 10%;
+
+      left: -10%;
+
+      width: 400px;
+
+      height: 400px;
+
+      background: rgba(146, 205, 214, 0.3);
+
+    }
+
+    .orb-2 {
+
+      bottom: 10%;
+
+      right: -10%;
+
+      width: 500px;
+
+      height: 500px;
+
+      background: rgba(254, 205, 211, 0.3);
+
+    }
+
+
+
+    /* ===== 【修复】1 & 2: 导航外层透明 + 漂浮自适应胶囊 ===== */
+
+    .nav-header {
+
+      position: fixed;
+
+      top: 0;
+
+      left: 0;
+
+      right: 0;
+
+      z-index: 100;
+
+      padding: 16px 0; /* 留出顶部浮动距离 */
+
+      background: transparent !important; /* 彻底透明，去除多余白角 */
+
+      border: none !important;
+
+      box-shadow: none !important;
+
+      -webkit-backdrop-filter: none !important;
+
+      backdrop-filter: none !important;
+
+      pointer-events: none; /* 让顶层多余空间不遮挡页面点击 */
+
+      transition: padding 0.3s var(--transition-bezier);
+
+    }
+
+
+
+    /* 滚动后微调胶囊高度 */
+
+    .nav-scrolled {
+
+      padding: 8px 0;
+
+    }
+
+
+
+    .nav-container {
+
+      max-width: 1240px;
+
+      margin: 0 auto;
+
+      padding: 0 20px;
+
+      width: 100%;
+
+      pointer-events: auto; /* 恢复菜单交互 */
+
+    }
+
+
+
+    /* 【毛玻璃重构】 核心胶囊体 */
+
+    .nav-capsule {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      min-height: 72px;
+
+      padding: 0 28px;
+
+      border-radius: 9999px; /* 极致圆润胶囊 */
+
+      background: var(--glass-bg);
+
+      border: 1px solid var(--glass-border);
+
+      -webkit-backdrop-filter: var(--glass-blur);
+
+      backdrop-filter: var(--glass-blur);
+
+      box-shadow: var(--glass-shadow);
+
+      position: relative;
+
+      transition: all 0.4s var(--transition-bezier);
+
+    }
+
+
+
+    .nav-scrolled .nav-capsule {
+
+      box-shadow: 0 15px 45px -15px rgba(0, 0, 0, 0.12), var(--glass-shadow);
+
+      background: rgba(255, 255, 255, 0.6);
+
+    }
+
+
+
+    /* ===== Brand / Logo ===== */
+
+    .nav-brand {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      text-decoration: none;
+
+      user-select: none;
+
+    }
+
+
+
+    .nav-brand-icon {
+
+      width: 38px;
+
+      height: 38px;
+
+      border-radius: 50%;
+
+      background: linear-gradient(135deg, #4f8bae, #92cdd6);
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      color: #fff;
+
+      font-size: 16px;
+
+      box-shadow: 0 4px 12px rgba(79, 139, 174, 0.25);
+
+      transition: all 0.4s var(--transition-bezier);
+
+    }
+
+
+
+    .nav-brand:hover .nav-brand-icon {
+
+      transform: rotate(180deg) scale(1.1);
+
+    }
+
+
+
+    .nav-brand-info {
+
+      display: flex;
+
+      flex-direction: column;
+
+    }
+
+
+
+    .nav-brand-text {
+
+      font-family: var(--font-nav);
+
+      font-weight: 800;
+
+      font-size: 19px;
+
+      color: var(--color-brand);
+
+      letter-spacing: 0.02em;
+
+      line-height: 1.2;
+
+      transition: color 0.3s;
+
+    }
+
+
+
+    .nav-brand-text .cn {
+
+      color: var(--color-brand-sub);
+
+    }
+
+
+
+    .nav-brand-sub {
+
+      font-size: 9px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.15em;
+
+      color: #999;
+
+      margin-top: 1px;
+
+      font-weight: 700;
+
+      transition: color 0.3s;
+
+    }
+
+
+
+    /* ===== 【修复】1: 滑动轨迹指示器 (Dynamic Indicator) ===== */
+
+    .nav-links {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 6px;
+
+      position: relative; /* 为指示器提供定位上下文 */
+
+    }
+
+
+
+    /* 活动加载器元素 */
+
+    .nav-indicator {
+
+      position: absolute;
+
+      top: 0;
+
+      left: 0;
+
+      height: 0;
+
+      width: 0;
+
+      border-radius: 9999px;
+
+      background: var(--indicator-bg);
+
+      border: var(--indicator-border);
+
+      box-shadow: var(--indicator-shadow);
+
+      z-index: 1;
+
+      pointer-events: none;
+
+      opacity: 0;
+
+      transform: translate3d(0, 0, 0);
+
+      will-change: transform, width, height;
+
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+
+                  width 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+
+                  height 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+
+                  opacity 0.25s,
+
+                  background-color 0.3s;
+
+    }
+
+
+
+    .nav-item {
+
+      font-size: 14.5px;
+
+      color: var(--color-nav-text);
+
+      font-weight: 500;
+
+      position: relative;
+
+      padding: 9px 18px;
+
+      border-radius: 9999px;
+
+      text-decoration: none;
+
+      z-index: 2; /* 确保文字在指示器上方 */
+
+      transition: color 0.3s, transform 0.2s;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 4px;
+
+    }
+
+
+
+    .nav-item:hover {
+
+      color: var(--color-nav-hover);
+
+    }
+
+
+
+    .nav-item.active {
+
+      color: var(--color-nav-hover);
+
+      font-weight: 700;
+
+    }
+
+
+
+    /* 钻石开往特色按钮 */
+
+    .nav-travellings {
+
+      background: linear-gradient(135deg, #25a3e1, #12c2e9) !important;
+
+      color: #ffffff !important;
+
+      box-shadow: 0 4px 15px rgba(18, 194, 233, 0.35);
+
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+
+      font-weight: 700 !important;
+
+      margin-left: 8px;
+
+    }
+
+
+
+    .nav-travellings:hover {
+
+      transform: translateY(-2px);
+
+      box-shadow: 0 6px 20px rgba(18, 194, 233, 0.45);
+
+      color: #fff !important;
+
+    }
+
+
+
+    .nav-travellings:active {
+
+      transform: scale(0.95);
+
+    }
+
+
+
+    /* 下拉菜单指示小三角 */
+
+    .nav-item i.fa-chevron-down {
+
+      font-size: 10px;
+
+      transition: transform 0.3s;
+
+    }
+
+    .nav-item:hover i.fa-chevron-down {
+
+      transform: rotate(180deg);
+
+    }
+
+
+
+    /* ===== Dropdown Menu (下拉悬浮窗) ===== */
+
+    .dropdown-container {
+
+      position: relative;
+
+    }
+
+
+
+    .dropdown-menu {
+
+      position: absolute;
+
+      top: calc(100% + 12px);
+
+      left: 50%;
+
+      transform: translateX(-50%) translateY(10px);
+
+      background: var(--glass-bg);
+
+      border: 1px solid var(--glass-border);
+
+      -webkit-backdrop-filter: var(--glass-blur);
+
+      backdrop-filter: var(--glass-blur);
+
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+
+      border-radius: 20px;
+
+      padding: 10px;
+
+      min-width: 150px;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition: all 0.3s var(--transition-bezier);
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 4px;
+
+      z-index: 110;
+
+    }
+
+
+
+    .dropdown-container:hover .dropdown-menu {
+
+      opacity: 1;
+
+      pointer-events: auto;
+
+      transform: translateX(-50%) translateY(0);
+
+    }
+
+
+
+    .dropdown-item {
+
+      padding: 8px 16px;
+
+      font-size: 13.5px;
+
+      color: var(--color-nav-text);
+
+      text-decoration: none;
+
+      border-radius: 12px;
+
+      transition: all 0.2s;
+
+    }
+
+
+
+    .dropdown-item:hover {
+
+      background: var(--indicator-bg);
+
+      color: var(--color-nav-hover);
+
+      padding-left: 20px;
+
+    }
+
+
+
+    /* ===== Controls Section (右侧工具区) ===== */
+
+    .nav-right {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+    }
+
+
+
+    .control-btn {
+
+      width: 40px;
+
+      height: 40px;
+
+      border-radius: 50%;
+
+      border: 1px solid var(--glass-border);
+
+      background: rgba(255, 255, 255, 0.4);
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      color: var(--color-nav-text);
+
+      cursor: pointer;
+
+      transition: all 0.3s var(--transition-bezier);
+
+      position: relative;
+
+    }
+
+
+
+    .control-btn:hover {
+
+      background: #ffffff;
+
+      color: var(--color-nav-hover);
+
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+      transform: scale(1.05);
+
+    }
+
+
+
+    .control-btn:active {
+
+      transform: scale(0.95);
+
+    }
+
+
+
+    /* 特殊设置按钮旋转 */
+
+    .config-btn:hover i {
+
+      animation: spin 3s linear infinite;
+
+    }
+
+
+
+    @keyframes spin {
+
+      from { transform: rotate(0deg); }
+
+      to { transform: rotate(360deg); }
+
+    }
+
+
+
+    .divider {
+
+      width: 1px;
+
+      height: 20px;
+
+      background: var(--glass-border);
+
+      margin: 0 4px;
+
+    }
+
+
+
+    .lang-text {
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+    }
+
+
+
+    /* ===== 【修复】3: 马卡龙可爱主题 (Theme Stylesheet) ===== */
+
+    body.theme-macaron {
+
+      /* 强制载入TsangerYuMo 字体 */
+
+      --font-nav: "TsangerYuMo W05", "Comic Sans MS", "PingFang SC", cursive, sans-serif !important;
+
+      background-color: #fffdf4 !important;
+
+      color: #8c605c;
+
+    }
+
+
+
+    /* 泡泡马卡龙背景气泡 */
+
+    body.theme-macaron::before {
+
+      background-image: radial-gradient(rgba(255, 181, 181, 0.15) 2px, transparent 2px);
+
+      background-size: 24px 24px;
+
+    }
+
+
+
+    body.theme-macaron .bg-orb {
+
+      filter: blur(80px);
+
+      opacity: 0.6;
+
+    }
+
+    body.theme-macaron .orb-1 { background: rgba(255, 186, 210, 0.5); }
+
+    body.theme-macaron .orb-2 { background: rgba(181, 234, 255, 0.5); }
+
+
+
+    /* 马卡龙导航箱体重构 */
+
+    body.theme-macaron .nav-capsule {
+
+      background: rgba(255, 248, 240, 0.85) !important;
+
+      border: 3px solid #ffb5b5 !important; /* 经典软糖粗边框 */
+
+      box-shadow: 0 10px 0 #ffa1a1, 0 15px 35px rgba(255, 161, 161, 0.25) !important;
+
+      transform: translateY(0);
+
+    }
+
+    body.theme-macaron .nav-scrolled .nav-capsule {
+
+      background: rgba(255, 248, 240, 0.95) !important;
+
+    }
+
+
+
+    body.theme-macaron .nav-brand-text {
+
+      color: #db2777 !important;
+
+    }
+
+    body.theme-macaron .nav-brand-text .cn {
+
+      color: #f43f5e !important;
+
+    }
+
+    body.theme-macaron .nav-brand-sub {
+
+      color: #fb7185 !important;
+
+    }
+
+    body.theme-macaron .nav-brand-icon {
+
+      background: linear-gradient(135deg, #ffa8b6, #ffccd5);
+
+      color: #fff;
+
+      box-shadow: 0 4px 0 #ff8396;
+
+      border: 2px solid #fff;
+
+    }
+
+
+
+    /* 极致可爱的马卡龙滑动器 */
+
+    body.theme-macaron .nav-indicator {
+
+      background-color: #ffdce3 !important;
+
+      border: 2px solid #ff8396 !important;
+
+      box-shadow: 0 3px 0 #ff5e78, inset 0 2px 4px rgba(255,255,255,0.4) !important;
+
+    }
+
+
+
+    body.theme-macaron .nav-item {
+
+      color: #9d5d56;
+
+      font-weight: 700;
+
+    }
+
+    body.theme-macaron .nav-item:hover {
+
+      color: #ff5e78;
+
+    }
+
+    body.theme-macaron .nav-item.active {
+
+      color: #db2777;
+
+    }
+
+    body.theme-macaron .nav-travellings {
+
+      background: linear-gradient(135deg, #ff8396, #ffb5b5) !important;
+
+      box-shadow: 0 4px 0 #e15c71 !important;
+
+      border: 2px solid #fff !important;
+
+    }
+
+    body.theme-macaron .nav-travellings:hover {
+
+      transform: translateY(-2px);
+
+      box-shadow: 0 6px 0 #e15c71 !important;
+
+    }
+
+
+
+    /* 暗黑极客主题 (Dark Glass Theme) 可选 */
+
+    body.theme-dark {
+
+      background-color: #0c101a;
+
+      color: #e2e8f0;
+
+      --font-nav: system-ui, -apple-system, sans-serif;
+
+    }
+
+    body.theme-dark::before {
+
+      background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+
+    }
+
+    body.theme-dark .bg-orb { opacity: 0.15; }
+
+    body.theme-dark .orb-1 { background: #3b82f6; }
+
+    body.theme-dark .orb-2 { background: #8b5cf6; }
+
+    body.theme-dark .nav-capsule {
+
+      background: rgba(15, 23, 42, 0.55) !important;
+
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+
+    }
+
+    body.theme-dark .nav-brand-text { color: #f8fafc; }
+
+    body.theme-dark .nav-brand-text .cn { color: #60a5fa; }
+
+    body.theme-dark .nav-item { color: #94a3b8; }
+
+    body.theme-dark .nav-item:hover, body.theme-dark .nav-item.active { color: #3b82f6; }
+
+    body.theme-dark .nav-indicator {
+
+      background: rgba(59, 130, 246, 0.15);
+
+      border: 1px solid rgba(59, 130, 246, 0.3);
+
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+
+    }
+
+    body.theme-dark .control-btn {
+
+      background: rgba(255, 255, 255, 0.05);
+
+      border-color: rgba(255, 255, 255, 0.1);
+
+      color: #94a3b8;
+
+    }
+
+    body.theme-dark .control-btn:hover {
+
+      background: rgba(255, 255, 255, 0.1);
+
+      color: #fff;
+
+    }
+
+
+
+    /* ===== Theme Config Panel (个性化配置面面板) ===== */
+
+    .config-panel {
+
+      position: absolute;
+
+      top: calc(100% + 15px);
+
+      right: 0;
+
+      width: 280px;
+
+      background: var(--glass-bg);
+
+      border: 1px solid var(--glass-border);
+
+      -webkit-backdrop-filter: var(--glass-blur);
+
+      backdrop-filter: var(--glass-blur);
+
+      border-radius: 24px;
+
+      padding: 20px;
+
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+
+      opacity: 0;
+
+      transform: translateY(15px);
+
+      pointer-events: none;
+
+      transition: all 0.35s var(--transition-bezier);
+
+      z-index: 120;
+
+    }
+
+
+
+    .config-panel.open {
+
+      opacity: 1;
+
+      transform: translateY(0);
+
+      pointer-events: auto;
+
+    }
+
+
+
+    .config-title {
+
+      font-size: 15px;
+
+      font-weight: 700;
+
+      margin-bottom: 12px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+    }
+
+
+
+    .config-section {
+
+      margin-bottom: 15px;
+
+    }
+
+
+
+    .config-section label {
+
+      display: block;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      color: #777;
+
+      margin-bottom: 8px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.05em;
+
+    }
+
+
+
+    .theme-grid {
+
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 6px;
+
+    }
+
+
+
+    .theme-btn {
+
+      padding: 8px 4px;
+
+      border-radius: 12px;
+
+      border: 1px solid var(--glass-border);
+
+      background: rgba(255,255,255,0.3);
+
+      cursor: pointer;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      color: var(--color-nav-text);
+
+      transition: all 0.2s;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      gap: 4px;
+
+    }
+
+
+
+    .theme-btn i {
+
+      font-size: 14px;
+
+    }
+
+
+
+    .theme-btn:hover {
+
+      background: rgba(255,255,255,0.6);
+
+      transform: translateY(-2px);
+
+    }
+
+
+
+    .theme-btn.active {
+
+      background: var(--color-nav-hover) !important;
+
+      color: #fff !important;
+
+      border-color: var(--color-nav-hover);
+
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    }
+
+
+
+    /* ===== Mobile Toggle & Responsive Design ===== */
+
+    .mobile-toggle {
+
+      display: none;
+
+      flex-direction: column;
+
+      justify-content: space-around;
+
+      width: 24px;
+
+      height: 18px;
+
+      background: transparent;
+
+      border: none;
+
+      cursor: pointer;
+
+      z-index: 105;
+
+    }
+
+
+
+    .mobile-toggle span {
+
+      width: 100%;
+
+      height: 2px;
+
+      background-color: var(--color-nav-text);
+
+      border-radius: 10px;
+
+      transition: all 0.3s ease;
+
+    }
+
+
+
+    .mobile-toggle.active span:nth-child(1) {
+
+      transform: rotate(45deg) translate(5px, 5px);
+
+    }
+
+    .mobile-toggle.active span:nth-child(2) {
+
+      opacity: 0;
+
+    }
+
+    .mobile-toggle.active span:nth-child(3) {
+
+      transform: rotate(-45deg) translate(4px, -5px);
+
+    }
+
+
+
+    /* 移动端浮动面板 */
+
+    .mobile-menu {
+
+      position: absolute;
+
+      top: calc(100% + 10px);
+
+      left: 15px;
+
+      right: 15px;
+
+      background: var(--glass-bg);
+
+      border: 1px solid var(--glass-border);
+
+      -webkit-backdrop-filter: var(--glass-blur);
+
+      backdrop-filter: var(--glass-blur);
+
+      border-radius: 24px;
+
+      padding: 16px;
+
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 6px;
+
+      opacity: 0;
+
+      transform: translateY(-10px);
+
+      pointer-events: none;
+
+      transition: all 0.3s var(--transition-bezier);
+
+      z-index: 99;
+
+    }
+
+
+
+    .mobile-menu.open {
+
+      opacity: 1;
+
+      transform: translateY(0);
+
+      pointer-events: auto;
+
+    }
+
+
+
+    .mobile-link {
+
+      padding: 12px 18px;
+
+      border-radius: 14px;
+
+      text-decoration: none;
+
+      font-size: 15px;
+
+      color: var(--color-nav-text);
+
+      font-weight: 500;
+
+      transition: all 0.2s;
+
+    }
+
+
+
+    .mobile-link:hover, .mobile-link.mobile-active {
+
+      background: var(--indicator-bg);
+
+      color: var(--color-nav-hover);
+
+      padding-left: 24px;
+
+    }
+
+
+
+    /* 移动端断点适配 */
+
+    @media (max-width: 991px) {
+
+      .nav-links {
+
+        display: none !important;
+
+      }
+
+      .mobile-toggle {
+
+        display: flex;
+
+      }
+
+      .nav-right {
+
+        display: none; /* 移动端在菜单展开后可选装载 */
+
+      }
+
+      .nav-capsule {
+
+        min-height: 64px;
+
+        padding: 0 20px;
+
+      }
+
+    }
+
+
+
+    /* ===== Demo Page Content ===== */
+
+    .demo-content {
+
+      max-width: 800px;
+
+      margin: 180px auto 40px;
+
+      padding: 40px 24px;
+
+      text-align: center;
+
+      background: rgba(255, 255, 255, 0.4);
+
+      border: 1px solid rgba(255, 255, 255, 0.5);
+
+      border-radius: 32px;
+
+      box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+
+      -webkit-backdrop-filter: blur(10px);
+
+      backdrop-filter: blur(10px);
+
+    }
+
+
+
+    .demo-content h1 {
+
+      font-size: 36px;
+
+      margin-bottom: 16px;
+
+      background: linear-gradient(135deg, #4f8bae, #92cdd6);
+
+      -webkit-background-clip: text;
+
+      -webkit-text-fill-color: transparent;
+
+      font-weight: 800;
+
+    }
+
+
+
+    .demo-content p {
+
+      color: #666;
+
+      line-height: 1.8;
+
+      margin-bottom: 24px;
+
+      font-size: 15px;
+
+    }
+
+
+
+    .badge {
+
+      display: inline-block;
+
+      padding: 6px 14px;
+
+      background: rgba(79, 139, 174, 0.1);
+
+      color: #4f8bae;
+
+      border-radius: 99px;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      margin-bottom: 16px;
+
+    }
+
+
+
+    .custom-modal {
+
+      position: fixed;
+
+      top: 50%;
+
+      left: 50%;
+
+      transform: translate(-50%, -50%) scale(0.9);
+
+      background: #ffffff;
+
+      border-radius: 24px;
+
+      padding: 24px 32px;
+
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+
+      z-index: 1000;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      text-align: center;
+
+      max-width: 90%;
+
+      width: 320px;
+
+    }
+
+
+
+    .custom-modal.show {
+
+      opacity: 1;
+
+      pointer-events: auto;
+
+      transform: translate(-50%, -50%) scale(1);
+
+    }
+
+
+
+    .modal-overlay {
+
+      position: fixed;
+
+      top: 0;
+
+      left: 0;
+
+      right: 0;
+
+      bottom: 0;
+
+      background: rgba(0, 0, 0, 0.2);
+
+      -webkit-backdrop-filter: blur(4px);
+
+      backdrop-filter: blur(4px);
+
+      z-index: 999;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition: opacity 0.3s;
+
+    }
+
+
+
+    .modal-overlay.show {
+
+      opacity: 1;
+
+      pointer-events: auto;
+
+    }
+
+
+
+    .modal-btn {
+
+      margin-top: 16px;
+
+      padding: 8px 24px;
+
+      background: #4f8bae;
+
+      color: #fff;
+
+      border: none;
+
+      border-radius: 12px;
+
+      cursor: pointer;
+
+      font-weight: 700;
+
+      transition: background 0.2s;
+
+    }
+
+    .modal-btn:hover {
+
+      background: #3c718f;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+
+
+  <!-- Decorative Orbs -->
+
+  <div class="bg-orb orb-1"></div>
+
+  <div class="bg-orb orb-2"></div>
+
+
+
+  <!-- ===== 导航头部 ===== -->
+
+  <header class="nav-header" id="navHeader">
+
+    <div class="nav-container">
+
+      <div class="nav-capsule">
+
+        <!-- Logo -->
+
+        <a href="#" class="nav-brand" onclick="closeAll(); return false;">
+
+          <div class="nav-brand-icon">
+
+            <i class="fa-solid fa-snowflake"></i>
+
+          </div>
+
+          <div class="nav-brand-info">
+
+            <span class="nav-brand-text">Eysnter<span class="cn">.cn</span></span>
+
+            <span class="nav-brand-sub" id="brandSub">Frost Glass</span>
+
+          </div>
+
+        </a>
+
+
+
+        <!-- 桌面级导航区 -->
+
+        <nav class="nav-links" id="navLinks">
+
+          <!-- 核心活动指示器 -->
+
+          <div class="nav-indicator" id="navIndicator"></div>
+
+
+
+          <a href="#home" class="nav-item active" data-name="home">首页</a>
+
+          <a href="#about" class="nav-item" data-name="about">简介</a>
+
+          <a href="#guestbook" class="nav-item" data-name="guestbook">留言</a>
+
+          <a href="#rec" class="nav-item" data-name="rec">资源</a>
+
+          
+
+          <!-- Dropdown container -->
+
+          <div class="dropdown-container">
+
+            <a href="#navs" class="nav-item" data-name="navs" onclick="return false;">
+
+              导航 <i class="fa-solid fa-chevron-down"></i>
+
+            </a>
+
+            <div class="dropdown-menu">
+
+              <a href="#projects" class="dropdown-item">精品项目</a>
+
+              <a href="#blog" class="dropdown-item">关于博客</a>
+
+              <a href="#research" class="dropdown-item">学术科研</a>
+
+              <a href="#links" class="dropdown-item">友情链接</a>
+
+            </div>
+
+          </div>
+
+
+
+          <a href="#sponsor" class="nav-item" data-name="sponsor">赞助</a>
+
+          
+
+          <a href="https://www.travellings.cn/go.html" target="_blank" class="nav-item nav-travellings">
+
+            <i class="fa-solid fa-gem" style="font-size: 11px;"></i>开往
+
+          </a>
+
+        </nav>
+
+
+
+        <!-- 工具交互区 -->
+
+        <div class="nav-right">
+
+          <!-- 个性化配置齿轮 -->
+
+          <button class="control-btn config-btn" id="configBtn" onclick="toggleConfig(event)">
+
+            <i class="fa-solid fa-gear"></i>
+
+          </button>
+
+          <div class="divider"></div>
+
+          <!-- 语言切换 -->
+
+          <button class="control-btn" id="langBtn" onclick="toggleLang()">
+
+            <span class="lang-text" id="langLabel">ZH</span>
+
+          </button>
+
+
+
+          <!-- 配置浮窗 -->
+
+          <div class="config-panel" id="configPanel">
+
+            <h3 class="config-title">
+
+              <i class="fa-solid fa-palette"></i> 个性化配置
+
+            </h3>
+
+            <div class="config-section">
+
+              <label>切换风格主题</label>
+
+              <div class="theme-grid">
+
+                <button class="theme-btn active" id="btn-frost" onclick="changeTheme('frost')">
+
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                  <span>毛玻璃</span>
+
+                </button>
+
+                <button class="theme-btn" id="btn-macaron" onclick="changeTheme('macaron')">
+
+                  <i class="fa-solid fa-candy-cane"></i>
+
+                  <span>马卡龙</span>
+
+                </button>
+
+                <button class="theme-btn" id="btn-dark" onclick="changeTheme('dark')">
+
+                  <i class="fa-solid fa-moon"></i>
+
+                  <span>深邃黑</span>
+
+                </button>
+
+              </div>
+
+            </div>
+
+            <div class="config-section">
+
+              <label>辅助说明</label>
+
+              <p style="font-size: 11px; color:#888; line-height:1.4;">
+
+                马卡龙主题强制开启可爱手写体，毛玻璃和深邃黑使用极简现代黑体。
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- 移动端汉堡切换键 -->
+
+        <button class="mobile-toggle" id="mobileToggle" onclick="toggleMobile(event)">
+
+          <span></span>
+
+          <span></span>
+
+          <span></span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- 移动端浮动自适应菜单 -->
+
+    <div class="mobile-menu" id="mobileMenu">
+
+      <a href="#home" class="mobile-link mobile-active" data-name="home" onclick="closeAll()">首页</a>
+
+      <a href="#about" class="mobile-link" data-name="about" onclick="closeAll()">简介</a>
+
+      <a href="#guestbook" class="mobile-link" data-name="guestbook" onclick="closeAll()">留言</a>
+
+      <a href="#rec" class="mobile-link" data-name="rec" onclick="closeAll()">资源</a>
+
+      <a href="#sponsor" class="mobile-link" data-name="sponsor" onclick="closeAll()">赞助</a>
+
+      <a href="https://www.travellings.cn/go.html" target="_blank" class="mobile-link mobile-travellings" style="text-align: center; color: white;">
+
+        <i class="fa-solid fa-gem" style="font-size: 11px; margin-right: 6px;"></i>开往
+
+      </a>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- ===== 页面内容 ===== -->
+
+  <main class="demo-content">
+
+    <span class="badge" id="demoBadge">Frost Glass v2.0</span>
+
+    <h1 id="demoTitle">极简轻量级高质感导航</h1>
+
+    <p id="demoDesc">
+
+      这里是导航栏自适应与功能修复测试页面。页面已经彻底修复了多级菜单滑动器延迟定位、在带有圆角时自适应背景四角多余白色色块的问题。<br>
+
+      点击右上角【齿轮配置】可实时切换【马卡龙主题】，体验强制可爱字体渲染。
+
+    </p>
+
+    <div style="margin-top: 20px;">
+
+      <p style="color: #bbb; font-size: 12px;">向下滚动页面可查看浮动胶囊导航的收缩贴边效果。</p>
+
+    </div>
+
+  </main>
+
+
+
+  <!-- Custom Dialog Box (替换 window.alert) -->
+
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+  <div class="custom-modal" id="customModal">
+
+    <p id="modalMsg" style="font-weight:700; font-size:15px; color:#333;"></p>
+
+    <button class="modal-btn" onclick="closeModal()">好的</button>
+
+  </div>
+
+
+
+  <!-- ===== JavaScript Logic ===== -->
+
+  <script>
+
+    // --- 多语言翻译表 ---
+
+    const i18n = {
+
+      zh: {
+
+        home: '首页', about: '简介', guestbook: '留言', rec: '资源', sponsor: '赞助',
+
+        brandSub: '毛玻璃样式', title: '极简轻量级高质感导航',
+
+        desc: '这里是导航栏自适应与功能修复测试页面。页面已经彻底修复了多级菜单滑动器延迟定位、在带有圆角时自适应背景四角多余白色色块的问题。',
+
+        badge: '重构版 v2.0'
+
+      },
+
+      en: {
+
+        home: 'Home', about: 'Intro', guestbook: 'Message', rec: 'Resources', sponsor: 'Sponsor',
+
+        brandSub: 'FROST GLASS', title: 'Responsive Premium Navigation',
+
+        desc: 'Testing ground for ultra-smooth dynamic active indicators, perfectly tuned glassmorphic gradients, and zero square-background rendering artifacts.',
+
+        badge: 'Premium v2.0'
+
+      }
+
+    };
+
+
+
+    let currentLang = 'zh';
+
+    let currentTheme = 'frost';
+
+
+
+    // DOM 缓存
+
+    const navHeader = document.getElementById('navHeader');
+
+    const navLinks = document.getElementById('navLinks');
+
+    const indicator = document.getElementById('navIndicator');
+
+    const navItems = document.querySelectorAll('.nav-item');
+
+    const configPanel = document.getElementById('configPanel');
+
+    const mobileToggle = document.getElementById('mobileToggle');
+
+    const mobileMenu = document.getElementById('mobileMenu');
+
+
+
+    // ==========================================
+
+    // 【修复1】 核心逻辑：高精度活动指示器 (Sliding Indicator)
+
+    // ==========================================
+
+    function updateIndicator(element) {
+
+      if (!element || window.getComputedStyle(navLinks).display === 'none') {
+
+        indicator.style.opacity = '0';
+
+        return;
+
+      }
+
+
+
+      const parentRect = navLinks.getBoundingClientRect();
+
+      const rect = element.getBoundingClientRect();
+
+
+
+      // 精确校准当前悬停或激活菜单项的相对偏移
+
+      const leftOffset = rect.left - parentRect.left;
+
+      const topOffset = rect.top - parentRect.top;
+
+
+
+      indicator.style.width = `${rect.width}px`;
+
+      indicator.style.height = `${rect.height}px`;
+
+      indicator.style.transform = `translate3d(${leftOffset}px, ${topOffset}px, 0)`;
+
+      indicator.style.opacity = '1';
+
+    }
+
+
+
+    // 绑定事件：悬停和点击跟随
+
+    navItems.forEach(item => {
+
+      // 避免让点击直接跳转的外链（开往）去干扰一般内页跳转的 active 行为
+
+      if (item.classList.contains('nav-travellings')) return;
+
+
+
+      item.addEventListener('mouseenter', () => {
+
+        updateIndicator(item);
+
+      });
+
+
+
+      item.addEventListener('click', (e) => {
+
+        navItems.forEach(i => i.classList.remove('active'));
+
+        item.classList.add('active');
+
+        updateIndicator(item);
+
+      });
+
+    });
+
+
+
+    // 鼠标移出导航栏时，回弹至当前处于 active 状态的项
+
+    navLinks.addEventListener('mouseleave', () => {
+
+      const activeItem = navLinks.querySelector('.nav-item.active');
+
+      if (activeItem) {
+
+        updateIndicator(activeItem);
+
+      } else {
+
+        indicator.style.opacity = '0';
+
+      }
+
+    });
+
+
+
+    // 窗口尺寸缩放与载入时，高频自适应重绘位置
+
+    window.addEventListener('resize', () => {
+
+      const activeItem = navLinks.querySelector('.nav-item.active');
+
+      if (activeItem) {
+
+        updateIndicator(activeItem);
+
+      }
+
+    });
+
+
+
+    window.addEventListener('load', () => {
+
+      setTimeout(() => {
+
+        const activeItem = navLinks.querySelector('.nav-item.active');
+
+        if (activeItem) {
+
+          updateIndicator(activeItem);
+
+        }
+
+      }, 100); // 预留少量字体文件渲染时间，防止位置计算偏差
+
+    });
+
+
+
+    // ==========================================
+
+    // 【修复2】 移除滚动与悬浮四角遮挡
+
+    // ==========================================
+
+    window.addEventListener('scroll', () => {
+
+      if (window.scrollY > 40) {
+
+        navHeader.classList.add('nav-scrolled');
+
+      } else {
+
+        navHeader.classList.remove('nav-scrolled');
+
+      }
+
+    });
+
+
+
+    // ==========================================
+
+    // 【修复3 & 4】 风格切换 & 可爱字体配置
+
+    // ==========================================
+
+    function changeTheme(theme) {
+
+      document.body.classList.remove('theme-frost', 'theme-macaron', 'theme-dark');
+
+      document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+
+
+
+      currentTheme = theme;
+
+
+
+      const brandSub = document.getElementById('brandSub');
+
+      const demoBadge = document.getElementById('demoBadge');
+
+
+
+      if (theme === 'macaron') {
+
+        document.body.classList.add('theme-macaron');
+
+        document.getElementById('btn-macaron').classList.add('active');
+
+        brandSub.textContent = currentLang === 'zh' ? '马卡龙主题' : 'MACARON THEME';
+
+        demoBadge.textContent = 'Macaron v2.0';
+
+      } else if (theme === 'dark') {
+
+        document.body.classList.add('theme-dark');
+
+        document.getElementById('btn-dark').classList.add('active');
+
+        brandSub.textContent = currentLang === 'zh' ? '暗黑护眼' : 'DARK SHIELD';
+
+        demoBadge.textContent = 'Dark Glass v2.0';
+
+      } else {
+
+        // Frost Glass (默认)
+
+        document.body.classList.add('theme-frost');
+
+        document.getElementById('btn-frost').classList.add('active');
+
+        brandSub.textContent = currentLang === 'zh' ? '毛玻璃样式' : 'FROST GLASS';
+
+        demoBadge.textContent = 'Frost Glass v2.0';
+
+      }
+
+
+
+      // 每次风格变化，都需要重绘滑动指示器位置与大小
+
+      setTimeout(() => {
+
+        const activeItem = navLinks.querySelector('.nav-item.active');
+
+        if (activeItem) updateIndicator(activeItem);
+
+      }, 50);
+
+    }
+
+
+
+    // ==========================================
+
+    // 其他交互逻辑 (语言、侧边栏)
+
+    // ==========================================
+
+    function toggleLang() {
+
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+
+      document.getElementById('langLabel').textContent = currentLang === 'zh' ? 'ZH' : 'EN';
+
+
+
+      const trans = i18n[currentLang];
+
+      
+
+      // 更新桌面导航文字
+
+      document.querySelectorAll('.nav-item[data-name]').forEach(item => {
+
+        const key = item.dataset.name;
+
+        if (trans[key]) {
+
+          // 保留图标渲染
+
+          if (key === 'navs') {
+
+            item.innerHTML = `${trans[key]} <i class="fa-solid fa-chevron-down"></i>`;
+
+          } else {
+
+            item.textContent = trans[key];
+
+          }
+
+        }
+
+      });
+
+
+
+      // 更新移动端导航文字
+
+      document.querySelectorAll('.mobile-link[data-name]').forEach(item => {
+
+        const key = item.dataset.name;
+
+        if (trans[key]) item.textContent = trans[key];
+
+      });
+
+
+
+      // 更新页面文本
+
+      document.getElementById('demoTitle').textContent = trans.title;
+
+      document.getElementById('demoDesc').textContent = trans.desc;
+
+      
+
+      // 更新副标题
+
+      const brandSub = document.getElementById('brandSub');
+
+      if (currentTheme === 'macaron') {
+
+        brandSub.textContent = currentLang === 'zh' ? '马卡龙主题' : 'MACARON THEME';
+
+      } else if (currentTheme === 'dark') {
+
+        brandSub.textContent = currentLang === 'zh' ? '暗黑护眼' : 'DARK SHIELD';
+
+      } else {
+
+        brandSub.textContent = trans.brandSub;
+
+      }
+
+
+
+      showCustomModal(currentLang === 'zh' ? "语言已成功切换为：中文" : "Language Switched to: English");
+
+
+
+      // 翻译导致宽度变化，立即校正指示器
+
+      setTimeout(() => {
+
+        const activeItem = navLinks.querySelector('.nav-item.active');
+
+        if (activeItem) updateIndicator(activeItem);
+
+      }, 100);
+
+    }
+
+
+
+    // 配置浮窗隐藏逻辑
+
+    function toggleConfig(e) {
+
+      e.stopPropagation();
+
+      configPanel.classList.toggle('open');
+
+    }
+
+
+
+    // 移动端菜单控制
+
+    function toggleMobile(e) {
+
+      e.stopPropagation();
+
+      mobileToggle.classList.toggle('active');
+
+      mobileMenu.classList.toggle('open');
+
+    }
+
+
+
+    function closeAll() {
+
+      mobileToggle.classList.remove('active');
+
+      mobileMenu.classList.remove('open');
+
+      configPanel.classList.remove('open');
+
+    }
+
+
+
+    // 点击页面空白处收起配置与移动菜单
+
+    document.addEventListener('click', (e) => {
+
+      if (!configPanel.contains(e.target) && e.target !== document.getElementById('configBtn')) {
+
+        configPanel.classList.remove('open');
+
+      }
+
+    });
+
+
+
+    // ==========================================
+
+    // 弹窗提示逻辑 (无 Alert)
+
+    // ==========================================
+
+    function showCustomModal(msg) {
+
+      document.getElementById('modalMsg').textContent = msg;
+
+      document.getElementById('modalOverlay').classList.add('show');
+
+      document.getElementById('customModal').classList.add('show');
+
+    }
+
+
+
+    function closeModal() {
+
+      document.getElementById('modalOverlay').classList.remove('show');
+
+      document.getElementById('customModal').classList.remove('show');
+
+    }
+
+  </script>
+
+</body>
+
+</html>
+
+
+
+解析代码这串完善先前代码
+
+1.追加这个两个背景到导航栏配置里,风格你来命名
+
+2.先前的导航栏活动指示器背景跟随有问题,可以使用本代码的方式,同时修复填充和线窗的问题,以及指示器跟随问题
+
+3.这串代码的标题图标动画也很有意思,请结合来使用
+
+4.在导航栏配置增加以下相关配置1️⃣:导航栏标题图标 配置 圆形 和 气泡方形  2️⃣ 开往的配置   动态 和 静态(控制开往按钮是否跳动)
+
+
+
+
+
+@import url("https://fontsapi.zeoseven.com/190/main/result.css");
+
+
+
+body {
+
+    font-family: "极影毁片圆 Medium";
+
+    font-weight: normal;
+
+}
+
+
+
+@import url("https://fontsapi.zeoseven.com/623/main/result.css");
+
+
+
+body {
+
+    font-family: "KeinannPOP";
+
+    font-weight: normal;
+
+}
+
+
+
+@import url("https://fontsapi.zeoseven.com/374/main/result.css");
+
+
+
+body {
+
+    font-family: "WenQuanYi Zen Hei Mono";
+
+    font-weight: normal;
+
+}
+
+
+
+@import url("https://fontsapi.zeoseven.com/88/main/result.css");
+
+
+
+body {
+
+    font-family: "MaokenZhuyuanTi";
+
+    font-weight: normal;
+
+}
+
+1.我如何让绿色区域同时出现在1 或者 2 的地方,这也要加个配置(也就是log和工具栏 默认两边 还是中间 还是中间三分之一处)
+
+2.全宽状态下也可以配置 导航栏是否圆角, (默认全宽无圆角(90%))
+
+3.增加是否显示开往的配置按钮
+
+4.增加上方字体
+
+5.添加到代码的导航配置中,方便代码中也能配置 
+
+6.增加log和工具栏互换对调功能
+
+7.导航栏风格样式增加至15种(上方图片的样式2-6)

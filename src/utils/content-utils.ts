@@ -2,8 +2,22 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils";
+import postOrderJson from "@/config/postOrder.json";
 
-// Retrieve posts and sort them: pinned → weight(desc) → date(desc)
+// postOrder.json 自定义排序：数组格式，索引即顺序
+const customPostOrder: Record<string, number> = {};
+if (Array.isArray(postOrderJson)) {
+	for (let i = 0; i < (postOrderJson as string[]).length; i++) {
+		customPostOrder[(postOrderJson as string[])[i].toLowerCase()] = i;
+	}
+} else {
+	// 兼容旧的对象格式 { "id": order }
+	for (const [k, v] of Object.entries(postOrderJson)) {
+		customPostOrder[k.toLowerCase()] = v as number;
+	}
+}
+
+// Retrieve posts and sort them: pinned → 自定义排序 → weight(desc) → date(desc)
 async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
@@ -14,12 +28,21 @@ async function getRawSortedPosts() {
 		if (a.data.pinned && !b.data.pinned) return -1;
 		if (!a.data.pinned && b.data.pinned) return 1;
 
-		// 2. 权重排序（weight 越大越靠前）
+		// 2. postOrder.json 自定义排序（数字越小越靠前）
+		const orderA = customPostOrder[a.id.toLowerCase()];
+		const orderB = customPostOrder[b.id.toLowerCase()];
+		const hasOrderA = orderA !== undefined;
+		const hasOrderB = orderB !== undefined;
+		if (hasOrderA && hasOrderB) return orderA - orderB;
+		if (hasOrderA) return -1;
+		if (hasOrderB) return 1;
+
+		// 3. 权重排序（weight 越大越靠前）
 		const weightA = a.data.weight ?? 0;
 		const weightB = b.data.weight ?? 0;
 		if (weightA !== weightB) return weightB - weightA;
 
-		// 3. 按发布日期倒序兜底
+		// 4. 按发布日期倒序兜底
 		const dateA = new Date(a.data.published);
 		const dateB = new Date(b.data.published);
 		return dateA > dateB ? -1 : 1;

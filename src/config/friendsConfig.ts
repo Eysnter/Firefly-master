@@ -68,7 +68,18 @@ export const friendsConfig: FriendLink[] = [
     weight: 7,
     enabled: true,
   },
+  {
+    title: "胖小白",
+    imgurl:
+      "https://www.fatxiaobai.top/proxy-api/public/file/avatar/avatar.jpg",
+    desc: "爱健身,哎科技,爱生活!",
+    siteurl: "https://www.fatxiaobai.top/",
+    tags: ["Blog"],
+    weight: 10,
+    enabled: true,
+  },
 ];
+
 
 // 获取启用的友链并进行排序
 export const getEnabledFriends = (): FriendLink[] => {

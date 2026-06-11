@@ -6,17 +6,23 @@ import path from "node:path";
 
 const jsonPath = path.resolve("./src/config/postOrder.json");
 const rawOrder = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-// key 统一转小写
+// 兼容数组格式（新）和对象格式（旧）
 const postOrder: Record<string, number> = {};
-for (const [k, v] of Object.entries(rawOrder)) {
-  postOrder[k.toLowerCase()] = v as number;
+if (Array.isArray(rawOrder)) {
+  for (let i = 0; i < rawOrder.length; i++) {
+    postOrder[rawOrder[i].toLowerCase()] = i;
+  }
+} else {
+  for (const [k, v] of Object.entries(rawOrder)) {
+    postOrder[k.toLowerCase()] = v as number;
+  }
 }
 
 const allPosts = await getCollection("posts", ({ data }) => {
   return import.meta.env.PROD ? data.draft !== true : true;
 });
 
-// 按当前排序排列
+// 按当前排序排列（与主页一致：置顶 → 自定义排序 → 权重 → 发布日期）
 const sortedPosts = allPosts.sort((a, b) => {
   if (a.data.pinned && !b.data.pinned) return -1;
   if (!a.data.pinned && b.data.pinned) return 1;
@@ -27,6 +33,9 @@ const sortedPosts = allPosts.sort((a, b) => {
   if (hasA && hasB) return orderA - orderB;
   if (hasA) return -1;
   if (hasB) return 1;
+  const weightA = a.data.weight ?? 0;
+  const weightB = b.data.weight ?? 0;
+  if (weightA !== weightB) return weightB - weightA;
   return new Date(b.data.published).getTime() - new Date(a.data.published).getTime();
 });
 
@@ -154,19 +163,15 @@ const postsData = sortedPosts.map((p, i) => ({
     });
   }
 
-  function getOrderMap(): Record<string, number> {
+  function getOrderArray(): string[] {
     const items = Array.from(list.querySelectorAll(".post-item")) as HTMLElement[];
-    const map: Record<string, number> = {};
-    items.forEach((item, i) => {
-      if (item.dataset.id) map[item.dataset.id] = i;
-    });
-    return map;
+    return items.map(item => item.dataset.id).filter(Boolean) as string[];
   }
 
   // 保存排序
   btnSave.addEventListener("click", () => {
-    const orderMap = getOrderMap();
-    const json = JSON.stringify(orderMap, null, 2);
+    const orderArray = getOrderArray();
+    const json = JSON.stringify(orderArray, null, 2);
     localStorage.setItem("postOrder", json);
     jsonOutput.textContent = json;
     saveToast.classList.remove("hidden");
@@ -191,14 +196,24 @@ const postsData = sortedPosts.map((p, i) => ({
     const saved = localStorage.getItem("postOrder");
     if (!saved) return;
     try {
-      const orderMap = JSON.parse(saved) as Record<string, number>;
+      const parsed = JSON.parse(saved);
       const items = Array.from(list.querySelectorAll(".post-item")) as HTMLElement[];
-      const sorted = items.sort((a, b) => {
-        const orderA = orderMap[a.dataset.id!] ?? 9999;
-        const orderB = orderMap[b.dataset.id!] ?? 9999;
-        return orderA - orderB;
-      });
-      sorted.forEach(item => list.appendChild(item));
+      if (Array.isArray(parsed)) {
+        // 数组格式：索引即顺序
+        const orderMap: Record<string, number> = {};
+        parsed.forEach((id: string, i: number) => { orderMap[id] = i; });
+        const sorted = items.sort((a, b) => {
+          return (orderMap[a.dataset.id!] ?? 9999) - (orderMap[b.dataset.id!] ?? 9999);
+        });
+        sorted.forEach(item => list.appendChild(item));
+      } else {
+        // 对象格式（旧）
+        const orderMap = parsed as Record<string, number>;
+        const sorted = items.sort((a, b) => {
+          return (orderMap[a.dataset.id!] ?? 9999) - (orderMap[b.dataset.id!] ?? 9999);
+        });
+        sorted.forEach(item => list.appendChild(item));
+      }
       updateOrderNumbers();
     } catch {}
   }

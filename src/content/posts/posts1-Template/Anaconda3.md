@@ -6,7 +6,7 @@ tags: [Anaconda, 环境搭建, 速查手册]
 description: 本教程带你从零开始完美搭建 Anaconda 环境，解决 Python 版本冲突与第三方库安装噩梦，附带 Jupyter 启动教程及常用命令速查手册。
 category: 环境搭建
 draft: false 
-pinned: true
+
 comment: true
 lang: zh-CN
 ---

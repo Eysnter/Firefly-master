@@ -56,4 +56,19 @@ lang: ''
 
 fs.writeFileSync(path.join(targetDir, fileName), content)
 
+// 将新文章 ID 追加到 postOrder.json
+const postOrderPath = "./src/config/postOrder.json"
+const postId = fileName.replace(/\.(md|mdx)$/i, "")
+try {
+  const raw = JSON.parse(fs.readFileSync(postOrderPath, "utf-8"))
+  const order = Array.isArray(raw) ? raw : Object.keys(raw).sort((a, b) => raw[a] - raw[b])
+  if (!order.includes(postId)) {
+    order.push(postId)
+    fs.writeFileSync(postOrderPath, JSON.stringify(order, null, 2) + "\n")
+    console.log(`Added "${postId}" to postOrder.json`)
+  }
+} catch (e) {
+  console.warn(`Warning: Could not update postOrder.json: ${e.message}`)
+}
+
 console.log(`Post ${fullPath} created`)

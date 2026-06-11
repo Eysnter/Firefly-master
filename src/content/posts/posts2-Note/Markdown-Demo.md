@@ -1,7 +1,6 @@
 ---
 title: Markdown 基础教程
 published: 2026-06-10
-pinned: true
 image: "https://img.eysnter.cn/file/posts/Title/1781070385944_Markdown.png"
 tags: [教程]
 category: "Markdown"

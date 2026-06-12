@@ -33,7 +33,7 @@ export const friendsConfig: FriendLink[] = [
     enabled: true, // 是否启用
   },
   {
-    title: "站点名称：十三",
+    title: "十三",
     imgurl: "https://blog.nw177.cn/assets/avatar.webp",
     desc: "站点描述：欲买桂花同载酒，终不似，少年游。",
     siteurl: "https://blog.nw177.cn",

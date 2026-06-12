@@ -145,6 +145,27 @@ export const ja: Translation = {
 	[Key.bangumiUpdatedAt]: "ビルド時間",
 	[Key.bangumiDataStatic]: "静的データ",
 
+	// 追番ページ
+	[Key.anime]: "追番",
+	[Key.animeSubtitle]: "Bilibili と TMDB から同期した追番記録",
+	[Key.animeLastUpdated]: "データ更新",
+	[Key.animeTotal]: "合計",
+	[Key.animeSearch]: "アニメを検索...",
+	[Key.animeFilterAll]: "すべて",
+	[Key.animeFilterTv]: "TV アニメ",
+	[Key.animeFilterMovie]: "劇場版",
+	[Key.animeSortRatingDesc]: "評価：高い順",
+	[Key.animeSortRatingAsc]: "評価：低い順",
+	[Key.animeSortDateDesc]: "日付：新しい順",
+	[Key.animeSortDateAsc]: "日付：古い順",
+	[Key.animeViewDetail]: "詳細を見る",
+	[Key.animeWatchNow]: "今すぐ視聴",
+	[Key.animeNotConfigured]: "追番が設定されていません",
+	[Key.animeNotConfiguredDesc]: "src/config/siteConfig.ts で Bilibili UID または TMDB API Key を設定してください",
+	[Key.animeSource]: "データソース",
+	[Key.animeEpisodes]: "話数",
+	[Key.animeNoResults]: "一致するアニメが見つかりません",
+
 	// ページネーション
 	[Key.paginationFirst]: "最初",
 	[Key.paginationPrev]: "前へ",

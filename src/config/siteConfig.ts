@@ -125,6 +125,19 @@ export const siteConfig: SiteConfig = {
     categoryOrder: ["anime", "book", "music", "game"],
   },
 
+  // 追番配置（Bilibili + TMDB）
+  anime: {
+    // Bilibili 配置
+    bilibili: {
+      uid: "442980782", // 你的 Bilibili 用户 UID
+    },
+    // TMDB 配置（可选，需要翻墙）
+    // tmdb: {
+    //   apiKey: "your_tmdb_api_key", // TMDB API 密钥
+    //   listId: "your_list_id",       // TMDB 列表 ID
+    // },
+  },
+
   // 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
   // bangumi的数据为编译时获取的，所以不是实时数据，请配置bangumi.userId
   pages: {
@@ -138,6 +151,8 @@ export const siteConfig: SiteConfig = {
     bangumi: true,
     // 相册页面开关
     gallery: true,
+    // 追番页面开关，从 Bilibili 和 TMDB 同步追番数据
+    anime: true,
   },
 
   // 分类导航栏开关，在首页和归档页顶部显示分类快捷导航

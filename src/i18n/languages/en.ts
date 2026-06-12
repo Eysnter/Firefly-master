@@ -148,6 +148,27 @@ export const en: Translation = {
 	[Key.bangumiUpdatedAt]: "Build time",
 	[Key.bangumiDataStatic]: "Static data",
 
+	// Anime Page
+	[Key.anime]: "Anime",
+	[Key.animeSubtitle]: "Anime tracking synced from Bilibili and TMDB",
+	[Key.animeLastUpdated]: "Data updated at",
+	[Key.animeTotal]: "Total",
+	[Key.animeSearch]: "Search anime...",
+	[Key.animeFilterAll]: "All",
+	[Key.animeFilterTv]: "TV Anime",
+	[Key.animeFilterMovie]: "Movie",
+	[Key.animeSortRatingDesc]: "Rating: High to Low",
+	[Key.animeSortRatingAsc]: "Rating: Low to High",
+	[Key.animeSortDateDesc]: "Date: New to Old",
+	[Key.animeSortDateAsc]: "Date: Old to New",
+	[Key.animeViewDetail]: "View Details",
+	[Key.animeWatchNow]: "Watch Now",
+	[Key.animeNotConfigured]: "Anime Not Configured",
+	[Key.animeNotConfiguredDesc]: "Please configure Bilibili UID or TMDB API Key in src/config/siteConfig.ts",
+	[Key.animeSource]: "Source",
+	[Key.animeEpisodes]: "Episodes",
+	[Key.animeNoResults]: "No matching anime found",
+
 	// Pagination
 	[Key.paginationFirst]: "First",
 	[Key.paginationPrev]: "Previous",

@@ -54,6 +54,17 @@ export type SiteConfig = {
 		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
 	};
 
+	// 追番配置（Bilibili + TMDB）
+	anime?: {
+		bilibili?: {
+			uid: string; // Bilibili 用户 UID
+		};
+		tmdb?: {
+			apiKey: string; // TMDB API Key (v3)
+			listId: string; // TMDB 自定义列表 ID
+		};
+	};
+
 	generateOgImages: boolean;
 	favicon: Array<{
 		src: string;
@@ -86,6 +97,7 @@ export type SiteConfig = {
 		guestbook: boolean; // 留言板页面开关
 		bangumi: boolean;
 		gallery: boolean; // 相册页面开关
+		anime: boolean; // 追番页面开关
 	};
 
 	// 分类导航栏开关
@@ -191,6 +203,7 @@ export enum LinkPreset {
 	Gallery = 7,
 	Tags = 8,
 	Categories = 9,
+	Anime = 10,
 }
 
 export type NavBarLink = {

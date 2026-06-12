@@ -145,6 +145,27 @@ export const ru: Translation = {
 	[Key.bangumiUpdatedAt]: "Время сборки",
 	[Key.bangumiDataStatic]: "Статические данные",
 
+	// Страница аниме
+	[Key.anime]: "Аниме",
+	[Key.animeSubtitle]: "Трекинг аниме, синхронизированный с Bilibili и TMDB",
+	[Key.animeLastUpdated]: "Данные обновлены",
+	[Key.animeTotal]: "Всего",
+	[Key.animeSearch]: "Поиск аниме...",
+	[Key.animeFilterAll]: "Все",
+	[Key.animeFilterTv]: "TV Аниме",
+	[Key.animeFilterMovie]: "Фильм",
+	[Key.animeSortRatingDesc]: "Рейтинг: по убыванию",
+	[Key.animeSortRatingAsc]: "Рейтинг: по возрастанию",
+	[Key.animeSortDateDesc]: "Дата: новые",
+	[Key.animeSortDateAsc]: "Дата: старые",
+	[Key.animeViewDetail]: "Подробнее",
+	[Key.animeWatchNow]: "Смотреть",
+	[Key.animeNotConfigured]: "Аниме не настроено",
+	[Key.animeNotConfiguredDesc]: "Настройте Bilibili UID или TMDB API Key в src/config/siteConfig.ts",
+	[Key.animeSource]: "Источник",
+	[Key.animeEpisodes]: "Эпизоды",
+	[Key.animeNoResults]: "Аниме не найдено",
+
 	// Пагинация
 	[Key.paginationFirst]: "Первая",
 	[Key.paginationPrev]: "Предыдущая",

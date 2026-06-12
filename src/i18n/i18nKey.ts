@@ -143,6 +143,27 @@ enum I18nKey {
 	bangumiUpdatedAt = "bangumiUpdatedAt",
 	bangumiDataStatic = "bangumiDataStatic",
 
+	// 追番页面
+	anime = "anime",
+	animeSubtitle = "animeSubtitle",
+	animeLastUpdated = "animeLastUpdated",
+	animeTotal = "animeTotal",
+	animeSearch = "animeSearch",
+	animeFilterAll = "animeFilterAll",
+	animeFilterTv = "animeFilterTv",
+	animeFilterMovie = "animeFilterMovie",
+	animeSortRatingDesc = "animeSortRatingDesc",
+	animeSortRatingAsc = "animeSortRatingAsc",
+	animeSortDateDesc = "animeSortDateDesc",
+	animeSortDateAsc = "animeSortDateAsc",
+	animeViewDetail = "animeViewDetail",
+	animeWatchNow = "animeWatchNow",
+	animeNotConfigured = "animeNotConfigured",
+	animeNotConfiguredDesc = "animeNotConfiguredDesc",
+	animeSource = "animeSource",
+	animeEpisodes = "animeEpisodes",
+	animeNoResults = "animeNoResults",
+
 	// 分页
 	paginationFirst = "paginationFirst",
 	paginationPrev = "paginationPrev",

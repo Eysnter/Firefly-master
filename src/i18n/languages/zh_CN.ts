@@ -144,6 +144,27 @@ export const zh_CN: Translation = {
 	[Key.bangumiUpdatedAt]: "构建时间",
 	[Key.bangumiDataStatic]: "静态数据",
 
+	// 追番页面
+	[Key.anime]: "追番",
+	[Key.animeSubtitle]: "从 Bilibili 和 TMDB 同步的追番记录",
+	[Key.animeLastUpdated]: "数据更新于",
+	[Key.animeTotal]: "追番总数",
+	[Key.animeSearch]: "搜索番剧...",
+	[Key.animeFilterAll]: "全部",
+	[Key.animeFilterTv]: "TV 动画",
+	[Key.animeFilterMovie]: "剧场版",
+	[Key.animeSortRatingDesc]: "评分从高到低",
+	[Key.animeSortRatingAsc]: "评分从低到高",
+	[Key.animeSortDateDesc]: "日期从新到旧",
+	[Key.animeSortDateAsc]: "日期从旧到新",
+	[Key.animeViewDetail]: "查看详情",
+	[Key.animeWatchNow]: "立即观看",
+	[Key.animeNotConfigured]: "追番功能未配置",
+	[Key.animeNotConfiguredDesc]: "请在 src/config/siteConfig.ts 中配置 Bilibili UID 或 TMDB API Key",
+	[Key.animeSource]: "数据源",
+	[Key.animeEpisodes]: "集数",
+	[Key.animeNoResults]: "没有找到匹配的番剧",
+
 	// 分页
 	[Key.paginationFirst]: "首页",
 	[Key.paginationPrev]: "上一页",

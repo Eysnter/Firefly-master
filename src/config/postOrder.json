@@ -1,17 +1,17 @@
 [
-"guide/index",
-"posts2-Note/MySQL",
-"posts1-Template/Anaconda3",
-"posts2-Note/GitCode",
-"posts1-Template/markdown-extended",
-"posts2-Note/JavaSE-1",
-"posts2-Note/JavaSE-2",
-"posts2-Note/JavaSE-3",
-"posts1-Template/code-examples",
-"posts1-Template/markdown-extended",
-"video",
-"posts1-Template/encrypted-demo",
-"mdx-example",
-
-"mycode"
+  "guide/index",
+  "posts2-Note/MySQL",
+  "posts1-Template/Anaconda3",
+  "posts2-Note/GitCode",
+  "posts1-Template/markdown-extended",
+  "posts2-Note/JavaSE-1",
+  "posts2-Note/JavaSE-2",
+  "posts2-Note/JavaSE-3",
+  "posts1-Template/code-examples",
+  "posts1-Template/markdown-extended",
+  "video",
+  "posts1-Template/encrypted-demo",
+  "mdx-example",
+  "mycode",
+  "spring-Demo"
 ]

@@ -1,16 +1,14 @@
 ---
 title: MySQL 核心知识点与常用操作速查手册
 published: 2026-04-27
-image: 'https://img.eysnter.cn/file/posts/posts2-notes/mysql/1780326427413_mysql.png'
+image: "https://img.eysnter.cn/file/posts/posts2-notes/mysql/1780326427413_mysql.png"
 tags: [MySQL, 数据库, 笔记]
-category: '技术参考'
+category: "技术参考"
 draft: false
 description: 本文是一份系统化的 MySQL 核心知识点与常用操作速查手册，涵盖基础 SQL 语法、高级函数、索引、事务原理、架构锁机制及主从复制、分库分表等运维实践。
 lang: zh-CN
 comment: true
 ---
-
-
 
 # MySQL学习笔记
 
@@ -300,7 +298,7 @@ SELECT * FROM employee LIMIT 10, 10;
 
 ##### 注意事项
 
-- 起始索引从0开始，起始索引 = （查询页码 - 1） * 每页显示记录数
+- 起始索引从0开始，起始索引 = （查询页码 - 1） \* 每页显示记录数
 - 分页查询是数据库的方言，不同数据库有不同实现，MySQL是LIMIT
 - 如果查询的是第一页数据，起始索引可以省略，直接简写 LIMIT 10
 
@@ -376,7 +374,7 @@ drop user 'test'@'localhost';
 ##### 注意事项
 
 - 多个权限用逗号分隔
-- 授权时，数据库名和表名可以用 * 进行通配，代表所有
+- 授权时，数据库名和表名可以用 \* 进行通配，代表所有
 
 ## 函数
 
@@ -834,7 +832,7 @@ commit;
 | 不可重复读 | 一个事务先后读取同一条记录，但两次读取的数据不同                                       |
 | 幻读       | 一个事务按照条件查询数据时，没有对应的数据行，但是再插入数据时，又发现这行数据已经存在 |
 
-> 这三个问题的详细演示：https://www.bilibili.com/video/BV1Kr4y1i7ru?p=55cd 
+> 这三个问题的详细演示：https://www.bilibili.com/video/BV1Kr4y1i7ru?p=55cd
 
 并发事务隔离级别：
 
@@ -859,8 +857,6 @@ SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对�
 ## 存储引擎
 
 MySQL体系结构：
-
-
 
 存储引擎就是存储数据、建立索引、更新/查询数据等技术的实现方式。存储引擎是基于表而不是基于库的，所以存储引擎也可以被称为表引擎。
 默认存储引擎是InnoDB。
@@ -972,11 +968,9 @@ Memory 引擎的表数据是存储在内存中的，受硬件问题、断电问�
 ### 慢查询日志
 
 慢查询日志记录了所有执行时间超过指定参数（long_query_time，单位：秒，默认10秒）的所有SQL语句的日志。
-MySQL的慢查询日志默认没有开启，需要在MySQL的配置文件（/etc/my.cnf）中配置如下信息：
-	# 开启慢查询日志开关
-	slow_query_log=1
-	# 设置慢查询日志的时间为2秒，SQL语句执行时间超过2秒，就会视为慢查询，记录慢查询日志
-	long_query_time=2
+MySQL的慢查询日志默认没有开启，需要在MySQL的配置文件（/etc/my.cnf）中配置如下信息：# 开启慢查询日志开关
+slow_query_log=1 # 设置慢查询日志的时间为2秒，SQL语句执行时间超过2秒，就会视为慢查询，记录慢查询日志
+long_query_time=2
 更改后记得重启MySQL服务，日志文件位置：/var/lib/mysql/localhost-slow.log
 
 查看慢查询日志开关状态：
@@ -998,9 +992,8 @@ profiling 默认关闭，可以通过set语句在session/global级别开启 prof
 ### explain
 
 EXPLAIN 或者 DESC 命令获取 MySQL 如何执行 SELECT 语句的信息，包括在 SELECT 语句执行过程中表如何连接和连接的顺序。
-语法：
-	# 直接在select语句之前加上关键字 explain / desc
-	EXPLAIN SELECT 字段列表 FROM 表名 HWERE 条件;
+语法：# 直接在select语句之前加上关键字 explain / desc
+EXPLAIN SELECT 字段列表 FROM 表名 HWERE 条件;
 
 EXPLAIN 各字段含义：
 
@@ -1047,8 +1040,6 @@ EXPLAIN 各字段含义：
 
 #### B-Tree
 
-
-
 二叉树的缺点可以用红黑树来解决：
 
 红黑树也存在大数据量情况下，层级较深，检索速度慢的问题。
@@ -1056,16 +1047,12 @@ EXPLAIN 各字段含义：
 为了解决上述问题，可以使用 B-Tree 结构。
 B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节点的子节点个数）为5（5阶）的 b-tree 为例（每个节点最多存储4个key，5个指针）
 
-
-
 > B-Tree 的数据插入过程动画参照：https://www.bilibili.com/video/BV1Kr4y1i7ru?p=68
 > 演示地址：https://www.cs.usfca.edu/~galles/visualization/BTree.html
 
 #### B+Tree
 
 结构图：
-
-
 
 > 演示地址：https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html
 
@@ -1076,14 +1063,10 @@ B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节
 
 MySQL 索引数据结构对经典的 B+Tree 进行了优化。在原 B+Tree 的基础上，增加一个指向相邻叶子节点的链表指针，就形成了带有顺序指针的 B+Tree，提高区间访问的性能。
 
-
-
 #### Hash
 
 哈希索引就是采用一定的hash算法，将键值换算成新的hash值，映射到对应的槽位上，然后存储在hash表中。
 如果两个（或多个）键值，映射到一个相同的槽位上，他们就产生了hash冲突（也称为hash碰撞），可以通过链表来解决。
-
-
 
 特点：
 
@@ -1215,7 +1198,7 @@ use 是建议，实际使用哪个索引 MySQL 还会自己权衡运行速度去
 
 #### 覆盖索引&回表查询
 
-尽量使用覆盖索引（查询使用了索引，并且需要返回的列，在该索引中已经全部能找到），减少 select *。
+尽量使用覆盖索引（查询使用了索引，并且需要返回的列，在该索引中已经全部能找到），减少 select \*。
 
 explain 中 extra 字段含义：
 `using index condition`：查找使用了索引，但是需要回表查询数据
@@ -1453,11 +1436,11 @@ drop view if exists stu_v_1;/*  */
 
 **作用：**
 
-+ **简单**  
+- **简单**  
   视图不仅可以简化用户对数据的理解，也可以简化他们的操作。那些被经常使用的查询可以被定义为视图，从而使得用户不必为以后的操作每次指定全部的条件。
-+ **安全**  
+- **安全**  
   数据库可以授权，但不能授权到数据库特定行和特定的列上。通过视图用户只能查询和修改他们所能见到的数据。
-+ **数据独立**  
+- **数据独立**  
   视图可帮助用户屏蔽真实表结构变化带来的影响。
 
 #### 案例
@@ -1468,9 +1451,9 @@ create view tb user view as select id,name,profession, age,gender,status,createt
 select *from tb user view;
 
 -- 2.查询每个学生所选修的课程（三张表联查），这个功能在很多的业务中都有使用到，为了简化操作，定义一个视图。
-create view tb_stu_course_view 
-select s.name student_name, s.no student_no, c.name course_name 
-from student s, stuent_course sc, course c 
+create view tb_stu_course_view
+select s.name student_name, s.no student_no, c.name course_name
+from student s, stuent_course sc, course c
 where s.id = sc.studentid and sc.courseid = c.id;
 
 -- 以后每次只需要进行查询视图即可
@@ -1487,9 +1470,9 @@ select * from tb_stu_course_view;
 
 **特点：**
 
-+ 封装，复用
-+ 可以接收参数，也可以返回数据
-+ 减少网络交互，效率提升
+- 封装，复用
+- 可以接收参数，也可以返回数据
+- 减少网络交互，效率提升
 
 #### 基本语法
 
@@ -1553,8 +1536,8 @@ set global auto commit = 0;
 
 **注意：**
 
-+ 如果没有指定 session / global，默认 session，会话变量
-+ myesql 服务器重启之后，所设置的全局参数会失效，要想不失效，需要更改/etc/my.cnf 中的配置。
+- 如果没有指定 session / global，默认 session，会话变量
+- myesql 服务器重启之后，所设置的全局参数会失效，要想不失效，需要更改/etc/my.cnf 中的配置。
 
 ##### 用户定义变量
 
@@ -1661,12 +1644,11 @@ end;
 
 #### 参数（in, out, inout)
 
-| 类型  |                     含义                     | 备注  |
-| :---: | :------------------------------------------: | :---: |
-|  IN   |   该类参数作为输入，也就是需要调用时传入值   | 默认  |
-|  OUT  | 该类参数作为输出，也就是该参数可以作为返回值 |       |
-| INOUT |  既可以作为输入参数，也可以作为输出参数****  |       |
-
+| 类型  |                      含义                      | 备注 |
+| :---: | :--------------------------------------------: | :--: |
+|  IN   |    该类参数作为输入，也就是需要调用时传入值    | 默认 |
+|  OUT  |  该类参数作为输出，也就是该参数可以作为返回值  |      |
+| INOUT | 既可以作为输入参数，也可以作为输出参数\*\*\*\* |      |
 
 **用法：**
 
@@ -1740,9 +1722,9 @@ END CASE;
 -- 10-12月份，为第四季度
 
 create procedure p6(in month int)
-begin 
+begin
   declare result varchar(10);
-  case 
+  case
     when month >= 1 and month <= 3 then
       set result := '第一季度';
     when month >= 4 and month <= 6 then
@@ -1784,12 +1766,12 @@ END WHILE;
 create procedure p7(in n int)
 begin
   declare total int default 0;
-  
+
   while n>0 do
     set total := total + n
     set n:=n-1;
   end while;
-  
+
   select total;
 end;
 call p7( n: 100);
@@ -1824,13 +1806,13 @@ END REPEAT;
 create procedure p8(innint)
 begin
   declare total int default 0;
-  
+
   repeat
     set total := total + n;
     set n := n - 1;
   until n <= 0
   end repeat;
-  
+
   select total;
 end;
 
@@ -1863,7 +1845,7 @@ ITERATE label;-- 直接进入下一次循环
 -- C.如果当次累加的数据是奇数，则直接进入下一次循坏。-------> iterate xx
 
 create procedure p10(in n int)
-begin 
+begin
   declare total int defatult 0;
 
   sum: loop
@@ -1929,7 +1911,7 @@ CLOSE 游标名称;
 -- F.关闭游标
 
 create procedure p11(in uage int)
-begin 
+begin
   declare uname varchar(100);
   declare upro varchar(100);
   declare u_cursor cursor for select name, profession from tb_user where age <= uage;
@@ -1940,7 +1922,7 @@ begin
     name varchar(100),
     profession varchar(100)
   );
-  
+
   open u_cursor;
   while true do
     fetch u_cursor into uname,upro;
@@ -1972,13 +1954,13 @@ condition value
 
 ```sql
 create procedure p11(in uage int)
-begin 
+begin
   declare uname varchar(100);
   declare upro varchar(100);
   declare u_cursor cursor for select name, profession from tb_user where age <= uage;
-  
+
   -- 监控到02000的状态码后，关闭游标后执行exit退出操作。
-  declare exit handler for not found close u_cursor; 
+  declare exit handler for not found close u_cursor;
 
   drop table if exists tb_user_pro;
   create table if not exists tb_user_pro(
@@ -1986,7 +1968,7 @@ begin
     name varchar(100),
     profession varchar(100)
   );
-  
+
   open u_cursor;
   while true do
     fetch u_cursor into uname,upro;
@@ -2025,7 +2007,7 @@ returns int deterministic
 begin
   declare total int default 0;
 
-  while n > 0 do 
+  while n > 0 do
     set total := total + n;
     set n := n - 1;
   end while;
@@ -2045,7 +2027,6 @@ end;
 | insert 型触发器 | NEW 表示将要或者已经新增的数据                         |
 | update 型触发器 | OLD 表示修改之前的数据，NEW 表示将要或已经修改后的数据 |
 | delete 型触发器 | OLD 表示将要或者已经删除的数据                         |
-
 
 **语法：**
 
@@ -2077,7 +2058,7 @@ DROP TRIGGER [schema_name.]trigger_name; --如果没有指定 schema name，默�
 -- 插入数据触发器
 create trigger tb_user_insert_trigger
   after insert on tb_user for each row
-  begin 
+  begin
   insert into user_logs(id, operation, operate_time, operate_id, operate_params)values
   (null, 'insert', now(), new.id, concat('插入的数据内容为：id=', new.id, ',name=', new.name, ', phone=', new.phone, ', email=', new.email, ', profession=', new.profession));
 end;
@@ -2094,9 +2075,9 @@ insert into tb_user(id, name, phtone, email, profession, age, gender, status, cr
 -- 修改数据触发器
 create trigger tb_user_update_trigger
   after update on tb_user for each row
-  begin 
+  begin
   insert into user_logs(id, operation, operate_time, operate_id, operate_params)values
-  (null, 'update', now(), new.id, 
+  (null, 'update', now(), new.id,
    concat('更新之前的数据：id=', old.id, ',name=', old.name, ', phone=', old.phone, ', email=', old.email, ', profession=', old.profession,
     '更新之后的数据：id=', new.id, ',name=', new.name, ', phone=', new.phone, ', email=', new.email, ', profession=', new.profession));
 end;
@@ -2107,9 +2088,9 @@ update tb_user set age = 32 where id <= 5; -- 触发器为行级触发器，所�
 -- 删除数据触发器
 create trigger tb_user_delete_trigger
   after delete on tb_user for each row
-  begin 
+  begin
   insert into user_logs(id, operation, operate_time, operate_id, operate_params)values
-  (null, 'insert', now(), old.id, 
+  (null, 'insert', now(), old.id,
    concat('删除之前的数据：id=', new.id, ',name=', old.name, ', phone=', old.phone, ', email=', old.email, ', profession=', old.profession));
 end;
 
@@ -2470,8 +2451,6 @@ Mysql数据库安装完成后，自带了一下四个数据库，具体作用如
 
 ![](images/img-mysql/34108898837.png)
 
-
-
 # 运维篇
 
 ## 日志
@@ -2515,7 +2494,7 @@ MySQL服务器中提供了多种格式来记录二进制记录，具体格式及
 
 由于日志是以二进制方式存储的，不能直接读取，需要通过二进制日志查询工具 mysqlbinlog 来查看，具体语法：
 
-``````mysql
+```mysql
 mysqlbinlog[参数选项]logfilename
 
 参数选项：
@@ -2523,7 +2502,7 @@ mysqlbinlog[参数选项]logfilename
     -o    忽略掉日志中的前n行命令。
     -v    将行事件(数据变更)重构为SOL语句。
     -w    将行事件(数据变更)重构为SQL语句，并输出注释信息
-``````
+```
 
 #### 日志删除
 
@@ -2532,7 +2511,7 @@ mysqlbinlog[参数选项]logfilename
 | 指令                                             | 含义                                                                 |
 | ------------------------------------------------ | -------------------------------------------------------------------- |
 | reset master                                     | 删除全部 binlog 日志，删除之后，日志编号，将从 binlog.000001重新开始 |
-| purge master logs to 'binlog.***'                | 删除 *** 编号之前的所有日志                                          |
+| purge master logs to 'binlog.\*\*\*'             | 删除 \*\*\* 编号之前的所有日志                                       |
 | purge master logs before 'yyyy-mm-dd hh24:mi:ss' | 删除日志为"yyyy-mm-dd hh24:mi:ss"之前产生的所有日志                  |
 
 也可以在mysql的配置文件中配置二进制日志的过期时间，设置了之后，二进制日志过期会自动删除.
@@ -2545,36 +2524,36 @@ mysqlbinlog[参数选项]logfilename
 
 修改MySQL的配置文件 /etc/my.cnf 文件，添加如下内容：
 
-``````mysql
+```mysql
 #该选项用来开启查询日志，可选值：0或者1；0代表关闭，1代表开启
 general_log=1
 #设置日志的文件名 ， 如果没有指定，默认的文件名为 host_name.log
 general_log_file=mysql_query.log
-``````
+```
 
 ### 慢查询日志
 
 慢查询日志记录了所有执行时间超过参数 long_query_time 设置值并且扫描记录数不小于 min_examined_row_limit的所有的SQL语句的日志，默认未开启。long_query_time 默认为 10 秒，最小为0，精度可以到微秒。
 
-``````sql
+```sql
 #慢查询日志
 slow_query_log=1
 #执行时间参数
 long_query_time=2
-``````
+```
 
 默认情况下，不会记录管理语句，也不会记录不使用索引进行查找的查询。可以使用log_slow_admin_statements和更改此行为log_queries_not_using_indexes，如下所述。
 
-``````sql
+```sql
 #记录执行较慢的管理语句
 log_slow_admin_statements = 1
 #记录执行较慢的未使用索引的语句
 log_queries_not_using_indexes = 1
-``````
+```
 
 ## 主从复制
 
- ![](images/img-mysql/58131011726.png)
+![](images/img-mysql/58131011726.png)
 
 ![](images/img-mysql/4454682776.png)
 
@@ -2604,7 +2583,7 @@ log_queries_not_using_indexes = 1
 
 1、在主库上创建数据库、表，并插入数据
 
-``````sql
+```sql
 create database db01;
 use db01;
 create table tb_use(
@@ -2613,7 +2592,7 @@ create table tb_use(
 	sex varchar(1)
 )engine=innodb default charset=utf8mb4;
 insert into tb_user(id, name, sex) valurs (null, 'Tom', '1'), (null, 'Trigger', '0'), (null, 'Dawn', '1');
-``````
+```
 
 2、在从库中查询数据，验证主从是否同步。
 
@@ -2774,6 +2753,7 @@ schema.xml作为MyCat中最重要的配置文件之一,涵盖了MyCat的逻辑�
 ![](images/img-mysql/52287271210.png)
 
 ![](images/img-mysql/4564143383.png)
+
 <!--  -->
 
 ### 双主双从
@@ -2783,7 +2763,9 @@ schema.xml作为MyCat中最重要的配置文件之一,涵盖了MyCat的逻辑�
 ![](images/img-mysql/6338368756.png)
 
 ![](images/img-mysql/2677654314.png)
+
 <!-- -->
+
 ![](images/img-mysql/105101448841.png)
 
 ![](images/img-mysql/7237222812.png)
@@ -2796,7 +2778,7 @@ schema.xml作为MyCat中最重要的配置文件之一,涵盖了MyCat的逻辑�
 
 分别在两台主库Master1、Master2上执行DDL、DML语句，查看涉及到的数据库服务器的数据同步情况。
 
-``````
+```
 create database db01;
 use db01;
 create table tb_user(
@@ -2811,20 +2793,15 @@ insert into tb user(id,name,sex) values(3,'Dawn','1');
 insert into tb user(id,name,sex) values(4,"ack Ma','1');
 insertinto tb user(id,name,sex) values(5,'Coco','0');
 insert into tb user(id,name,sex) values(6,'erry','1');
-``````
-
-
+```
 
 ### 双主双从读写分离
-
-
 
 测试：
 
 登录MyCat，测试查询及更新操作，判定是否能够进行读写分离，以及读写分离的策略是否正确。
 
 当主库挂掉一个之后，是否能够自动切换。
-
 
 # 数据类型
 

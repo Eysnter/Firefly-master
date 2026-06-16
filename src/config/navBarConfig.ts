@@ -30,11 +30,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
-	// 根据配置决定是否添加友链，在siteConfig关闭pages.friends时导航栏不显示友链
-	if (siteConfig.pages.friends) {
-		links.push(LinkPreset.Friends);
-	}
-
         (links.push({
           name: "音乐",
           url: "/music/",
@@ -66,6 +61,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		url: "/content/",
 		icon: "material-symbols:info",
 		children: [
+			// 根据配置决定是否添加友链，在siteConfig关闭pages.friends时导航栏不显示友链
+			...(siteConfig.pages.friends ? [LinkPreset.Friends] : []),
 			// 根据配置决定是否添加赞助，在siteConfig关闭pages.sponsor时导航栏不显示赞助
 			...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
 

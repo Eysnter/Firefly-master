@@ -1,5 +1,5 @@
 ---
-title: 2️⃣ JavaSE(流程控制.循环.数组.方法)
+title:  ② JavaSE(流程控制.循环.数组.方法)
 published: 2026-05-27
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/JavaSE/1780497837065_JavaSE-2.jpg'
 tags: [JavaSE,知识点]

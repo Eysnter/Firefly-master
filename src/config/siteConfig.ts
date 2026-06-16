@@ -43,7 +43,7 @@ export const siteConfig: SiteConfig = {
   // 页面整体宽度（单位：rem）
   // 数值越大可以让页面内容区域更宽
   // 在使用单侧栏边栏时，建议调低一些宽度以获得更好的视觉效果。
-  pageWidth: 180,
+  pageWidth: 130,
 
   // 网站Card样式配置
   card: {
@@ -175,7 +175,7 @@ export const siteConfig: SiteConfig = {
       // 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
       masonry: false,
       // 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
-      columnWidth: 330,
+      columnWidth: 360,
     },
   },
 

@@ -1,5 +1,5 @@
 ---
-title: 1️⃣ JavaSE(类型.运算符.表达式)
+title: ① JavaSE(类型.运算符.表达式)
 published: 2026-05-27
 image: 'https://img.eysnter.cn/file/posts/posts2-notes/JavaSE/1780499976120_JavaSE-1.jpg'
 tags: [JavaSE,知识点]

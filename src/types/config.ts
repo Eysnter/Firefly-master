@@ -392,6 +392,23 @@ export type AnnouncementConfig = {
 		url: string; // 链接地址
 		external?: boolean; // 是否外部链接
 	};
+	// 图片轮播配置
+	carousel?: {
+		enable: boolean; // 是否启用图片轮播
+		images: string[]; // 轮播图片列表（支持本地路径或远程URL）
+		interval?: number; // 轮播间隔（毫秒），默认 5000
+		showIndicator?: boolean; // 是否显示指示器圆点，默认 true
+		fadeDuration?: number; // 淡入淡出时长（毫秒），默认 800
+	};
+};
+
+// 桌宠配置
+export type DesktopPetConfig = {
+	enable: boolean; // 是否启用桌宠功能
+	petWidth?: number; // 桌宠图片宽度（像素），默认 86
+	speed?: number; // 移动速度（像素/秒），默认 100
+	opacity?: number; // 桌宠透明度（0-1），默认 0.9
+	bottom?: number; // 距离页面底部的偏移量（像素），默认 0
 };
 
 // 单个字体配置
@@ -514,6 +531,21 @@ export type SakuraConfig = {
 		fadeSpeed: number; // 消失速度，不应大于最小不透明度
 	};
 	zIndex: number; // 层级，确保樱花在合适的层级显示
+};
+
+// 雪景特效配置
+export type SnowConfig = {
+	enable: boolean; // 是否启用雪景特效
+	switchable?: boolean; // 是否允许用户在设置中切换雪景特效
+	flakeCount?: number; // 雪花数量，默认 150
+	minSize?: number; // 雪花最小尺寸，默认 2
+	maxSize?: number; // 雪花最大尺寸，默认 5
+	speed?: number; // 下落速度，默认 1
+	opacity?: {
+		min: number; // 最小不透明度，默认 0.3
+		max: number; // 最大不透明度，默认 0.8
+	};
+	zIndex?: number; // 层级，默认 9999
 };
 
 // Spine 看板娘配置

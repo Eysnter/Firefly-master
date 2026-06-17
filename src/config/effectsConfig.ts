@@ -1,4 +1,4 @@
-import type { SakuraConfig } from "../types/config";
+import type { SakuraConfig, SnowConfig } from "../types/config";
 
 // 特效配置 - 集中管理所有动画特效
 
@@ -55,4 +55,31 @@ export const sakuraConfig: SakuraConfig = {
 
 	// 层级，确保樱花在合适的层级显示
 	zIndex: 100,
+};
+
+export const snowConfig: SnowConfig = {
+	// 是否启用雪景特效
+	enable: false,
+
+	// 是否允许用户在设置中切换
+	switchable: true,
+
+	// 雪花数量
+	flakeCount: 150,
+
+	// 雪花尺寸范围
+	minSize: 2,
+	maxSize: 5,
+
+	// 下落速度
+	speed: 1,
+
+	// 雪花不透明度范围
+	opacity: {
+		min: 0.3,
+		max: 0.8,
+	},
+
+	// 层级
+	zIndex: 9999,
 };

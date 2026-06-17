@@ -1,0 +1,169 @@
+---
+// 桌宠组件 - 在页面底部左右走动的可爱宠物
+import { desktopPetConfig } from "@/config/desktopPetConfig";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const config = desktopPetConfig;
+
+// 如果桌宠功能未启用，不渲染任何内容
+if (!config.enable) {
+  return;
+}
+
+// 导入桌宠图片
+import petGif from "@/assets/images/zc.gif";
+---
+
+<div
+  id="desktop-pet"
+  class:list={["desktop-pet-container", className]}
+  data-speed={config.speed || 100}
+  data-pet-width={config.petWidth || 86}
+  data-opacity={config.opacity || 0.9}
+  data-bottom={config.bottom || 0}
+>
+  <img
+    id="desktop-pet-img"
+    src={petGif.src}
+    alt="桌面宠物"
+    class="desktop-pet-img"
+    draggable="false"
+  />
+</div>
+
+<style>
+  .desktop-pet-container {
+    position: fixed;
+    z-index: 999999;
+    pointer-events: none;
+  }
+
+  .desktop-pet-img {
+    position: fixed;
+    z-index: 999999;
+    bottom: 0;
+    left: -100px;
+    opacity: 0.9;
+    transform: scaleX(-1);
+    animation-direction: alternate;
+    animation-timing-function: linear;
+    pointer-events: auto;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* 点击动画效果 */
+  .desktop-pet-img.pet-clicked {
+    animation: petJump 0.5s ease-in-out;
+  }
+
+  @keyframes petJump {
+    0%, 100% {
+      transform: scaleX(-1) translateY(0);
+    }
+    50% {
+      transform: scaleX(-1) translateY(-20px);
+    }
+  }
+</style>
+
+<script>
+  // 桌宠移动逻辑
+  function initDesktopPet() {
+    const petContainer = document.getElementById("desktop-pet");
+    const petImg = document.getElementById("desktop-pet-img") as HTMLImageElement;
+
+    if (!petContainer || !petImg) return;
+
+    // 获取配置参数
+    const speed = parseInt(petContainer.getAttribute("data-speed") || "100");
+    const petWidth = parseInt(petContainer.getAttribute("data-pet-width") || "86");
+    const opacity = parseFloat(petContainer.getAttribute("data-opacity") || "0.9");
+    const bottom = parseInt(petContainer.getAttribute("data-bottom") || "0");
+
+    // 设置样式
+    petImg.style.opacity = opacity.toString();
+    petImg.style.bottom = `${bottom}px`;
+
+    // 动态创建样式标签用于动画
+    const styleTag = document.createElement("style");
+    styleTag.id = "desktop-pet-css";
+    document.head.appendChild(styleTag);
+
+    let w1 = document.body.scrollWidth;
+    let leftStart = 0 - petWidth;
+    let leftEnd = w1 - petWidth;
+    let time = Math.floor(w1 / speed);
+    let fx: "r" | "l" = "r";
+    let isFirst = true;
+
+    // 移动桌宠
+    function movePet(direction: "r" | "l") {
+      if (!isFirst) {
+        leftStart = 0;
+      }
+
+      if (direction === "r") {
+        petImg.style.transform = "scaleX(-1)";
+        styleTag.innerHTML = `
+          @keyframes desktopPetMove {
+            from { left: ${leftStart}px }
+            to   { left: ${leftEnd}px }
+          }
+        `;
+        petImg.style.animationName = "desktopPetMove";
+        petImg.style.animationDuration = `${time}s`;
+      } else {
+        petImg.style.transform = "scaleX(1)";
+        styleTag.innerHTML = `
+          @keyframes desktopPetMove2 {
+            from { left: ${leftEnd}px }
+            to   { left: ${leftStart}px }
+          }
+        `;
+        petImg.style.animationName = "desktopPetMove2";
+        petImg.style.animationDuration = `${time}s`;
+      }
+    }
+
+    // 动画结束时切换方向
+    petImg.addEventListener("animationend", () => {
+      isFirst = false;
+      fx = fx === "r" ? "l" : "r";
+      movePet(fx);
+    });
+
+    // 点击桌宠时的互动效果
+    petImg.addEventListener("click", () => {
+      petImg.classList.add("pet-clicked");
+      setTimeout(() => {
+        petImg.classList.remove("pet-clicked");
+      }, 500);
+    });
+
+    // 窗口大小变化时重新计算
+    window.addEventListener("resize", () => {
+      w1 = document.body.scrollWidth;
+      leftEnd = w1 - petWidth;
+      time = Math.floor(w1 / speed);
+    });
+
+    // 开始移动
+    movePet(fx);
+  }
+
+  // 页面加载时初始化
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initDesktopPet);
+  } else {
+    initDesktopPet();
+  }
+
+  // 支持 Astro 的页面切换
+  document.addEventListener("astro:page-load", initDesktopPet);
+</script>

@@ -16,6 +16,7 @@ import {
 	getDefaultOverlayCardOpacity,
 	getDefaultOverlayOpacity,
 	getDefaultSakuraEnabled,
+	getDefaultSnowEnabled,
 	getDefaultWavesEnabled,
 	getHue,
 	getStoredBannerCarouselEnabled,
@@ -25,6 +26,7 @@ import {
 	getStoredOverlayCardOpacity,
 	getStoredOverlayOpacity,
 	getStoredSakuraEnabled,
+	getStoredSnowEnabled,
 	getStoredWallpaperMode,
 	getStoredWavesEnabled,
 	setBannerCarouselEnabled,
@@ -35,12 +37,13 @@ import {
 	setOverlayCardOpacity,
 	setOverlayOpacity,
 	setSakuraEnabled,
+	setSnowEnabled,
 	setWallpaperMode,
 	setWavesEnabled,
 } from "@utils/setting-utils";
 import { onMount } from "svelte";
 import Icon from "@/components/common/Icon.svelte";
-import { backgroundWallpaper, sakuraConfig, siteConfig } from "@/config";
+import { backgroundWallpaper, sakuraConfig, snowConfig, siteConfig } from "@/config";
 import type { WALLPAPER_MODE } from "@/types/config";
 
 type OverlaySliderItem = {
@@ -80,8 +83,10 @@ let bannerTitleEnabled = $state(true);
 const defaultBannerTitleEnabled = getDefaultBannerTitleEnabled();
 let bannerCarouselEnabled = $state(true);
 const defaultBannerCarouselEnabled = getDefaultBannerCarouselEnabled();
-let sakuraEnabled = $state(true);
+let sakuraEnabled = $state(getStoredSakuraEnabled());
 const defaultSakuraEnabled = getDefaultSakuraEnabled();
+let snowEnabled = $state(getStoredSnowEnabled());
+const defaultSnowEnabled = getDefaultSnowEnabled();
 let overlayOpacity = $state(getDefaultOverlayOpacity());
 const defaultOverlayOpacity = getDefaultOverlayOpacity();
 let overlayBlur = $state(getDefaultOverlayBlur());
@@ -113,6 +118,8 @@ const isBannerCarouselSwitchable =
 	backgroundWallpaper.banner?.carousel?.switchable ?? false;
 // 是否允许用户切换樱花特效
 const isSakuraSwitchable = sakuraConfig?.switchable ?? false;
+// 是否允许用户切换雪景特效
+const isSnowSwitchable = snowConfig?.switchable ?? false;
 // 是否有任何横幅设置可显示（后续添加新设置时在此处添加条件）
 const hasBannerSettings =
 	isWavesSwitchable ||
@@ -309,6 +316,11 @@ function toggleSakuraEnabled() {
 	setSakuraEnabled(sakuraEnabled);
 }
 
+function toggleSnowEnabled() {
+	snowEnabled = !snowEnabled;
+	setSnowEnabled(snowEnabled);
+}
+
 function switchWallpaperMode(newMode: WALLPAPER_MODE) {
 	wallpaperMode = newMode;
 	setWallpaperMode(newMode);
@@ -396,6 +408,9 @@ onMount(() => {
 
 	// 从localStorage读取樱花特效状态
 	sakuraEnabled = getStoredSakuraEnabled();
+
+	// 从localStorage读取雪景特效状态
+	snowEnabled = getStoredSnowEnabled();
 
 	// 从localStorage读取全屏透明设置状态
 	overlayOpacity = getStoredOverlayOpacity();
@@ -712,7 +727,7 @@ $effect(() => {
     {/if}
 
     <!-- Effects Settings Section -->
-    {#if isSakuraSwitchable}
+    {#if isSakuraSwitchable || isSnowSwitchable}
         <div class="mt-2 mb-2">
             <div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3 mb-2
                 before:w-1 before:h-4 before:rounded-md before:bg-(--primary)
@@ -720,13 +735,19 @@ $effect(() => {
             >
                 {i18n(I18nKey.effectsSettings)}
                 <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md  active:scale-90"
-                        class:opacity-0={sakuraEnabled === defaultSakuraEnabled} class:pointer-events-none={sakuraEnabled === defaultSakuraEnabled} onclick={() => { sakuraEnabled = defaultSakuraEnabled; setSakuraEnabled(defaultSakuraEnabled); }}>
+                        class:opacity-0={(sakuraEnabled === defaultSakuraEnabled || !isSakuraSwitchable) && (snowEnabled === defaultSnowEnabled || !isSnowSwitchable)}
+                        class:pointer-events-none={(sakuraEnabled === defaultSakuraEnabled || !isSakuraSwitchable) && (snowEnabled === defaultSnowEnabled || !isSnowSwitchable)}
+                        onclick={() => {
+                            if (isSakuraSwitchable) { sakuraEnabled = defaultSakuraEnabled; setSakuraEnabled(defaultSakuraEnabled); }
+                            if (isSnowSwitchable) { snowEnabled = defaultSnowEnabled; setSnowEnabled(defaultSnowEnabled); }
+                        }}>
                     <div class="text-(--btn-content)">
                         <Icon icon="fa7-solid:arrow-rotate-left" class="text-[0.875rem]"></Icon>
                     </div>
                 </button>
             </div>
             <div class="space-y-1">
+                {#if isSakuraSwitchable}
                 <button
                     class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
                     class:bg-(--btn-regular-bg-hover)={sakuraEnabled}
@@ -742,6 +763,24 @@ $effect(() => {
                              class:left-5={sakuraEnabled}></div>
                     </div>
                 </button>
+                {/if}
+                {#if isSnowSwitchable}
+                <button
+                    class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
+                    class:bg-(--btn-regular-bg-hover)={snowEnabled}
+                    onclick={toggleSnowEnabled}
+                >
+                    <Icon icon="mdi:weather-snowy" class="text-[1.25rem] shrink-0"></Icon>
+                    <span class="text-sm flex-1">{i18n(I18nKey.snowEffect)}</span>
+                    <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
+                         class:bg-(--primary)={snowEnabled}
+                         class:bg-(--btn-regular-bg-active)={!snowEnabled}>
+                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
+                             class:left-0.5={!snowEnabled}
+                             class:left-5={snowEnabled}></div>
+                    </div>
+                </button>
+                {/if}
             </div>
         </div>
     {/if}

@@ -1,6 +1,7 @@
 ---
 import Live2DWidget from "@components/features/Live2DWidget.astro";
-
+import DesktopPet from "@components/features/DesktopPet.astro";
+import SnowEffect from "@components/features/SnowEffect.astro";
 import SpineModel from "@components/features/SpineModel.astro";
 import Footer from "@components/layout/Footer.astro";
 import Navbar from "@components/layout/Navbar.astro";
@@ -1019,6 +1020,8 @@ const bannerCarouselInterval = Math.max(
 
         <SpineModel></SpineModel>
         {live2dWidgetConfig.enable && <Live2DWidget config={live2dWidgetConfig} />}
+        <DesktopPet />
+        <SnowEffect />
     </div>
 </div>
 

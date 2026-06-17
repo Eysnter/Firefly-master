@@ -1,0 +1,197 @@
+---
+// 雪景特效组件 - 雪花飘落背景效果
+import { snowConfig } from "@/config/effectsConfig";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const config = snowConfig;
+
+// 如果雪景特效未启用，不渲染任何内容
+if (!config.enable) {
+  return;
+}
+---
+
+<canvas
+  id="snowfall"
+  class:list={["snow-canvas", className]}
+  data-flake-count={config.flakeCount || 150}
+  data-min-size={config.minSize || 2}
+  data-max-size={config.maxSize || 5}
+  data-speed={config.speed || 1}
+  data-opacity-min={config.opacity?.min || 0.3}
+  data-opacity-max={config.opacity?.max || 0.8}
+  data-z-index={config.zIndex || 9999}
+></canvas>
+
+<style>
+  .snow-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // 雪景特效实现
+  function initSnowEffect() {
+    const canvas = document.getElementById("snowfall") as HTMLCanvasElement;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // 获取配置参数
+    const flakeCount = parseInt(canvas.getAttribute("data-flake-count") || "150");
+    const minSize = parseFloat(canvas.getAttribute("data-min-size") || "2");
+    const maxSize = parseFloat(canvas.getAttribute("data-max-size") || "5");
+    const speed = parseFloat(canvas.getAttribute("data-speed") || "1");
+    const opacityMin = parseFloat(canvas.getAttribute("data-opacity-min") || "0.3");
+    const opacityMax = parseFloat(canvas.getAttribute("data-opacity-max") || "0.8");
+    const zIndex = canvas.getAttribute("data-z-index") || "9999";
+
+    // 设置 canvas 样式
+    canvas.style.zIndex = zIndex;
+
+    // 设置 canvas 尺寸
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+
+    // 雪花数组
+    interface Snowflake {
+      x: number;
+      y: number;
+      size: number;
+      speed: number;
+      velY: number;
+      velX: number;
+      opacity: number;
+      step: number;
+      stepSize: number;
+    }
+
+    const flakes: Snowflake[] = [];
+    let mouseX = -100;
+    let mouseY = -100;
+
+    // 重置雪花位置
+    function resetFlake(flake: Snowflake) {
+      flake.x = Math.floor(Math.random() * canvas.width);
+      flake.y = 0;
+      flake.size = Math.random() * (maxSize - minSize) + minSize;
+      flake.speed = (Math.random() * 1 + 0.5) * speed;
+      flake.velY = flake.speed;
+      flake.velX = 0;
+      flake.opacity = Math.random() * (opacityMax - opacityMin) + opacityMin;
+    }
+
+    // 初始化雪花
+    function initFlakes() {
+      for (let i = 0; i < flakeCount; i++) {
+        const flake: Snowflake = {
+          x: Math.floor(Math.random() * canvas.width),
+          y: Math.floor(Math.random() * canvas.height),
+          size: Math.random() * (maxSize - minSize) + minSize,
+          speed: (Math.random() * 1 + 0.5) * speed,
+          velY: 0,
+          velX: 0,
+          opacity: Math.random() * (opacityMax - opacityMin) + opacityMin,
+          stepSize: Math.random() / 30,
+          step: 0,
+        };
+        flake.velY = flake.speed;
+        flakes.push(flake);
+      }
+    }
+
+    // 绘制雪花
+    function drawSnow() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < flakeCount; i++) {
+        const flake = flakes[i];
+        const x = mouseX;
+        const y = mouseY;
+        const minDist = 100;
+
+        const dx = flake.x - x;
+        const dy = flake.y - y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // 鼠标交互效果
+        if (dist < minDist) {
+          const force = (minDist * 2) / (dist * dist);
+          const xcomp = (x - flake.x) / dist;
+          const ycomp = (y - flake.y) / dist;
+          const deltaV = force / 2;
+
+          flake.velX -= deltaV * xcomp;
+          flake.velY -= deltaV * ycomp;
+        } else {
+          flake.velX *= 0.28;
+          if (flake.velY <= flake.speed) {
+            flake.velY = flake.speed;
+          }
+          flake.velX += Math.cos((flake.step += 0.25)) * flake.stepSize;
+        }
+
+        // 更新位置
+        flake.y += flake.velY;
+        flake.x += flake.velX;
+
+        // 边界检测
+        if (flake.y >= canvas.height || flake.y <= 0) {
+          resetFlake(flake);
+        }
+        if (flake.x >= canvas.width || flake.x <= 0) {
+          resetFlake(flake);
+        }
+
+        // 绘制雪花
+        ctx.fillStyle = `rgba(255, 255, 255, ${flake.opacity})`;
+        ctx.beginPath();
+        ctx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(drawSnow);
+    }
+
+    // 鼠标移动事件
+    document.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // 窗口大小变化事件
+    window.addEventListener("resize", resizeCanvas);
+
+    // 监听雪景特效开关事件
+    window.addEventListener("snowToggle", ((e: CustomEvent) => {
+      canvas.style.display = e.detail.enabled ? "block" : "none";
+    }) as EventListener);
+
+    // 初始化并开始动画
+    initFlakes();
+    drawSnow();
+  }
+
+  // 页面加载时初始化
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSnowEffect);
+  } else {
+    initSnowEffect();
+  }
+
+  // 支持 Astro 的页面切换
+  document.addEventListener("astro:page-load", initSnowEffect);
+</script>

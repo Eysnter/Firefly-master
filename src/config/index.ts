@@ -11,6 +11,7 @@ export type {
 	BookmarkSite,
 	CommentConfig,
 	CoverImageConfig,
+	DesktopPetConfig,
 	ExpressiveCodeConfig,
 	FooterConfig,
 	GalleryAlbum,
@@ -23,6 +24,7 @@ export type {
 	SakuraConfig,
 	SidebarLayoutConfig,
 	SiteConfig,
+	SnowConfig,
 	SponsorConfig,
 	SponsorItem,
 	SponsorMethod,
@@ -36,8 +38,9 @@ export { bookmarksPageConfig } from "./bookmarksConfig"; // 书签配置
 export { backgroundWallpaper } from "./backgroundWallpaper"; // 背景壁纸配置
 // 功能配置
 export { commentConfig } from "./commentConfig"; // 评论系统配置
+export { desktopPetConfig } from "./desktopPetConfig"; // 桌宠配置
 export { coverImageConfig } from "./coverImageConfig"; // 封面图配置
-export { sakuraConfig } from "./effectsConfig"; // 动画特效配置（樱花等）
+export { sakuraConfig, snowConfig } from "./effectsConfig"; // 动画特效配置（樱花、雪景等）
 export { expressiveCodeConfig } from "./expressiveCodeConfig"; // 代码高亮配置
 export { fontConfig } from "./fontConfig"; // 字体配置
 export { footerConfig } from "./footerConfig"; // 页脚配置

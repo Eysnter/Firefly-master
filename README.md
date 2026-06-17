@@ -35,16 +35,7 @@
 [**📝使用文档**](https://docs-firefly.cuteleaf.cn/) /
 [**🍀我的博客**](https://blog.cuteleaf.cn) 
 
-⚡ 静态站点生成: 基于Astro的超快加载速度和SEO优化
 
-🎨 现代化设计: 简洁美观的界面，支持自定义主题色
-
-📱 移动友好: 完美的响应式体验，移动端专项优化
-
-🔧 高度可配置: 大部分功能模块均可通过配置文件自定义
-
-<img alt="firefly" src="./docs/images/1.webp" />
-<img alt="Lighthouse" src="./docs/images/Lighthouse.png" />
 
 >[!TIP]
 >

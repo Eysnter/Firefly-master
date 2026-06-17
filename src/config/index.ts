@@ -5,6 +5,10 @@
 export type {
 	AnnouncementConfig,
 	BackgroundWallpaperConfig,
+	BookmarkCategory,
+	BookmarkGroup,
+	BookmarksPageConfig,
+	BookmarkSite,
 	CommentConfig,
 	CoverImageConfig,
 	ExpressiveCodeConfig,
@@ -27,6 +31,7 @@ export type {
 } from "../types/config";
 export { adConfig1, adConfig2 } from "./adConfig"; // 广告配置
 export { announcementConfig } from "./announcementConfig"; // 公告配置
+export { bookmarksPageConfig } from "./bookmarksConfig"; // 书签配置
 // 样式配置
 export { backgroundWallpaper } from "./backgroundWallpaper"; // 背景壁纸配置
 // 功能配置

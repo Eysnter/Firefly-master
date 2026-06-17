@@ -1,0 +1,490 @@
+---
+title: "实现音乐播放器功能：从黑胶唱片到侧边栏小组件的完整实现"
+published: 2026-06-17
+image: "https://img.eysnter.cn/file/posts/Title/1781679488613_music.jpg"
+tags: [Astro, 音乐播放器, 前端开发, CSS动画, 组件设计, 博客主题]
+category: "前端开发"
+draft: false
+description: 本博客将带你从0开始实现一个音乐播放器系统，涵盖黑胶唱片全页播放器、侧边栏音乐小组件、导航栏集成、单例架构设计，以及歌词同步、模糊搜索、播放列表管理等核心功能的实现细节。
+lang: zh-CN
+comment: true
+---
+
+## 前言
+
+在博客中嵌入一个好用的音乐播放器，是很多博主的梦想。这篇博客将从零开始实现了一套**完整的音乐播放系统**——没有依赖 APlayer 或 MetingJS 等第三方库，而是用原生 JavaScript 手写了 Meting API 协议对接、播放器 UI 和全部交互逻辑。
+
+本文将从**全页黑胶唱片播放器**、**侧边栏音乐小组件**、**导航栏集成**三个维度，深入剖析这套系统的设计与实现。
+
+---
+
+## 一、系统总览：三层架构
+
+Firefly 的音乐系统由**三个层级**的 UI 组件构成，共享同一个播放引擎：
+
+| 层级 | 组件 | 文件 | 用途 |
+|------|------|------|------|
+| 🔧 **引擎层** | GlobalAudio | `src/components/widgets/GlobalAudio.astro` | 单例播放引擎，持有 `<audio>` 元素和全部播放状态 |
+| 🎵 **全页播放器** | MusicPlayer (Full) | `src/components/widgets/MusicPlayer.astro` | 黑胶唱片风格的完整播放界面，路由 `/music` |
+| 📱 **侧边栏小组件** | MusicPlayer (Sidebar) | `src/components/features/MusicPlayer.astro` | 紧凑型播放器，嵌入侧边栏或导航栏下拉面板 |
+
+三者的关系可以用一句话概括：**GlobalAudio 是心脏，全页播放器和侧边栏小组件是两张脸。**
+
+### 架构通信图
+
+<img src="https://img.eysnter.cn/file/posts/posts1-Template/Music-Player/1781677801804_music-0.jpg" width="500" />
+---
+
+## 二、全页黑胶唱片播放器
+
+### 2.1 黑胶唱片的 CSS 实现
+
+全页播放器最吸睛的部分就是左侧的**纯 CSS 黑胶唱片**，不依赖任何图片素材：
+
+```css
+/* 唱片纹理：锥形渐变模拟黑色胶面 */
+background: conic-gradient(
+  from 0deg,
+  #1a1a1a 0deg, #2a2a2a 20deg,
+  #1a1a1a 40deg, #2a2a2a 60deg,
+  /* ... 循环 18 次形成环形纹理 */
+);
+
+/* 唱片刻槽：径向渐变重复 */
+background: repeating-radial-gradient(
+  circle at center,
+  transparent 0px, transparent 2px,
+  rgba(255,255,255,0.03) 2.5px, transparent 3px
+);
+```
+
+唱片由三层组成：
+
+- **外环**：`conic-gradient` + `repeating-radial-gradient` 模拟胶面和刻槽
+- **内圈**：显示专辑封面，`animate-spin-slow` 以 8 秒/圈匀速旋转
+- **唱针（Tonearm）**：CSS 绘制的唱臂，播放时旋转 30° 落针，暂停时抬起
+
+```css
+/* 唱针动画 */
+.tonearm {
+  transform-origin: top right;   /* 支点在右上角 */
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tonearm.playing {
+  transform: rotate(30deg);      /* 落针 */
+}
+```
+
+整个唱片还叠加了一层高光（`highlight overlay`），用径向渐变模拟光泽质感。
+
+### 2.2 双栏布局
+
+全页播放器采用**左右双栏**设计：
+<img src="https://img.eysnter.cn/file/posts/posts1-Template/Music-Player/1781677798865_music-1.jpg" width="500" />
+**左栏**包含：
+- 黑胶唱片（自动旋转）
+- 歌曲标题 / 艺术家
+- 进度条（可拖拽，显示当前时间 / 总时长）
+- 歌单网格（2 列，显示歌单名和歌曲数，点击切换）
+
+**右栏**有两个可切换的视图：
+- **歌词视图**：背景是模糊放大的封面图（50px blur, 150% scale），歌词逐行滚动，当前行放大 1.12 倍并带有发光效果，支持逐字高亮
+- **播放列表视图**：顶部搜索栏（模糊匹配），下方滚动歌曲列表，正在播放的歌曲有脉冲动画指示器
+
+### 2.3 歌词同步引擎
+
+歌词解析支持三种格式：
+
+```javascript
+// 1. 标准 LRC
+[00:12.34]歌词内容
+
+// 2. 翻译行（相同时间戳）
+[00:12.34]歌词内容
+[00:12.34]Lyrics translation
+
+// 3. 逐字同步（带 <mm:ss.xx> 标签）
+[00:12.34]<00:12.34>逐<00:12.89>字<00:13.12>同<00:13.50>步
+```
+
+同步引擎在 `requestAnimationFrame` 循环中运行，每帧检查当前播放时间，高亮当前行和当前字：
+
+```javascript
+syncLyrics(currentTime) {
+  // 二分查找当前行
+  const index = this.lyrics.findLastIndex(l => l.time <= currentTime);
+  // 高亮当前行
+  activeLine.classList.add('lyric-active');  // scale(1.12) + glow
+  // 逐字高亮
+  activeWords.forEach(w => w.classList.add('lyric-word-active'));
+  // 自动滚动到可视区域
+  activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+```
+
+歌词面板还有**智能滚动检测**：当用户手动滚动歌词时，自动暂停跟随 3 秒，避免和用户抢滚动控制权。
+
+### 2.4 模糊搜索
+
+播放列表的搜索实现了**逐字符模糊匹配**算法：
+
+```javascript
+function fuzzyMatch(query, target) {
+  const q = query.toLowerCase();
+  const t = target.toLowerCase();
+  let qi = 0;
+  for (let ti = 0; ti < t.length && qi < q.length; ti++) {
+    if (t[ti] === q[qi]) qi++;
+  }
+  return qi === q.length;
+}
+```
+
+支持空格分隔的多关键词，所有关键词都必须匹配才显示结果。
+
+---
+
+## 三、侧边栏音乐小组件
+
+侧边栏小组件是一个**紧凑型播放器**，专为侧边栏和导航栏下拉面板设计。
+
+### 3.1 UI 结构
+<img src="https://img.eysnter.cn/file/posts/posts1-Template/Music-Player/1781677801804_music-0.jpg" width="500" />
+核心元素：
+- **圆形旋转封面**：56px，10 秒/圈匀速旋转（`animate-spin-slow`）
+- **歌曲信息**：标题可点击跳转 `/music` 页面
+- **进度条**：细线样式，悬停时显示拖拽圆点
+- **控制栏**：循环模式 → 上一曲 → 播放/暂停（主题色高亮）→ 下一曲 → 播放列表
+- **歌词抽屉**：CSS `grid-template-rows` 动画实现平滑展开/收起
+- **播放列表抽屉**：与歌词抽屉互斥，打开一个自动关闭另一个
+
+### 3.2 适配器模式：与引擎的绑定
+
+侧边栏小组件**没有自己的播放逻辑**。它通过一个**适配器（Adapter）**模式与 GlobalMusicPlayer 单例通信：
+
+```javascript
+// 创建适配器，包装全局单例
+const mgr = {
+  get state() {
+    return window.globalMusicPlayer;
+  },
+  play: () => window.globalMusicPlayer?.togglePlay(),
+  prev: () => window.globalMusicPlayer?.prevSong(),
+  next: () => window.globalMusicPlayer?.nextSong(),
+  // ...
+};
+
+// requestAnimationFrame 循环：轮询单例状态 → 广播 fm:* 事件
+function syncTick() {
+  const player = window.globalMusicPlayer;
+  if (!player) { requestAnimationFrame(syncTick); return; }
+
+  // 广播时间更新
+  window.dispatchEvent(new CustomEvent('fm:time', {
+    detail: { current: player.audio.currentTime, total: player.audio.duration }
+  }));
+
+  // 广播歌词索引
+  window.dispatchEvent(new CustomEvent('fm:lrc-index', {
+    detail: { index: player.currentLrcIndex }
+  }));
+
+  // 广播播放状态、音量、模式等...
+  requestAnimationFrame(syncTick);
+}
+```
+
+小组件监听这些 `fm:*` 事件来更新自己的 UI：
+
+| 事件 | 携带数据 | UI 更新 |
+|------|----------|---------|
+| `fm:time` | `{ current, total }` | 进度条 + 时间显示 |
+| `fm:lrc-index` | `{ index }` | 歌词高亮 + 自动滚动 |
+| `fm:track` | `{ title, artist, cover }` | 封面、标题、艺术家 |
+| `fm:play-state` | `{ playing }` | 播放/暂停按钮图标 |
+| `fm:volume` | `{ volume, muted }` | 音量滑块 + 静音图标 |
+| `fm:mode` | `{ repeat, shuffle }` | 循环模式图标 |
+| `fm:lyrics` | `{ lyrics }` | 歌词列表渲染 |
+| `fm:error` | `{ message }` | 错误提示覆盖层 |
+
+### 3.3 生命周期管理
+
+小组件使用 `MutationObserver` 监听自身 DOM 的移除，自动清理事件监听器和动画帧，避免内存泄漏：
+
+```javascript
+const observer = new MutationObserver(() => {
+  if (!document.getElementById(widgetId)) {
+    // 清理所有事件监听器
+    // 取消 requestAnimationFrame
+    observer.disconnect();
+  }
+});
+observer.observe(document.body, { childList: true, subtree: true });
+```
+
+---
+
+## 四、导航栏集成
+
+当配置 `showInNavbar: true` 时，导航栏右侧会出现一个音符图标按钮。点击后弹出一个浮动面板，内部渲染的就是侧边栏小组件的完整实例。
+
+```astro
+<!-- Navbar.astro -->
+<button id="music-player-switch">
+  <Icon name="heroicons:musical-note" />
+</button>
+
+<div id="music-nav-panel" class="float-panel-closed">
+  <MusicPlayer />
+</div>
+```
+
+面板使用与显示设置、导航菜单相同的 `float-panel-closed` 切换模式，点击面板外区域自动关闭。
+
+---
+
+## 五、单例引擎：GlobalMusicPlayer
+
+### 5.1 为什么需要单例？
+
+在传统的多页应用中，每次页面跳转都会销毁并重建 DOM。如果音乐播放器是页面级组件，切页就会**中断播放**。
+
+Firefly 使用 Astro + Swup 的 SPA 导航方案，通过 `transition:persist` 让 `<audio>` 元素在页面切换时**保持存活**：
+
+```astro
+<!-- Layout.astro -->
+<div transition:persist="firefly-global-audio-wrapper">
+  <GlobalAudio />
+</div>
+```
+
+`GlobalMusicPlayer` 类挂载在 `window.globalMusicPlayer` 上，是真正的**全局单例**。
+
+### 5.2 播放状态管理
+
+```javascript
+class GlobalMusicPlayer {
+  playlist = [];           // 歌曲列表
+  currentIndex = 0;        // 当前播放索引
+  isPlaying = false;       // 是否正在播放
+  isShuffle = false;       // 随机播放
+  repeatMode = 'all';      // 'all' | 'one' | 'off'
+  lyrics = [];             // 解析后的歌词数组
+  audio = null;            // <audio> DOM 元素
+}
+```
+
+播放模式有三种：
+- **列表循环** (`all`)：播放完最后一曲，从头开始
+- **单曲循环** (`one`)：当前歌曲播放完毕后重新开始
+- **随机播放** (`shuffle`)：随机选择下一曲
+
+### 5.3 MediaSession API 集成
+
+引擎集成了浏览器的 MediaSession API，支持系统级媒体控制：
+
+```javascript
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: song.title,
+    artist: song.artist,
+    artwork: [{ src: song.cover, sizes: '512x512' }]
+  });
+  navigator.mediaSession.setActionHandler('play', () => this.togglePlay());
+  navigator.mediaSession.setActionHandler('pause', () => this.togglePlay());
+  navigator.mediaSession.setActionHandler('previoustrack', () => this.prevSong());
+  navigator.mediaSession.setActionHandler('nexttrack', () => this.nextSong());
+}
+```
+
+这意味着在 Windows 的音量混合器、macOS 的控制中心、手机的锁屏界面上，都能看到歌曲信息并控制播放。
+
+### 5.4 页面切换时的状态恢复
+
+每次 Swup 完成页面导航后，引擎的 `handlePageLoad()` 方法会：
+
+1. 重新绑定 DOM 引用（因为全页播放器的 DOM 可能已经重建）
+2. 恢复播放状态到 UI
+3. 控制迷你播放器的显隐（在 `/music` 页面自动隐藏）
+
+---
+
+## 六、迷你播放器（Mini Player）
+
+当配置 `showMiniPlayer: true` 时，页面左下角会出现一个**浮动圆形按钮**：
+
+<img src="https://img.eysnter.cn/file/posts/posts1-Template/Music-Player/1781677797338_music-3.png" width="800" />
+
+- **常驻状态**：圆形封面按钮，带音频可视化动画条
+- **悬停展开**：显示封面、标题、艺术家和上一曲/播放/下一曲控制
+- **自动隐藏**：在 `/music` 全页播放器页面自动隐藏，避免重复
+
+---
+
+## 七、数据管线：构建时预取
+
+### 7.1 构建时获取
+
+音乐数据在**构建时**通过 `scripts/fetch-music-duration.mjs` 脚本预取：
+
+```bash
+pnpm prefetch:music
+```
+
+脚本的工作流程：
+
+1. 从 `siteConfig.ts` 解析歌单 ID
+2. 调用 Meting API 获取每个歌单的歌曲列表
+3. 跨歌单去重（按 URL）
+4. 获取缺失的歌曲时长（先尝试网易云 API，失败则下载音频文件用 `music-metadata` 解析）
+5. 增量保存到 `src/data/music.json`（每解析 20 首保存一次）
+
+### 7.2 运行时数据
+
+`src/data/music.ts` 导入 JSON 并导出三个数据集：
+
+```typescript
+export const musicList: Song[];            // 所有歌曲的扁平数组
+export const playlistCounts: Record<string, number>;  // 歌单 → 歌曲数
+export const playlistSongs: Record<string, Song[]>;   // 歌单 → 歌曲数组
+```
+
+全页播放器通过 `data-*` 属性序列化这些数据，播放列表切换**无需网络请求**，瞬间完成。
+
+---
+
+## 八、配置详解
+
+所有音乐相关配置集中在 `src/config/musicConfig.ts`：
+
+```typescript
+export const musicPlayerConfig: MusicPlayerConfig = {
+  showInNavbar: true,      // 导航栏显示音符按钮
+  showMiniPlayer: false,   // 左下角迷你播放器
+  mode: "meting",          // "meting" | "local"
+  volume: 0.7,             // 默认音量 0-1
+  playMode: "list",        // "list" | "one" | "random"
+  showLyrics: true,        // 侧边栏显示歌词按钮
+
+  meting: {
+    api: "https://163.hyc.moe",
+    server: "netease",     // netease | tencent | kugou | xiami | baidu
+    type: "playlist",      // song | playlist | album | search | artist
+    id: "17924204831",
+    auth: "auth",
+    fallbackApis: [
+      "https://api.injahow.cn/meting/",
+      "https://api.moeyao.cn/meting/"
+    ]
+  },
+
+  local: {
+    playlist: [
+      { name: "歌曲名", artist: "艺术家", url: "/music/song.mp3", cover: "/cover.jpg", lrc: "/lyrics.lrc" }
+    ]
+  }
+};
+```
+
+音量设置会自动持久化到 `localStorage`（键名 `music-player-volume`），刷新页面后自动恢复。
+
+---
+
+## 九、样式与动画细节
+
+### 9.1 关键动画
+
+| 动画 | 时长 | 用途 |
+|------|------|------|
+| `animate-spin-slow` (全页) | 8s | 黑胶唱片旋转 |
+| `animate-spin-slow` (侧边栏) | 10s | 封面旋转 |
+| 唱针落针 | 0.8s | cubic-bezier 缓动 |
+| 歌词抽屉展开 | CSS grid-rows | 平滑高度过渡 |
+| 进度条拖拽圆点 | opacity 过渡 | 悬停时显示 |
+
+### 9.2 歌词效果
+
+```css
+/* 歌词区域渐变遮罩 */
+.mask-image-lyrics {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%, black 15%, black 85%, transparent 100%
+  );
+}
+
+/* 当前激活行 */
+.lyric-active {
+  transform: scale(1.12);
+  color: var(--primary);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
+/* 当前激活字 */
+.lyric-word-active {
+  text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent);
+}
+```
+
+### 9.3 主题色适配
+
+整个音乐系统通过 CSS 自定义属性 `--primary` 实现主题色适配，配合 Tailwind 的 `text-(--primary)` 和 `bg-(--primary)` 语法，自动适配亮色/暗色模式和自定义主题色。
+
+---
+
+## 十、多语言支持
+
+音乐系统支持 5 种语言，共 18 个翻译键：
+
+| 语言 | 代码 |
+|------|------|
+| English | `en` |
+| 简体中文 | `zh_CN` |
+| 繁體中文 | `zh_TW` |
+| 日本語 | `ja` |
+| Русский | `ru` |
+
+翻译键覆盖了播放器的所有文本：无播放、歌词、音量、播放模式、上一曲、下一曲、播放列表、无歌词、加载歌词中、歌词加载失败、无歌曲、错误提示、播放、暂停、进度、封面、无封面。
+
+---
+
+## 十一、第三方依赖
+
+整套音乐系统的外部依赖极少：
+
+| 依赖 | 用途 | 运行环境 |
+|------|------|----------|
+| `music-metadata` | 解析音频文件获取时长 | 仅构建时 |
+| Meting API | 获取歌单/歌曲数据 | 运行时 fetch |
+| 无 APlayer | — | — |
+| 无 MetingJS | — | — |
+
+项目完全**手写了 Meting API 协议的对接逻辑**，没有引入任何第三方播放器库。
+
+---
+
+## 总结
+
+Firefly 的音乐播放器系统展示了如何用**原生 Web 技术**构建一个功能完备的音乐播放体验：
+
+- **单例架构**确保播放不中断，页面切换无感知
+- **适配器模式 + 自定义事件**解耦了引擎层和 UI 层
+- **纯 CSS 黑胶唱片**带来沉浸式视觉体验
+- **逐字歌词同步**提供了专业级的歌词展示
+- **构建时预取**避免了运行时的网络延迟
+- **MediaSession 集成**打通了操作系统级媒体控制
+
+这套设计既保持了代码的整洁性，又提供了丰富的用户体验，是 Astro 博客主题中音乐播放器实现的一个完整范例。
+
+---
+
+> 💡 **相关文件索引**
+>
+> - `src/config/musicConfig.ts` — 音乐配置
+> - `src/components/widgets/GlobalAudio.astro` — 播放引擎
+> - `src/components/features/MusicPlayer.astro` — 侧边栏小组件
+> - `src/components/widgets/MusicPlayer.astro` — 全页播放器
+> - `src/components/widget/Music.astro` — 小组件包装器
+> - `src/pages/music.astro` — 音乐页面路由
+> - `scripts/fetch-music-duration.mjs` — 构建时数据获取脚本
+> - `src/data/music.json` — 预取的歌曲数据

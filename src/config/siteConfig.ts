@@ -153,6 +153,8 @@ export const siteConfig: SiteConfig = {
     gallery: true,
     // 追番页面开关，从 Bilibili 和 TMDB 同步追番数据
     anime: true,
+    // 导航（书签）页面开关
+    bookmarks: true,
   },
 
   // 分类导航栏开关，在首页和归档页顶部显示分类快捷导航

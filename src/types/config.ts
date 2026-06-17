@@ -98,6 +98,7 @@ export type SiteConfig = {
 		bangumi: boolean;
 		gallery: boolean; // 相册页面开关
 		anime: boolean; // 追番页面开关
+		bookmarks: boolean; // 导航（书签）页面开关
 	};
 
 	// 分类导航栏开关
@@ -204,6 +205,7 @@ export enum LinkPreset {
 	Tags = 8,
 	Categories = 9,
 	Anime = 10,
+	Bookmarks = 11,
 }
 
 export type NavBarLink = {
@@ -757,6 +759,38 @@ export type FriendsPageConfig = {
 	showCustomContent?: boolean; // 是否显示自定义内容（friends.mdx）
 	showComment?: boolean; // 是否显示评论区，默认 true
 	randomizeSort?: boolean; // 是否打乱排序，如果为 true，将忽略 weight，随机排序
+};
+
+// 书签站点
+export type BookmarkSite = {
+	name: string;
+	url: string;
+	icon?: string;
+	description?: string;
+};
+
+// 书签分组
+export type BookmarkGroup = {
+	name: string;
+	icon?: string;
+	sites: BookmarkSite[];
+};
+
+// 书签分类（支持多层嵌套）
+export type BookmarkCategory = {
+	name: string;
+	icon?: string;
+	sites?: BookmarkSite[];
+	groups?: BookmarkGroup[];
+	subcategories?: BookmarkCategory[];
+};
+
+// 书签页面配置
+export type BookmarksPageConfig = {
+	title?: string; // 页面标题，留空则使用 i18n 中的翻译
+	description?: string; // 页面描述，留空则使用 i18n 中的翻译
+	showComment?: boolean; // 是否显示评论区，默认 true
+	categories: BookmarkCategory[];
 };
 
 // 音乐播放器配置

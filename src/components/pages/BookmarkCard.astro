@@ -1,0 +1,30 @@
+---
+import { Icon } from "astro-icon/components";
+import type { BookmarkSite } from "@/types/config";
+
+interface Props {
+  site: BookmarkSite;
+}
+
+const { site } = Astro.props;
+---
+
+<a
+  href={site.url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="site-card group"
+  title={`${site.name} - ${site.description || site.url}`}
+>
+  <div class="site-card-icon">
+    {site.icon ? (
+      <Icon name={site.icon} class="site-icon" />
+    ) : (
+      <Icon name="material-symbols:link" class="site-icon" />
+    )}
+  </div>
+  <div class="site-card-content">
+    <h3>{site.name}</h3>
+    {site.description && <p>{site.description}</p>}
+  </div>
+</a>

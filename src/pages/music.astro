@@ -355,13 +355,9 @@ const bottomPlaylists = playlists.filter(p => p.id !== "all");
       renderFavPlaylists();
       const player = window.globalMusicPlayer;
       if (player) {
-        player.switchPlaylist(playlistId);
-        setTimeout(() => player.playSong(songIndex), 100);
+        player.switchPlaylistAndPlay(playlistId, songIndex);
       } else {
-        setTimeout(() => {
-          const p = window.globalMusicPlayer;
-          if (p) { p.switchPlaylist(playlistId); setTimeout(() => p.playSong(songIndex), 100); }
-        }, 500);
+        setTimeout(() => window.globalMusicPlayer?.switchPlaylistAndPlay(playlistId, songIndex), 500);
       }
     };
 
@@ -395,6 +391,15 @@ const bottomPlaylists = playlists.filter(p => p.id !== "all");
       player.audio._favWatched = true;
       player.audio.addEventListener('play', () => { FavState.isPlaying = true; renderFavPlaylists(); });
       player.audio.addEventListener('pause', () => { FavState.isPlaying = false; renderFavPlaylists(); });
+
+      // 监听歌曲切换事件（来自主播放器的上/下一首、自动播放等）
+      document.addEventListener('firefly:song-change', (e) => {
+        const d = e.detail;
+        FavState.activePlaylistId = d.playlistId;
+        FavState.currentSongIndex = d.songIndex;
+        FavState.isPlaying = d.isPlaying;
+        renderFavPlaylists();
+      });
     }
 
     if (document.readyState === 'loading') {

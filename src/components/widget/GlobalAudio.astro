@@ -236,11 +236,17 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
             };
             bindSwup();
 
-            // MutationObserver：检测主播放器 DOM 插入
+            // MutationObserver：检测主播放器 DOM 插入/替换
             this._mainPlayerObserver = new MutationObserver(() => {
-                if (this.container && !this.container.isConnected) { this.container = null; this._mainPlayerBound = false; }
+                if (this.container && !this.container.isConnected) { this.container = null; this._mainPlayerBound = false; this._el = {}; }
                 const el = document.querySelector('[data-playlist-songs]');
-                if (el && !this.container) { this.container = el; this._bindMainPlayer(); this.updateUI(); }
+                if (el && el !== this.container) {
+                    this.container = el;
+                    this._mainPlayerBound = false;
+                    this._el = {};
+                    this._bindMainPlayer();
+                    this.updateUI();
+                }
             });
             this._mainPlayerObserver.observe(document.body, { childList: true, subtree: true });
         }
@@ -262,7 +268,13 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
                 this.audio.currentTime = savedTime;
             }
 
-            this.container = document.querySelector('[data-playlist-songs]');
+            // 检测主播放器容器是否变化（Swup 页面切换后 DOM 已替换）
+            const newContainer = document.querySelector('[data-playlist-songs]');
+            if (newContainer && newContainer !== this.container) {
+                this.container = newContainer;
+                this._mainPlayerBound = false; // 强制重新绑定
+                this._el = {}; // 清空旧缓存
+            }
             if (this.container) this._bindMainPlayer();
 
             if (this.audio && !this.audio.paused) this.isPlaying = true;
@@ -617,6 +629,16 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
                     artwork: [{ src: song.cover || '/favicon.svg', sizes: '512x512', type: 'image/png' }]
                 });
             }
+
+            // 通知外部组件（收藏面板等）歌曲已切换
+            document.dispatchEvent(new CustomEvent('firefly:song-change', {
+                detail: {
+                    playlistId: this.activePlaylistId,
+                    songIndex: index,
+                    song: song,
+                    isPlaying: autoPlay || this.isPlaying,
+                }
+            }));
         }
         
         togglePlay() { this.audio.paused ? this.audio.play() : this.audio.pause(); }
@@ -669,6 +691,20 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
                 this.highlightPlaylistEntry(playlistId);
                 this.loadSong(0, true);
             }
+        }
+
+        /** 切换歌单并播放指定歌曲（避免先加载 song 0 再切换的闪烁） */
+        switchPlaylistAndPlay(playlistId, songIndex) {
+            if (!this.playlistSongs?.[playlistId]) return;
+            this.playlist = this.playlistSongs[playlistId];
+            this.activePlaylistId = playlistId;
+            this.currentIndex = songIndex;
+            if (this.playlistCounts[playlistId]) {
+                this.playlistCounts[playlistId] = this.playlist.length;
+            }
+            this.renderPlaylistList();
+            this.highlightPlaylistEntry(playlistId);
+            this.loadSong(songIndex, true);
         }
 
         playSong(index) { if (index >= 0 && index < this.playlist.length) this.loadSong(index, true); }

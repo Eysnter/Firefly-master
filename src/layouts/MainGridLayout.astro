@@ -20,10 +20,15 @@ import {
 	siteConfig,
 } from "@/config";
 import {
-	BANNER_HEIGHT,
-	BANNER_HEIGHT_EXTEND,
-	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+	BANNER_HEIGHT as DEFAULT_BANNER_HEIGHT,
+	BANNER_HEIGHT_EXTEND as DEFAULT_BANNER_HEIGHT_EXTEND,
+	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT as DEFAULT_MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "@/constants/constants";
+
+// 从 siteConfig 获取页面尺寸配置，未设置则使用默认常量
+const BANNER_HEIGHT = siteConfig.bannerHeight ?? DEFAULT_BANNER_HEIGHT;
+const BANNER_HEIGHT_EXTEND = siteConfig.bannerHeightExtend ?? DEFAULT_BANNER_HEIGHT_EXTEND;
+const MAIN_PANEL_OVERLAPS_BANNER_HEIGHT = siteConfig.mainPanelOverlap ?? DEFAULT_MAIN_PANEL_OVERLAPS_BANNER_HEIGHT;
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";

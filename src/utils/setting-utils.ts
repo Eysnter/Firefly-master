@@ -1,5 +1,5 @@
 import {
-	BANNER_HEIGHT_EXTEND,
+	BANNER_HEIGHT_EXTEND as DEFAULT_BANNER_HEIGHT_EXTEND,
 	DARK_MODE,
 	DEFAULT_THEME,
 	LIGHT_MODE,
@@ -13,11 +13,14 @@ import type { LIGHT_DARK_MODE, WALLPAPER_MODE } from "@/types/config";
 import {
 	backgroundWallpaper,
 	expressiveCodeConfig,
+	siteConfig,
 	sakuraConfig,
 	snowConfig,
-	siteConfig,
 } from "../config";
 import { isHomePage as checkIsHomePage } from "./layout-utils";
+
+// 从 siteConfig 获取 Banner 扩展高度
+const BANNER_HEIGHT_EXTEND = siteConfig.bannerHeightExtend ?? DEFAULT_BANNER_HEIGHT_EXTEND;
 
 // Declare global functions
 declare global {

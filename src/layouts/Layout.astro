@@ -17,11 +17,16 @@ import {
 } from "@/config";
 import {
 	ARTICLE_WIDTH,
-	BANNER_HEIGHT,
-	BANNER_HEIGHT_EXTEND,
-	BANNER_HEIGHT_HOME,
+	BANNER_HEIGHT as DEFAULT_BANNER_HEIGHT,
+	BANNER_HEIGHT_EXTEND as DEFAULT_BANNER_HEIGHT_EXTEND,
+	BANNER_HEIGHT_HOME as DEFAULT_BANNER_HEIGHT_HOME,
 	PAGE_WIDTH,
 } from "@/constants/constants";
+
+// 从 siteConfig 获取 Banner 高度配置，未设置则使用默认常量
+const BANNER_HEIGHT = siteConfig.bannerHeight ?? DEFAULT_BANNER_HEIGHT;
+const BANNER_HEIGHT_EXTEND = siteConfig.bannerHeightExtend ?? DEFAULT_BANNER_HEIGHT_EXTEND;
+const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
 import { defaultFavicons } from "@/constants/icon";
 import type { Favicon } from "@/types/config";
 import { getDefaultBackground, isHomePage } from "@/utils/layout-utils";
@@ -543,7 +548,8 @@ const siteLang = lang.replace("_", "-");
       define:vars={{
         configHue,
         "page-width": `${siteConfig.pageWidth ?? PAGE_WIDTH}rem`,
-        "article-width": `${siteConfig.articleWidth ?? ARTICLE_WIDTH}rem`,
+        "article-width": `${(siteConfig.articleWidth || ARTICLE_WIDTH)}rem`,
+        "page-scale": siteConfig.pageScale ?? 1,
       }}
     ></style>
     <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
@@ -738,12 +744,17 @@ const siteLang = lang.replace("_", "-");
 <script>
   import { pathsEqual, url } from "@/utils/url-utils";
   import {
-    BANNER_HEIGHT,
-    BANNER_HEIGHT_HOME,
-    BANNER_HEIGHT_EXTEND,
+    BANNER_HEIGHT as DEFAULT_BANNER_HEIGHT,
+    BANNER_HEIGHT_HOME as DEFAULT_BANNER_HEIGHT_HOME,
+    BANNER_HEIGHT_EXTEND as DEFAULT_BANNER_HEIGHT_EXTEND,
     // MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
   } from "@/constants/constants";
   import { backgroundWallpaper, expressiveCodeConfig, siteConfig } from "@/config";
+
+  // 从 siteConfig 获取 Banner 高度配置
+  const BANNER_HEIGHT = siteConfig.bannerHeight ?? DEFAULT_BANNER_HEIGHT;
+  const BANNER_HEIGHT_EXTEND = siteConfig.bannerHeightExtend ?? DEFAULT_BANNER_HEIGHT_EXTEND;
+  const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
 
   /* Preload fonts */
   // (async function() {

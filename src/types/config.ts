@@ -29,6 +29,17 @@ export type SiteConfig = {
 	// 文章内容区域最大宽度（单位：rem）
 	articleWidth?: number;
 
+	// Banner 高度配置（单位：vh）
+	bannerHeight?: number; // Banner 基础高度，默认 35
+	bannerHeightExtend?: number; // Banner 首页扩展高度，默认 30
+
+	// 主内容区域与 Banner 重叠高度（单位：rem）
+	mainPanelOverlap?: number;
+
+	// 页面整体缩放比例（0.5 ~ 2.0），默认 1.0
+	// 基于 CSS zoom 属性，影响页面所有元素的大小
+	pageScale?: number;
+
 	// 卡片样式配置
 	card: {
 		// 是否开启卡片边框和阴影立体效果
@@ -408,7 +419,10 @@ export type AnnouncementConfig = {
 // 桌宠配置
 export type DesktopPetConfig = {
 	enable: boolean; // 是否启用桌宠功能
-	petWidth?: number; // 桌宠图片宽度（像素），默认 86
+	petWidth?: number; // 桌宠图片宽度（像素），用于计算移动边界，默认 86
+	width?: number; // 桌宠显示宽度（像素），默认 86
+	height?: number; // 桌宠显示高度（像素），默认 auto
+	mobileWidth?: number; // 移动端桌宠显示宽度（像素），默认 50
 	speed?: number; // 移动速度（像素/秒），默认 100
 	opacity?: number; // 桌宠透明度（0-1），默认 0.9
 	bottom?: number; // 距离页面底部的偏移量（像素），默认 0

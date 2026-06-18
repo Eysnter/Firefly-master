@@ -49,9 +49,9 @@ html {
     scroll-behavior: smooth;
 }
 
-/* 全局 zoom 缩小整体页面 50%（侧边栏/间距/字号/圆角全部缩小） */
+/* 全局 zoom 缩放整体页面（侧边栏/间距/字号/圆角全部缩放） */
 html {
-    zoom: 1;
+    zoom: var(--page-scale, 1);
 }
 
 /* 页面顶部渐变高光效果 */

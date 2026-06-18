@@ -43,13 +43,24 @@ export const siteConfig: SiteConfig = {
   // 页面整体宽度（单位：rem）
   // 数值越大可以让页面内容区域更宽
   // 在使用单侧栏边栏时，建议调低一些宽度以获得更好的视觉效果。
-  pageWidth: 120,
+  pageWidth: 130,
 
-    // 文章内容区域最大宽度（单位：rem），默认72rem（约1152px）
-//   - 50 — 窄阅读（800px）
-//   - 72 — 默认最佳阅读宽度（1152px）
-//   - 90 — 宽文章区（1440px）
-  articleWidth: 0,
+  // 文章内容区域最大宽度（单位：rem），默认72rem（约1152px）
+  //   - 50 — 窄阅读（800px）
+  //   - 72 — 默认最佳阅读宽度（1152px）
+  //   - 90 — 宽文章区（1440px）
+  articleWidth: 90,
+
+  // Banner 高度配置（单位：vh）
+  // bannerHeight: 35,       // Banner 基础高度，默认 35vh
+  // bannerHeightExtend: 30, // Banner 首页扩展高度，默认 30vh
+
+  // 主内容区域与 Banner 重叠高度（单位：rem），默认 3.5rem
+  // mainPanelOverlap: 3.5,
+
+  // 页面整体缩放比例（0.5 ~ 2.0），默认 1.0
+  // 基于 CSS zoom 属性，缩放页面所有元素（文字、间距、组件等）
+  pageScale: 1,
 
   // 网站Card样式配置
   card: {
@@ -87,7 +98,7 @@ export const siteConfig: SiteConfig = {
     // 导航栏标题
     title: "Eysnter",
     // 全宽导航栏，导航栏是否占满屏幕宽度
-    widthFull: true,
+    widthFull: false,
     // 导航菜单对齐方式，left：左对齐，center：居中
     menuAlign: "center",
     // 导航栏图标和标题是否跟随主题色
@@ -183,7 +194,7 @@ export const siteConfig: SiteConfig = {
       // 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
       masonry: false,
       // 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
-      columnWidth: 350,
+      columnWidth: 310,
     },
   },
 
@@ -270,14 +281,8 @@ export const siteConfig: SiteConfig = {
     // 歌单配置
     playlists: [
       { id: "17924204831", name: "纯音乐", server: "netease" },
-      { id: "17933567326", name: "我的喜欢", server: "netease" },
-      { id: "zhoujielun", name: "周杰伦", server: "netease", type: "custom" },
-      { id: "17964946766", name: "陶喆", server: "netease" },
-      { id: "17957187425", name: "方大同", server: "netease" },
-      { id: "17956985703", name: "G.E.M.邓紫棋", server: "netease" },
-      { id: "17957136689", name: "林俊杰", server: "netease" },
-      { id: "17957661244", name: "孙燕姿", server: "netease" },
-      { id: "17966019560", name: "告五人", server: "netease" },
+      { id: "17924133093", name: "轻音乐", server: "netease" },
+      { id: "17924071366", name: "中文歌", server: "netease" },
     ],
   },
 

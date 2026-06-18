@@ -152,7 +152,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
     set:html={JSON.stringify(jsonLd)}
   />
   <div
-    class="flex w-full rounded-(--radius-large) overflow-hidden relative mb-4"
+    class="flex w-full max-w-(--article-width) mx-auto rounded-(--radius-large) overflow-hidden relative mb-4"
   >
     <div
       id="post-container"

@@ -45,6 +45,8 @@ import petGif from "@/assets/images/zc.gif";
   .desktop-pet-img {
     position: fixed;
     z-index: 999999;
+    width: 86px;
+    height: auto;
     bottom: 0;
     left: -100px;
     opacity: 0.9;
@@ -55,6 +57,13 @@ import petGif from "@/assets/images/zc.gif";
     cursor: pointer;
     user-select: none;
     -webkit-user-drag: none;
+  }
+
+  /* 移动端适配 - 缩小桌宠尺寸 */
+  @media (max-width: 768px) {
+    .desktop-pet-img {
+      width: 50px;
+    }
   }
 
   /* 点击动画效果 */
@@ -82,9 +91,14 @@ import petGif from "@/assets/images/zc.gif";
 
     // 获取配置参数
     const speed = parseInt(petContainer.getAttribute("data-speed") || "100");
-    const petWidth = parseInt(petContainer.getAttribute("data-pet-width") || "86");
     const opacity = parseFloat(petContainer.getAttribute("data-opacity") || "0.9");
     const bottom = parseInt(petContainer.getAttribute("data-bottom") || "0");
+
+    // 获取桌宠实际渲染宽度（响应式，移动端会更小）
+    function getPetWidth(): number {
+      return petImg.offsetWidth || 86;
+    }
+    let petWidth = getPetWidth();
 
     // 设置样式
     petImg.style.opacity = opacity.toString();
@@ -148,6 +162,7 @@ import petGif from "@/assets/images/zc.gif";
 
     // 窗口大小变化时重新计算
     window.addEventListener("resize", () => {
+      petWidth = getPetWidth();
       w1 = document.body.scrollWidth;
       leftEnd = w1 - petWidth;
       time = Math.floor(w1 / speed);

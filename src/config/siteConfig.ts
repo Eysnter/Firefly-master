@@ -43,7 +43,13 @@ export const siteConfig: SiteConfig = {
   // 页面整体宽度（单位：rem）
   // 数值越大可以让页面内容区域更宽
   // 在使用单侧栏边栏时，建议调低一些宽度以获得更好的视觉效果。
-  pageWidth: 130,
+  pageWidth: 120,
+
+    // 文章内容区域最大宽度（单位：rem），默认72rem（约1152px）
+//   - 50 — 窄阅读（800px）
+//   - 72 — 默认最佳阅读宽度（1152px）
+//   - 90 — 宽文章区（1440px）
+  articleWidth: 0,
 
   // 网站Card样式配置
   card: {
@@ -81,7 +87,7 @@ export const siteConfig: SiteConfig = {
     // 导航栏标题
     title: "Eysnter",
     // 全宽导航栏，导航栏是否占满屏幕宽度
-    widthFull: false,
+    widthFull: true,
     // 导航菜单对齐方式，left：左对齐，center：居中
     menuAlign: "center",
     // 导航栏图标和标题是否跟随主题色
@@ -177,7 +183,7 @@ export const siteConfig: SiteConfig = {
       // 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
       masonry: false,
       // 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
-      columnWidth: 351,
+      columnWidth: 350,
     },
   },
 

@@ -2,7 +2,7 @@ import type { DesktopPetConfig } from "../types/config";
 
 export const desktopPetConfig: DesktopPetConfig = {
   // 是否启用桌宠功能
-  enable: true,
+  enable: false,
 
   // 桌宠图片宽度（像素），用于计算移动边界
   petWidth: 86,

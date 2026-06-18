@@ -25,9 +25,12 @@ import petGif from "@/assets/images/zc.gif";
   data-pet-width={config.petWidth || 86}
   data-opacity={config.opacity || 0.9}
   data-bottom={config.bottom || 0}
+  data-mobile-bottom={config.mobileBottom ?? config.bottom ?? 0}
   data-width={config.width || 86}
   data-height={config.height || ""}
   data-mobile-width={config.mobileWidth || 50}
+  data-mobile-height={config.mobileHeight || ""}
+  data-mobile-breakpoint={config.mobileBreakpoint || 768}
 >
   <img
     id="desktop-pet-img"
@@ -46,6 +49,7 @@ import petGif from "@/assets/images/zc.gif";
     --pet-width: 86px;
     --pet-height: auto;
     --pet-mobile-width: 50px;
+    --pet-mobile-height: auto;
   }
 
   .desktop-pet-img {
@@ -69,7 +73,7 @@ import petGif from "@/assets/images/zc.gif";
   @media (max-width: 768px) {
     .desktop-pet-img {
       width: var(--pet-mobile-width);
-      height: auto;
+      height: var(--pet-mobile-height);
     }
   }
 
@@ -100,24 +104,40 @@ import petGif from "@/assets/images/zc.gif";
     const speed = parseInt(petContainer.getAttribute("data-speed") || "100");
     const opacity = parseFloat(petContainer.getAttribute("data-opacity") || "0.9");
     const bottom = parseInt(petContainer.getAttribute("data-bottom") || "0");
+    const mobileBottom = parseInt(petContainer.getAttribute("data-mobile-bottom") || "0");
     const width = parseInt(petContainer.getAttribute("data-width") || "86");
     const height = petContainer.getAttribute("data-height") || "";
     const mobileWidth = parseInt(petContainer.getAttribute("data-mobile-width") || "50");
+    const mobileHeight = petContainer.getAttribute("data-mobile-height") || "";
+    const mobileBreakpoint = parseInt(petContainer.getAttribute("data-mobile-breakpoint") || "768");
+
+    // 判断是否为移动端
+    function isMobile(): boolean {
+      return window.innerWidth <= mobileBreakpoint;
+    }
 
     // 应用尺寸配置到 CSS 变量
-    petContainer.style.setProperty("--pet-width", `${width}px`);
-    petContainer.style.setProperty("--pet-height", height ? `${height}px` : "auto");
-    petContainer.style.setProperty("--pet-mobile-width", `${mobileWidth}px`);
+    function applyStyles() {
+      const mobile = isMobile();
+      petContainer.style.setProperty("--pet-width", mobile ? `${mobileWidth}px` : `${width}px`);
+      petContainer.style.setProperty("--pet-height", mobile
+        ? (mobileHeight ? `${mobileHeight}px` : "auto")
+        : (height ? `${height}px` : "auto"));
+      petContainer.style.setProperty("--pet-mobile-width", `${mobileWidth}px`);
+      petContainer.style.setProperty("--pet-mobile-height", mobileHeight ? `${mobileHeight}px` : "auto");
+      petImg.style.bottom = mobile ? `${mobileBottom}px` : `${bottom}px`;
+    }
+
+    applyStyles();
 
     // 获取桌宠实际渲染宽度（响应式，移动端会更小）
     function getPetWidth(): number {
-      return petImg.offsetWidth || width;
+      return petImg.offsetWidth || (isMobile() ? mobileWidth : width);
     }
     let petWidth = getPetWidth();
 
     // 设置样式
     petImg.style.opacity = opacity.toString();
-    petImg.style.bottom = `${bottom}px`;
 
     // 动态创建样式标签用于动画
     const styleTag = document.createElement("style");
@@ -177,6 +197,7 @@ import petGif from "@/assets/images/zc.gif";
 
     // 窗口大小变化时重新计算
     window.addEventListener("resize", () => {
+      applyStyles();
       petWidth = getPetWidth();
       w1 = document.body.scrollWidth;
       leftEnd = w1 - petWidth;

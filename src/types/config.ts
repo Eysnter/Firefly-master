@@ -423,9 +423,12 @@ export type DesktopPetConfig = {
 	width?: number; // 桌宠显示宽度（像素），默认 86
 	height?: number; // 桌宠显示高度（像素），默认 auto
 	mobileWidth?: number; // 移动端桌宠显示宽度（像素），默认 50
+	mobileHeight?: number; // 移动端桌宠显示高度（像素），默认 auto
+	mobileBreakpoint?: number; // 移动端断点（像素），默认 768
 	speed?: number; // 移动速度（像素/秒），默认 100
 	opacity?: number; // 桌宠透明度（0-1），默认 0.9
 	bottom?: number; // 距离页面底部的偏移量（像素），默认 0
+	mobileBottom?: number; // 移动端距离页面底部的偏移量（像素），默认 0
 };
 
 // 单个字体配置

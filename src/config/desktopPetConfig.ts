@@ -8,7 +8,7 @@ export const desktopPetConfig: DesktopPetConfig = {
   petWidth: 86,
 
   // 桌宠显示宽度（像素）
-  width: 86,
+  width: 100,
 
   // 桌宠显示高度（像素），不设置则保持图片原始比例
   // height: 86,

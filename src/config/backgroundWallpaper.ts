@@ -41,22 +41,26 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
     // 桌面背景图片（支持单张或多张随机）
     // desktop: "assets/images/DesktopWallpaper/d1.avif",
     desktop: [
-      "https://t.alcy.cc/fj",
-      //   "https://img.eysnter.cn/file/Wallpaper/ACG/1780047400660_bd4.png",
-      // "assets/images/DesktopWallpaper/d3.jpg",
-      // "assets/images/DesktopWallpaper/d4.jpg",
-      // "assets/images/DesktopWallpaper/d5.jpg",
-      // "assets/images/DesktopWallpaper/d6.jpg",
+      "https://tc.alcy.cc/tc/20260121/27a5408f0f9763b05404c8c8e9bfd034.webp",
+      "https://tc.alcy.cc/tc/20260121/e0133987b1f4d3f81271662bdcedbbd3.webp",
+      "https://tc.alcy.cc/tc/20260121/90667b3e805d4070eb8254a437f56701.webp",
+      "https://tc.alcy.cc/tc/20260121/1c0155509f5979907d5ab297da6b47ed.webp",
+      "https://tc.alcy.cc/tc/20260121/11439d32205082c44f047a0a9d011815.webp",
+      "https://tc.alcy.cc/tc/20260429/bb987bfe3cde592dcd045a7855ce94a9.webp",
+      "https://tc.alcy.cc/tc/20260429/a36b581273df18cfb2cbaaeb7485c6c6.webp",
+      "https://tc.alcy.cc/tc/20260121/1b2ac4412abb7b0f20d4a419bac2f73d.webp",
+      "https://tc.alcy.cc/tc/20260121/c7d3e0cd25e25d0be5aac6453e37282f.webp",
     ],
-    // 移动背景图片（支持单张或多张随机）
-    // mobile: "assets/images/MobileWallpaper/m1.avif",
     mobile: [
-      "https://t.alcy.cc/moemp",
-      //   "assets/images/MobileWallpaper/m2.png",
-      // "assets/images/MobileWallpaper/m3.png",
-      // "assets/images/MobileWallpaper/m4.png",
-      // "assets/images/MobileWallpaper/m5.png",
-      // "assets/images/MobileWallpaper/m6.png",
+      "https://tc.alcy.cc/tc/20260121/27a5408f0f9763b05404c8c8e9bfd034.webp",
+      "https://tc.alcy.cc/tc/20260121/e0133987b1f4d3f81271662bdcedbbd3.webp",
+      "https://tc.alcy.cc/tc/20260121/90667b3e805d4070eb8254a437f56701.webp",
+      "https://tc.alcy.cc/tc/20260121/1c0155509f5979907d5ab297da6b47ed.webp",
+      "https://tc.alcy.cc/tc/20260121/11439d32205082c44f047a0a9d011815.webp",
+      "https://tc.alcy.cc/tc/20260429/bb987bfe3cde592dcd045a7855ce94a9.webp",
+      "https://tc.alcy.cc/tc/20260429/a36b581273df18cfb2cbaaeb7485c6c6.webp",
+      "https://tc.alcy.cc/tc/20260121/1b2ac4412abb7b0f20d4a419bac2f73d.webp",
+      "https://tc.alcy.cc/tc/20260121/c7d3e0cd25e25d0be5aac6453e37282f.webp",
     ],
   },
   // 横幅壁纸和全屏壁纸共享配置
@@ -168,21 +172,11 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
     position: "0% 20%",
     // 横幅图片轮播配置，仅在当配置多张图片时生效
     carousel: {
-      // 是否启用横幅图片轮播；关闭时保持每次刷新随机显示一张
-      // 开启轮播可能会有点奇怪，为了让图片之间的切换自然，图片会在下一张加载完成后，当前图片才会消失，所以会导致过渡有重影，可能会影响观感
-      // 目前还没有找到更好的过渡效果方案，所以如果你觉得轮播切换时的过渡效果不好，可以考虑关闭轮播，保持每次刷新随机显示一张图片
-      // 反正我目前不是很满意这个过渡效果，所以默认关闭了，如果你有更好的过渡效果方案，欢迎提交PR改进这个功能
       enable: true,
-      // 轮播切换间隔（毫秒）
       interval: 5000,
-      // 是否允许用户通过控制面板切换横幅轮播
+      // 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动
+      transitionEffect: "fade",
       switchable: true,
-    },
-    // 随机图API配置，设置后自动启用无刷新轮播（双层淡入淡出，无需刷新页面）
-    // 与 src 配置互斥，优先使用 randomImage
-    randomImage: {
-      url: "https://t.alcy.cc/ycy", // 随机图API地址
-      interval: 8000, // 轮播间隔（毫秒）
     },
   },
   // 全屏透明覆盖模式特有配置

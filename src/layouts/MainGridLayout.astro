@@ -149,11 +149,12 @@ const showBannerPostMeta =
 const showBannerDim = (isBannerMode || isFullscreenMode) && isBackgroundEnabled;
 const dimOpacity = backgroundWallpaper.common?.dimOpacity ?? 0.15;
 
-// 随机图API配置
-const randomImageConfig = backgroundWallpaper.banner?.randomImage;
-const useRandomImage = !!randomImageConfig?.url;
-const randomImageUrl = randomImageConfig?.url || '';
-const randomImageInterval = randomImageConfig?.interval ?? 6000;
+// 轮播配置
+const bannerCarouselEnabledDefault = backgroundWallpaper.banner?.carousel?.enable ?? false;
+const bannerCarouselSwitchable = backgroundWallpaper.banner?.carousel?.switchable ?? false;
+const bannerCarouselInterval = Math.max(backgroundWallpaper.banner?.carousel?.interval ?? 5000, 2000);
+const bannerCarouselEffect = backgroundWallpaper.banner?.carousel?.transitionEffect ?? "fade";
+const hasMultipleImages = backgroundImages.desktop.length > 1 || backgroundImages.mobile.length > 1;
 
 const showBannerPageTitle =
 	(isBannerMode || isFullscreenMode) &&
@@ -285,14 +286,6 @@ const stickyNavbar = siteConfig.navbar.stickyNavbar ?? false;
 // 获取图片质量配置
 const configQuality = getImageQuality();
 const mobileQuality = Math.round(configQuality * 0.9);
-const bannerCarouselEnabledDefault =
-	backgroundWallpaper.banner?.carousel?.enable ?? false;
-const bannerCarouselSwitchable =
-	backgroundWallpaper.banner?.carousel?.switchable ?? false;
-const bannerCarouselInterval = Math.max(
-	backgroundWallpaper.banner?.carousel?.interval ?? 5000,
-	3000,
-);
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
@@ -342,20 +335,50 @@ const bannerCarouselInterval = Math.max(
 				: `top: -${BANNER_HEIGHT_EXTEND}vh`
 }>
     <!-- 背景图片显示 -->
-    {useRandomImage ? (
-    <!-- 随机图API模式：双层淡入淡出 -->
-    <div class="relative h-full w-full" id="banner-random-container" data-random-url={randomImageUrl} data-random-interval={randomImageInterval}>
-        <div id="banner-bg-current" class="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 transition-opacity duration-1000" style={`background-image: url(${randomImageUrl}?t=${Date.now()})`}></div>
-        <div id="banner-bg-next" class="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 opacity-0 transition-opacity duration-1000"></div>
-    </div>
-    ) : (
-    <div class="relative h-full w-full" id="banner-images-container"
-         data-mobile-count={backgroundImages.mobile.length}
-         data-desktop-count={backgroundImages.desktop.length}
+    {(bannerCarouselEnabledDefault && hasMultipleImages) ? (
+    <!-- 轮播模式：渲染所有图片为 slide-item -->
+    <div class:list={["relative h-full w-full bg-black", `effect-${bannerCarouselEffect}`]} id="banner-images-container"
+         style="z-index: 5"
          data-carousel-enabled={bannerCarouselEnabledDefault}
          data-carousel-switchable={bannerCarouselSwitchable}
-         data-carousel-interval={bannerCarouselInterval}>
-        <!-- Mobile: 默认渲染第一张，其余放入 template 避免浏览器预加载 -->
+         data-carousel-interval={bannerCarouselInterval}
+         data-carousel-effect={bannerCarouselEffect}>
+        <!-- Mobile slides -->
+        {backgroundImages.mobile.map((src, index) => (
+            <div class:list={["slide-item block lg:hidden", index === 0 && "active"]} data-index={index}>
+                <ImageWrapper
+                    alt="Mobile background image of the blog"
+                    class="object-cover h-full w-full"
+                    src={src}
+                    position={backgroundWallpaper.banner?.position}
+                    widths={[640, 750, 1080]}
+                    sizes="100vw"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchpriority={index === 0 ? "high" : undefined}
+                    quality={mobileQuality}
+                />
+            </div>
+        ))}
+        <!-- Desktop slides -->
+        {backgroundImages.desktop.map((src, index) => (
+            <div class:list={["slide-item hidden lg:block", index === 0 && "active"]} data-index={index}>
+                <ImageWrapper
+                    alt="Desktop background image of the blog"
+                    class="object-cover h-full"
+                    src={src}
+                    position={backgroundWallpaper.banner?.position}
+                    widths={[1280, 1920, 2560]}
+                    sizes="100vw"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchpriority={index === 0 ? "high" : undefined}
+                    quality={configQuality}
+                />
+            </div>
+        ))}
+    </div>
+    ) : (
+    <!-- 单图模式 -->
+    <div class="relative h-full w-full" id="banner-images-container">
         {backgroundImages.mobile.length > 0 && (
             <div class="banner-image-slot-mobile absolute inset-0 block lg:hidden">
                 <ImageWrapper
@@ -371,22 +394,6 @@ const bannerCarouselInterval = Math.max(
                 />
             </div>
         )}
-        {backgroundImages.mobile.slice(1).map((src) => (
-            <template class="banner-tpl-mobile">
-                <ImageWrapper
-                    alt="Mobile background image of the blog"
-                    class="object-cover h-full w-full"
-                    src={src}
-                    position={backgroundWallpaper.banner?.position}
-                    widths={[640, 750, 1080]}
-                    sizes="100vw"
-                    loading="eager"
-                    fetchpriority="high"
-                    quality={mobileQuality}
-                />
-            </template>
-        ))}
-        <!-- Desktop: 默认渲染第一张，其余放入 template -->
         {backgroundImages.desktop.length > 0 && (
             <div class="banner-image-slot-desktop absolute inset-0 hidden lg:block">
                 <ImageWrapper
@@ -403,180 +410,21 @@ const bannerCarouselInterval = Math.max(
                 />
             </div>
         )}
-        {backgroundImages.desktop.slice(1).map((src) => (
-            <template class="banner-tpl-desktop">
-                <ImageWrapper
-                    id="banner"
-                    alt="Desktop background image of the blog"
-                    class="object-cover h-full"
-                    src={src}
-                    position={backgroundWallpaper.banner?.position}
-                    widths={[1280, 1920, 2560]}
-                    sizes="100vw"
-                    loading="eager"
-                    fetchpriority="high"
-                    quality={configQuality}
-                />
-            </template>
-        ))}
     </div>
     )}
 
-    <!-- 随机图API轮播脚本 -->
-    {useRandomImage && (
-    <script is:inline data-swup-ignore-script define:vars={{ randomImageUrl, randomImageInterval }}>
-        (function randomImageCarousel() {
-            var container = document.getElementById('banner-random-container');
-            if (!container) return;
-
-            var bgCurrent = document.getElementById('banner-bg-current');
-            var bgNext = document.getElementById('banner-bg-next');
-            if (!bgCurrent || !bgNext) return;
-
-            var TRANSITION_DURATION = 1000;
-            var timer = null;
-            var isAnimating = false;
-
-            var getRandomUrl = function() { return randomImageUrl + '?t=' + Date.now(); };
-
-            var preloadImage = function(url) {
-                return new Promise(function(resolve, reject) {
-                    var img = new Image();
-                    img.onload = function() { resolve(url); };
-                    img.onerror = reject;
-                    img.src = url;
-                });
-            };
-
-            var switchImage = async function() {
-                if (isAnimating) return;
-                if (document.hidden) return;
-
-                try {
-                    var nextUrl = getRandomUrl();
-                    await preloadImage(nextUrl);
-                    isAnimating = true;
-
-                    bgNext.style.backgroundImage = 'url(' + nextUrl + ')';
-                    bgNext.classList.remove('opacity-0');
-
-                    setTimeout(function() {
-                        bgCurrent.style.backgroundImage = 'url(' + nextUrl + ')';
-                        bgNext.style.transition = 'none';
-                        bgNext.classList.add('opacity-0');
-                        bgNext.offsetHeight;
-                        bgNext.style.transition = '';
-                        isAnimating = false;
-                    }, TRANSITION_DURATION);
-                } catch (e) {
-                    isAnimating = false;
-                }
-            };
-
-            var startCarousel = function() {
-                stopCarousel();
-                timer = setInterval(switchImage, randomImageInterval);
-            };
-
-            var stopCarousel = function() {
-                if (timer) { clearInterval(timer); timer = null; }
-            };
-
-            var observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    entry.isIntersecting ? startCarousel() : stopCarousel();
-                });
-            });
-            observer.observe(container);
-
-            document.addEventListener('astro:before-swap', function() {
-                stopCarousel();
-                observer.disconnect();
-            }, { once: true });
-
-            startCarousel();
-        })();
-    </script>
-    )}
-
-    <!-- 客户端随机选择图片脚本（静态图片模式） -->
-    <script is:inline data-swup-ignore-script>
-        (function randomizeBannerImage() {
-            var container = document.getElementById('banner-images-container');
-            if (!container) return;
-
-            var mobileCount = parseInt(container.dataset.mobileCount || '0', 10);
-            var desktopCount = parseInt(container.dataset.desktopCount || '0', 10);
-
-            if (mobileCount <= 1 && desktopCount <= 1) return;
-
-            // 保存 SSR 初始第一张图的 HTML，供后续轮播收集完整帧序列使用
-            if (typeof window.__bannerInitialFrameHtml === 'undefined') {
-                window.__bannerInitialFrameHtml = {};
-            }
-
-            function rememberInitialFrame(slotClass) {
-                var slot = container.querySelector('.' + slotClass);
-                if (!slot) return;
-                if (!window.__bannerInitialFrameHtml[slotClass]) {
-                    window.__bannerInitialFrameHtml[slotClass] = slot.innerHTML;
-                }
-            }
-
-            rememberInitialFrame('banner-image-slot-mobile');
-            rememberInitialFrame('banner-image-slot-desktop');
-
-            // F5 刷新重置，Swup 切换保留
-            if (typeof window.__bannerRandomIndex === 'undefined') {
-                window.__bannerRandomIndex = {
-                    mobile: mobileCount > 1 ? Math.floor(Math.random() * mobileCount) : 0,
-                    desktop: desktopCount > 1 ? Math.floor(Math.random() * desktopCount) : 0
-                };
-            }
-
-            // 从 template 替换默认图片（index 0 = 已渲染的默认图，>0 = template）
-            function applyRandom(slotClass, tplClass, randomIndex) {
-                if (randomIndex === 0) return;
-                var slot = container.querySelector('.' + slotClass);
-                var templates = container.querySelectorAll('.' + tplClass);
-                if (!slot || !templates.length) return;
-                var tpl = templates[randomIndex - 1];
-                if (!tpl) return;
-                slot.innerHTML = '';
-                slot.appendChild(tpl.content.cloneNode(true));
-            }
-
-            applyRandom('banner-image-slot-mobile', 'banner-tpl-mobile', window.__bannerRandomIndex.mobile);
-            applyRandom('banner-image-slot-desktop', 'banner-tpl-desktop', window.__bannerRandomIndex.desktop);
-        })();
-    </script>
-
-    <!-- 横幅轮播 Ken Burns 样式（放在 body 中，不受 Swup head 替换影响） -->
-    <Fragment set:html={`<style>
-        @keyframes bannerKenBurns {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
-        }
-        .banner-kb {
-            animation: bannerKenBurns ${bannerCarouselInterval + 1500}ms ease-out forwards;
-        }
-    </style>`} />
-    <!-- 横幅图片轮播脚本 -->
+    <!-- 壁纸轮播脚本（基于 CSS transition 的简洁实现） -->
+    {(bannerCarouselEnabledDefault && hasMultipleImages) && (
     <script is:inline data-swup-ignore-script>
         (function initBannerCarousel() {
             var container = document.getElementById('banner-images-container');
             if (!container) return;
 
             var WALLPAPER_BANNER = 'banner';
-
-            var mobileCount = parseInt(container.dataset.mobileCount || '0', 10);
-            var desktopCount = parseInt(container.dataset.desktopCount || '0', 10);
-            if (mobileCount <= 1 && desktopCount <= 1) return;
-
-            var interval = parseInt(container.dataset.carouselInterval || '8000', 10);
+            var interval = parseInt(container.dataset.carouselInterval || '5000', 10);
             var switchable = container.dataset.carouselSwitchable === 'true';
             var defaultEnabled = container.dataset.carouselEnabled === 'true';
-            var FADE_MS = 1500;
+            var FADE_MS = 1000;
 
             function isCarouselEnabled() {
                 if (!switchable) return defaultEnabled;
@@ -586,144 +434,152 @@ const bannerCarouselInterval = Math.max(
             }
 
             function isBannerWallpaperMode() {
-                return document.documentElement.getAttribute('data-wallpaper-mode') === WALLPAPER_BANNER;
+                var mode = document.documentElement.getAttribute('data-wallpaper-mode');
+                return mode === 'banner' || mode === 'fullscreen';
             }
 
-            // 收集所有帧内容
-            if (!window.__bannerCarouselFrames) window.__bannerCarouselFrames = {};
-
-            function collectFrames(slotClass, tplClass) {
-                if (window.__bannerCarouselFrames[slotClass]) return;
-                var frames = [];
-                var initialFrame =
-                    window.__bannerInitialFrameHtml &&
-                    window.__bannerInitialFrameHtml[slotClass];
-                var slot = container.querySelector('.' + slotClass);
-                if (initialFrame) {
-                    frames.push(initialFrame);
-                } else if (slot) {
-                    frames.push(slot.innerHTML);
+            // 获取当前设备可见的 slide-item（用 class 判断，避免 offsetParent 触发重排）
+            function getVisibleSlides() {
+                var all = container.querySelectorAll('.slide-item');
+                var isLg = window.innerWidth >= 1024;
+                var visible = [];
+                for (var i = 0; i < all.length; i++) {
+                    var el = all[i];
+                    // mobile: "block lg:hidden" → lg 以上隐藏
+                    // desktop: "hidden lg:block" → lg 以下隐藏
+                    if (isLg && el.classList.contains('lg:hidden')) continue;
+                    if (!isLg && el.classList.contains('hidden') && !el.classList.contains('lg:hidden')) continue;
+                    visible.push(el);
                 }
-                var tpls = container.querySelectorAll('.' + tplClass);
-                for (var i = 0; i < tpls.length; i++) {
-                    // 直接读取 template 的 innerHTML，不创建真实 DOM 节点，避免触发图片加载
-                    frames.push(tpls[i].innerHTML);
+                if (visible.length === 0) {
+                    for (var j = 0; j < all.length; j++) visible.push(all[j]);
                 }
-                window.__bannerCarouselFrames[slotClass] = frames;
+                return visible;
             }
 
-            collectFrames('banner-image-slot-mobile', 'banner-tpl-mobile');
-            collectFrames('banner-image-slot-desktop', 'banner-tpl-desktop');
-
-            if (typeof window.__bannerCarouselIndex === 'undefined') {
-                window.__bannerCarouselIndex = {
-                    mobile: window.__bannerRandomIndex ? window.__bannerRandomIndex.mobile : 0,
-                    desktop: window.__bannerRandomIndex ? window.__bannerRandomIndex.desktop : 0
-                };
+            function getCurrentIndex(slides) {
+                for (var i = 0; i < slides.length; i++) {
+                    if (slides[i].classList.contains('active')) return i;
+                }
+                return 0;
             }
 
-            // 检查 slot 是否被响应式类隐藏（lg:hidden / hidden lg:block）
-            // 不使用 offsetParent，因为 wallpaper-wrapper 初始可能 display:none
-            function isSlotHiddenByBreakpoint(slot) {
-                var cl = slot.classList;
-                var w = window.innerWidth;
-                var isLg = w >= 1024;
-                // mobile slot: "block lg:hidden" → lg 以上隐藏
-                if (cl.contains('lg:hidden') && isLg) return true;
-                // desktop slot: "hidden lg:block" → lg 以下隐藏
-                if (cl.contains('hidden') && !cl.contains('lg:hidden') && !isLg) return true;
-                return false;
+            function changeToSlide(targetIndex, resetProgress) {
+                var slides = getVisibleSlides();
+                if (slides.length <= 1) return;
+
+                var nextIndex = targetIndex;
+                if (nextIndex >= slides.length) nextIndex = 0;
+                else if (nextIndex < 0) nextIndex = slides.length - 1;
+
+                // Slide 效果需要 prev-waiting 辅助类
+                var effect = container.className;
+                if (effect.indexOf('effect-slide') !== -1) {
+                    for (var i = 0; i < slides.length; i++) {
+                        slides[i].classList.remove('prev-waiting');
+                        if (i < nextIndex) slides[i].classList.add('prev-waiting');
+                    }
+                }
+
+                for (var j = 0; j < slides.length; j++) {
+                    if (j === nextIndex) slides[j].classList.add('active');
+                    else slides[j].classList.remove('active');
+                }
+
+                if (resetProgress !== false && appState.isPlaying) {
+                    startAutoPlay();
+                }
             }
 
-            // 给首张图启动 Ken Burns
-            function applyInitialKB(slotClass) {
-                var slot = container.querySelector('.' + slotClass);
-                if (!slot || isSlotHiddenByBreakpoint(slot)) return;
-                // 移除可能残留的旧 class，重新触发动画
-                slot.classList.remove('banner-kb');
-                void slot.offsetWidth; // 强制回流
-                slot.classList.add('banner-kb');
-            }
+            var appState = {
+                isPlaying: false,
+                autoPlayTimer: null,
+                touchStartX: 0,
+                touchEndX: 0
+            };
 
-            function crossfade(slotClass, totalCount, type) {
-                if (totalCount <= 1) return;
-                var frames = window.__bannerCarouselFrames[slotClass];
-                if (!frames || frames.length === 0) return;
-
-                var oldSlot = container.querySelector('.' + slotClass);
-                if (!oldSlot) return;
-
-                // 跳过当前不可见的 slot（桌面端不加载移动端图片，反之亦然）
-                if (isSlotHiddenByBreakpoint(oldSlot)) return;
-
-                var currentIndex = window.__bannerCarouselIndex[type];
-                var nextIndex = (currentIndex + 1) % frames.length;
-                window.__bannerCarouselIndex[type] = nextIndex;
-
-                // 新层：叠在旧层上方
-                var newSlot = document.createElement('div');
-                // 复制基础 class，去掉 banner-kb 避免继承旧动画状态
-                var baseClass = oldSlot.className.replace(/\bbanner-kb\b/g, '').trim();
-                newSlot.className = baseClass;
-                newSlot.style.opacity = '0';
-                newSlot.style.transition = 'opacity ' + FADE_MS + 'ms ease-in-out';
-                newSlot.innerHTML = frames[nextIndex];
-                oldSlot.parentNode.insertBefore(newSlot, oldSlot.nextSibling);
-
-                // 双 rAF：确保 opacity:0 已绘制，然后同时触发淡入 + Ken Burns
-                requestAnimationFrame(function() {
-                    requestAnimationFrame(function() {
-                        newSlot.style.opacity = '1';
-                        newSlot.classList.add('banner-kb');
-                    });
-                });
-
-                // 淡入完成后：移除旧层，清理 transition（避免影响后续动画）
-                setTimeout(function() {
-                    if (oldSlot.parentNode) oldSlot.parentNode.removeChild(oldSlot);
-                    newSlot.style.transition = '';
-                }, FADE_MS + 50);
-            }
-
-            var timerId = null;
-
-            function startCarousel() {
-                stopCarousel();
-                if (!isBannerWallpaperMode()) return;
+            function startAutoPlay() {
+                stopAutoPlay();
                 if (!isCarouselEnabled()) return;
+                if (!isBannerWallpaperMode()) return;
 
-                // 首张图立即启动 Ken Burns 缩放
-                applyInitialKB('banner-image-slot-mobile');
-                applyInitialKB('banner-image-slot-desktop');
-
-                timerId = setInterval(function() {
-                    if (!isBannerWallpaperMode()) { stopCarousel(); return; }
-                    if (!isCarouselEnabled()) { stopCarousel(); return; }
-                    crossfade('banner-image-slot-mobile', mobileCount, 'mobile');
-                    crossfade('banner-image-slot-desktop', desktopCount, 'desktop');
+                appState.isPlaying = true;
+                appState.autoPlayTimer = setTimeout(function advance() {
+                    if (!appState.isPlaying) return;
+                    var slides = getVisibleSlides();
+                    var currentIdx = getCurrentIndex(slides);
+                    changeToSlide(currentIdx + 1, false);
+                    appState.autoPlayTimer = setTimeout(advance, interval);
                 }, interval);
             }
 
-            function stopCarousel() {
-                if (timerId !== null) { clearInterval(timerId); timerId = null; }
+            function stopAutoPlay() {
+                appState.isPlaying = false;
+                if (appState.autoPlayTimer) {
+                    clearTimeout(appState.autoPlayTimer);
+                    appState.autoPlayTimer = null;
+                }
             }
 
-            window.addEventListener('bannerCarouselChange', function(e) {
-                e.detail && e.detail.enabled ? startCarousel() : stopCarousel();
-            });
-
-            window.addEventListener('wallpaperModeChange', function(e) {
-                if (e.detail && e.detail.mode === 'banner') {
-                    if (isCarouselEnabled()) startCarousel();
-                } else {
-                    stopCarousel();
+            // 键盘控制
+            document.addEventListener('keydown', function(e) {
+                if (!isBannerWallpaperMode() || !isCarouselEnabled()) return;
+                if (e.key === 'ArrowRight') {
+                    var slides = getVisibleSlides();
+                    changeToSlide(getCurrentIndex(slides) + 1);
+                } else if (e.key === 'ArrowLeft') {
+                    var slides2 = getVisibleSlides();
+                    changeToSlide(getCurrentIndex(slides2) - 1);
+                } else if (e.key === ' ') {
+                    e.preventDefault();
+                    appState.isPlaying ? stopAutoPlay() : startAutoPlay();
                 }
             });
 
-            startCarousel();
+            // 触屏滑动
+            document.addEventListener('touchstart', function(e) {
+                appState.touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            document.addEventListener('touchend', function(e) {
+                appState.touchEndX = e.changedTouches[0].screenX;
+                var diff = appState.touchEndX - appState.touchStartX;
+                if (Math.abs(diff) > 50) {
+                    var slides = getVisibleSlides();
+                    if (diff > 0) changeToSlide(getCurrentIndex(slides) - 1);
+                    else changeToSlide(getCurrentIndex(slides) + 1);
+                }
+            }, { passive: true });
+
+            // 事件监听
+            window.addEventListener('bannerCarouselChange', function(e) {
+                e.detail && e.detail.enabled ? startAutoPlay() : stopAutoPlay();
+            });
+            window.addEventListener('wallpaperModeChange', function(e) {
+                if (e.detail && (e.detail.mode === 'banner' || e.detail.mode === 'fullscreen')) {
+                    if (isCarouselEnabled()) startAutoPlay();
+                } else {
+                    stopAutoPlay();
+                }
+            });
+
+            // 随机首张
+            var slides = getVisibleSlides();
+            if (slides.length > 1) {
+                var randomIdx = Math.floor(Math.random() * slides.length);
+                for (var k = 0; k < slides.length; k++) {
+                    if (k === randomIdx) slides[k].classList.add('active');
+                    else slides[k].classList.remove('active');
+                }
+            }
+
+            // 启动
+            if (isCarouselEnabled() && isBannerWallpaperMode()) {
+                startAutoPlay();
+            }
         })();
     </script>
-    
+    )}
+
     <div id="banner-dim-container" class="absolute inset-0 z-0 pointer-events-none">
         {showBannerDim && <div class="banner-dim-overlay absolute inset-0" style={`background: rgba(0, 0, 0, ${dimOpacity})`}></div>}
     </div>
@@ -864,7 +720,7 @@ const bannerCarouselInterval = Math.max(
     <div class={`waves absolute -bottom-px h-[10vh] max-h-37.5 min-h-12.5 w-full md:h-[15vh]
         ${!wavesEnabledOnMobile ? 'hidden' : ''} ${!wavesEnabledOnDesktop ? 'md:hidden' : ''} ${wavesEnabledOnDesktop ? 'md:block' : ''}`}
         id="header-waves"
-        style="transform: translateZ(0);">
+        style="transform: translateZ(0); z-index: 3;">
         <svg
             class="waves"
             xmlns="http://www.w3.org/2000/svg"
@@ -915,7 +771,7 @@ const bannerCarouselInterval = Math.max(
     <div class={`wallpaper-gradient absolute bottom-0 left-0 w-full pointer-events-none
         ${!gradientEnabledOnMobile ? 'hidden' : ''} ${!gradientEnabledOnDesktop ? 'md:hidden' : ''} ${gradientEnabledOnDesktop ? 'md:block' : ''}`}
         id="wallpaper-gradient"
-        style={`height: ${gradientHeight}; background: linear-gradient(to bottom, transparent, var(--page-bg));`}>
+        style={`height: ${gradientHeight}; z-index: 8; background: linear-gradient(to bottom, transparent, var(--page-bg));`}>
     </div>
     ) : null}
 </div>

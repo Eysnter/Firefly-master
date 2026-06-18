@@ -741,12 +741,8 @@ export type BackgroundWallpaperConfig = {
 		carousel?: {
 			enable: boolean; // 是否启用横幅图片轮播
 			interval?: number; // 轮播间隔时间，单位毫秒
+			transitionEffect?: "fade" | "zoom" | "slide"; // 过渡效果
 			switchable?: boolean; // 是否允许用户通过控制面板切换横幅轮播
-		};
-		// 随机图API配置，设置后自动启用无刷新轮播（双层淡入淡出）
-		randomImage?: {
-			url: string; // 随机图API地址，如 "https://t.alcy.cc/ycy"
-			interval?: number; // 轮播间隔（毫秒），默认 6000
 		};
 	};
 	// 全屏透明覆盖模式特有配置

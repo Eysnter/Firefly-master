@@ -782,6 +782,23 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
              this.updateUI();
         }
 
+        // 切换歌单（供底部歌单面板调用）
+        switchPlaylist(playlistId) {
+            if (this.playlistSongs && this.playlistSongs[playlistId]) {
+                this.playlist = this.playlistSongs[playlistId];
+                this.activePlaylistId = playlistId;
+                this.currentIndex = 0;
+                this.loadSong(0, true);
+            }
+        }
+
+        // 播放指定歌曲（供底部歌单面板调用）
+        playSong(index) {
+            if (index >= 0 && index < this.playlist.length) {
+                this.loadSong(index, true);
+            }
+        }
+
         toggleMiniPlayer() {
              // Deprecated in favor of open/close hover
             if (!this.isMiniOpen) {
@@ -916,6 +933,13 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
                     mainStatusDot.classList.add('bg-green-400');
                 }
                 if (mainStatusText) mainStatusText.textContent = '播放中';
+                // 音频可视化条动画
+                const mainVisualizer = document.getElementById('audio-visualizer');
+                if (mainVisualizer) {
+                    mainVisualizer.querySelectorAll('div').forEach(bar => {
+                        bar.classList.add('visualizer-bar-active');
+                    });
+                }
             } else {
                 if (mainIconPlay) mainIconPlay.classList.remove('hidden');
                 if (mainIconPause) mainIconPause.classList.add('hidden');
@@ -927,6 +951,13 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
                     mainStatusDot.classList.add('bg-red-400');
                 }
                 if (mainStatusText) mainStatusText.textContent = '暂停';
+                // 停止可视化条动画
+                const mainVisualizer = document.getElementById('audio-visualizer');
+                if (mainVisualizer) {
+                    mainVisualizer.querySelectorAll('div').forEach(bar => {
+                        bar.classList.remove('visualizer-bar-active');
+                    });
+                }
             }
 
             // Update Active Playlist Item
@@ -1003,6 +1034,15 @@ const showMini = musicPlayerConfig.showMiniPlayer ?? false;
                   this.visualizerBars.forEach(bar => {
                       bar.style.height = (Math.random() * 8 + 4) + 'px';
                   });
+              }
+              // 主播放器可视化条高度随机化
+              if (this.isPlaying) {
+                  const mainVisualizer = document.getElementById('audio-visualizer');
+                  if (mainVisualizer) {
+                      mainVisualizer.querySelectorAll('div').forEach(bar => {
+                          bar.style.transform = `scaleY(${Math.random() * 0.8 + 0.2})`;
+                      });
+                  }
               }
         }
         

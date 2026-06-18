@@ -14,15 +14,381 @@ const playlists = [
 
 const counts = { ...playlistCounts, "all": musicList.length };
 const songs = { ...playlistSongs, "all": musicList };
+
+// 计算总时长
+function parseDuration(d?: string): number {
+  if (!d) return 0;
+  const parts = d.split(":");
+  if (parts.length === 2) return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+  return 0;
+}
+const totalSeconds = musicList.reduce((sum, item) => sum + parseDuration(item.duration), 0);
+const totalHours = Math.floor(totalSeconds / 3600);
+const totalMinutes = Math.floor((totalSeconds % 3600) / 60);
+const totalDurationText = totalHours > 0 ? `${totalHours}h ${totalMinutes}m` : `${totalMinutes}m`;
+
+// 底部歌单数据（排除"全部音乐"）
+const bottomPlaylists = playlists.filter(p => p.id !== "all");
 ---
 
 <MainGridLayout title={i18n(I18nKey.music)} description={i18n(I18nKey.music)}>
   <div class="py-8 px-4">
+
+    <!-- ========== 顶部统计卡片 ========== -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <!-- 总歌曲 -->
+      <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-white/60 dark:border-white/10 shadow-sm flex items-center justify-between transition-all hover:shadow-md hover:translate-y-[-1px]">
+        <div>
+          <p class="text-xs text-gray-400 font-semibold tracking-wide uppercase">总歌曲</p>
+          <h3 class="text-3xl font-extrabold text-gray-800 dark:text-gray-200 mt-1">{musicList.length}</h3>
+          <span class="text-[10px] font-medium px-2 py-0.5 rounded-full mt-2 inline-block" style="color: var(--primary); background-color: color-mix(in oklch, var(--primary) 10%, transparent);">已通过 Meting 同步</span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background-color: color-mix(in oklch, var(--primary) 10%, transparent); color: var(--primary);">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+        </div>
+      </div>
+      <!-- 歌单数量 -->
+      <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-white/60 dark:border-white/10 shadow-sm flex items-center justify-between transition-all hover:shadow-md hover:translate-y-[-1px]">
+        <div>
+          <p class="text-xs text-gray-400 font-semibold tracking-wide uppercase">歌单</p>
+          <h3 class="text-3xl font-extrabold text-gray-800 dark:text-gray-200 mt-1">{bottomPlaylists.length}</h3>
+          <span class="text-[10px] text-purple-500 font-medium bg-purple-50/80 dark:bg-purple-900/30 px-2 py-0.5 rounded-full mt-2 inline-block">支持多排版浏览切换</span>
+        </div>
+        <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center text-purple-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        </div>
+      </div>
+      <!-- 总时长 -->
+      <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-white/60 dark:border-white/10 shadow-sm flex items-center justify-between transition-all hover:shadow-md hover:translate-y-[-1px]">
+        <div>
+          <p class="text-xs text-gray-400 font-semibold tracking-wide uppercase">总时长</p>
+          <h3 class="text-3xl font-extrabold text-gray-800 dark:text-gray-200 mt-1">{totalDurationText}</h3>
+          <span class="text-[10px] text-emerald-500 font-medium bg-emerald-50/80 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full mt-2 inline-block">高品质音频</span>
+        </div>
+        <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center text-emerald-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 主播放器 ========== -->
     <MusicPlayer
       list={musicList}
       playlists={playlists}
       playlistCounts={counts}
       playlistSongs={songs}
     />
+
+    <!-- ========== 底部多模式歌单面板 ========== -->
+    <div class="mt-10 animate-in fade-in slide-in-from-bottom-4 duration-700" id="favorites-section">
+      <!-- 标题栏 + 布局切换 -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-l-4 pl-4 py-1 gap-4" style="border-color: var(--primary);">
+        <div>
+          <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">我收藏的音乐</h3>
+          <p class="text-xs text-gray-400 mt-0.5">{bottomPlaylists.length} 个收藏歌单 · 支持多维排版自由切换</p>
+        </div>
+        <!-- 布局切换控件 -->
+        <div class="flex items-center bg-gray-100 dark:bg-gray-800 border border-gray-200/50 dark:border-gray-700/50 p-1 rounded-xl self-start sm:self-center shadow-inner">
+          <button id="layout-grid" class="playlist-mode-btn-active flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300" data-mode="grid">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            <span>精美网格</span>
+          </button>
+          <button id="layout-list" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200" data-mode="list">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <span>简洁列表</span>
+          </button>
+          <button id="layout-collapse" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200" data-mode="collapse">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <span>深度折叠</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 歌单动态渲染容器 -->
+      <div id="playlists-display-container" class="mt-6">
+        <!-- JS 渲染对应模式的 DOM 内容 -->
+      </div>
+    </div>
+
+    <!-- ========== Toast 通知 ========== -->
+    <div id="music-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900/90 dark:bg-gray-100/90 backdrop-blur-md text-white dark:text-gray-900 text-xs font-semibold px-5 py-3 rounded-full shadow-2xl z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-300">
+    </div>
   </div>
+
+  <!-- ========== 底部歌单面板脚本 ========== -->
+  <script is:inline define:vars={{ bottomPlaylists, playlistSongs, playlistCounts }}>
+    // 底部歌单状态
+    const FavState = {
+      layout: 'grid', // grid, list, collapse
+      expandedId: null, // 折叠模式下展开的歌单ID
+      activePlaylistId: null, // 当前播放的歌单ID
+      currentSongIndex: -1,
+      isPlaying: false,
+    };
+
+    // Toast 通知
+    window.showMusicToast = function(text) {
+      const toast = document.getElementById('music-toast');
+      if (!toast) return;
+      toast.textContent = text;
+      toast.classList.remove('opacity-0', 'translate-y-3');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-3');
+      }, 2500);
+    };
+
+    // 切换布局模式
+    function switchFavLayout(mode) {
+      FavState.layout = mode;
+      // 更新按钮样式
+      document.querySelectorAll('[data-mode]').forEach(btn => {
+        if (btn.dataset.mode === mode) {
+          btn.className = 'playlist-mode-btn-active flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300';
+        } else {
+          btn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200';
+        }
+      });
+      renderFavPlaylists();
+      window.showMusicToast(`已切换到${mode === 'grid' ? '精美网格' : mode === 'list' ? '简洁列表' : '深度折叠'}模式`);
+    }
+
+    // 渲染底部歌单
+    function renderFavPlaylists() {
+      const container = document.getElementById('playlists-display-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (FavState.layout === 'grid') {
+        renderGridLayout(container);
+      } else if (FavState.layout === 'list') {
+        renderListLayout(container);
+      } else if (FavState.layout === 'collapse') {
+        renderCollapseLayout(container);
+      }
+    }
+
+    // 网格模式
+    function renderGridLayout(container) {
+      const grid = document.createElement('div');
+      grid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5';
+
+      bottomPlaylists.forEach(pl => {
+        const plSongs = playlistSongs[pl.id] || [];
+        const count = playlistCounts[pl.id] || 0;
+        const isActive = FavState.activePlaylistId === pl.id;
+        const covers = plSongs.slice(0, 4).map(s => s.cover);
+        while (covers.length < 4) covers.push(covers[0] || '');
+
+        const card = document.createElement('div');
+        card.className = `bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-3xl p-4 border transition-all duration-300 cursor-pointer ${isActive ? 'ring-4 scale-[1.02] shadow-lg' : 'border-gray-100 dark:border-gray-800 hover:scale-[1.02] hover:shadow-md'}`;
+        if (isActive) card.style.borderColor = 'var(--primary)';
+        if (isActive) card.style.ringColor = 'color-mix(in oklch, var(--primary) 30%, transparent)';
+
+        card.innerHTML = `
+          <div class="grid grid-cols-2 gap-1 rounded-2xl overflow-hidden aspect-square relative group">
+            <img src="${covers[0]}" class="w-full h-full object-cover" loading="lazy">
+            <img src="${covers[1]}" class="w-full h-full object-cover" loading="lazy">
+            <img src="${covers[2]}" class="w-full h-full object-cover" loading="lazy">
+            <img src="${covers[3]}" class="w-full h-full object-cover" loading="lazy">
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div class="w-11 h-11 text-white rounded-full flex items-center justify-center transform scale-90 group-hover:scale-100 transition-all duration-300 shadow-lg" style="background-color: var(--primary);">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+            <span class="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">${count}首</span>
+          </div>
+          <div class="mt-3.5 px-0.5">
+            <h4 class="text-xs font-bold text-gray-800 dark:text-gray-200 tracking-wide truncate">${pl.name}</h4>
+            <p class="text-[10px] text-gray-400 font-medium mt-0.5">${plSongs.length} 首可播音频</p>
+          </div>
+        `;
+        card.addEventListener('click', () => switchFavPlaylist(pl.id, pl.name));
+        grid.appendChild(card);
+      });
+      container.appendChild(grid);
+    }
+
+    // 列表模式
+    function renderListLayout(container) {
+      const grid = document.createElement('div');
+      grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4';
+
+      bottomPlaylists.forEach(pl => {
+        const plSongs = playlistSongs[pl.id] || [];
+        const count = playlistCounts[pl.id] || 0;
+        const isActive = FavState.activePlaylistId === pl.id;
+        const cover = plSongs[0]?.cover || '';
+
+        const row = document.createElement('div');
+        row.className = `flex items-center justify-between p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer ${isActive ? 'ring-2' : 'border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 hover:shadow-md hover:border-gray-200 dark:hover:border-gray-700'}`;
+        if (isActive) {
+          row.style.borderColor = 'color-mix(in oklch, var(--primary) 40%, transparent)';
+          row.style.backgroundColor = 'color-mix(in oklch, var(--primary) 5%, transparent)';
+        }
+
+        row.innerHTML = `
+          <div class="flex items-center gap-3.5 min-w-0">
+            <div class="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0 relative">
+              <img src="${cover}" class="w-full h-full object-cover" loading="lazy">
+              ${isActive && FavState.isPlaying ? `
+                <div class="absolute inset-0 bg-black/30 flex items-center justify-center gap-0.5">
+                  <span class="w-1 h-3.5 bg-white rounded-full bar-active" style="animation-delay: 0.1s"></span>
+                  <span class="w-1 h-5 bg-white rounded-full bar-active" style="animation-delay: 0.3s"></span>
+                  <span class="w-1 h-3 bg-white rounded-full bar-active" style="animation-delay: 0.5s"></span>
+                </div>
+              ` : ''}
+            </div>
+            <div class="min-w-0">
+              <h4 class="text-xs font-bold text-gray-800 dark:text-gray-200 tracking-wide truncate">${pl.name}</h4>
+              <p class="text-[10px] text-gray-400 font-medium mt-0.5">${plSongs.length} 首高品质音乐</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-full">${count}首</span>
+            <button class="w-8 h-8 rounded-full text-white flex items-center justify-center transition-all shadow-sm hover:scale-110" style="background-color: var(--primary);">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+          </div>
+        `;
+        row.addEventListener('click', () => switchFavPlaylist(pl.id, pl.name));
+        grid.appendChild(row);
+      });
+      container.appendChild(grid);
+    }
+
+    // 折叠模式
+    function renderCollapseLayout(container) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'space-y-3.5 max-w-4xl mx-auto';
+
+      bottomPlaylists.forEach(pl => {
+        const plSongs = playlistSongs[pl.id] || [];
+        const count = playlistCounts[pl.id] || 0;
+        const isActive = FavState.activePlaylistId === pl.id;
+        const isExpanded = FavState.expandedId === pl.id;
+        const cover = plSongs[0]?.cover || '';
+
+        const item = document.createElement('div');
+        item.className = `border rounded-2xl overflow-hidden transition-all duration-300 shadow-sm ${isExpanded ? 'ring-2' : 'border-gray-100 dark:border-gray-800'}`;
+        if (isExpanded) item.style.ringColor = 'color-mix(in oklch, var(--primary) 15%, transparent)';
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between p-4 cursor-pointer transition-all ${isActive ? 'border-b border-gray-100 dark:border-gray-800' : ''}" style="${isActive ? `background: linear-gradient(to right, color-mix(in oklch, var(--primary) 5%, transparent), transparent);` : 'background: white/80;'}">
+            <div class="flex items-center gap-3.5 min-w-0">
+              <div class="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0 relative">
+                <img src="${cover}" class="w-full h-full object-cover" loading="lazy">
+                ${isActive && FavState.isPlaying ? `
+                  <div class="absolute inset-0 bg-black/30 flex items-center justify-center gap-0.5">
+                    <span class="w-1 h-3 bg-white origin-bottom bar-active" style="animation-delay: 0.1s"></span>
+                    <span class="w-1 h-4.5 bg-white origin-bottom bar-active" style="animation-delay: 0.3s"></span>
+                  </div>
+                ` : ''}
+              </div>
+              <div class="min-w-0">
+                <h4 class="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5 truncate">
+                  <span>${pl.name}</span>
+                  ${isActive ? `<span class="w-2 h-2 rounded-full animate-pulse" style="background-color: var(--primary);"></span>` : ''}
+                </h4>
+                <p class="text-[10px] text-gray-400 font-medium mt-0.5">${plSongs.length}首曲目 · 点击可折叠展开试听</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <button class="play-all-btn flex items-center gap-1 text-[10px] font-bold text-white px-3 py-1.5 rounded-xl transition-all shadow-sm hover:scale-105" style="background-color: var(--primary);">
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <span>播放歌单</span>
+              </button>
+              <button class="toggle-arrow text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-transform duration-300 p-1" style="transform: rotate(${isExpanded ? '180deg' : '0deg'});">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="accordion-content bg-gray-50/50 dark:bg-gray-800/30 border-t border-gray-100/50 dark:border-gray-800/50" style="max-height: ${isExpanded ? (plSongs.length * 56 + 20) + 'px' : '0px'}; opacity: ${isExpanded ? '1' : '0'}">
+            <div class="p-3 space-y-1">
+              ${plSongs.map((song, sIdx) => `
+                <div class="song-item flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-gray-150 dark:hover:border-gray-700" data-playlist-id="${pl.id}" data-song-index="${sIdx}">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <span class="text-[10px] font-mono text-gray-400 w-5 text-center">${(sIdx + 1).toString().padStart(2, '0')}</span>
+                    <div class="w-8 h-8 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0">
+                      <img src="${song.cover}" class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="min-w-0">
+                      <h5 class="text-xs truncate text-gray-800 dark:text-gray-200">${song.title}</h5>
+                      <p class="text-[10px] text-gray-400 font-normal truncate">${song.artist}</p>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono text-gray-400 mr-2">${song.duration || '--:--'}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        // 折叠切换
+        const header = item.querySelector('.flex.items-center.justify-between');
+        header.addEventListener('click', (e) => {
+          if (e.target.closest('.play-all-btn')) return;
+          FavState.expandedId = FavState.expandedId === pl.id ? null : pl.id;
+          renderFavPlaylists();
+        });
+
+        // 播放歌单
+        const playAllBtn = item.querySelector('.play-all-btn');
+        playAllBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          switchFavPlaylist(pl.id, pl.name);
+        });
+
+        // 歌曲点击
+        item.querySelectorAll('.song-item').forEach(el => {
+          el.addEventListener('click', () => {
+            const plId = el.dataset.playlistId;
+            const sIdx = parseInt(el.dataset.songIndex);
+            playFavSong(plId, sIdx);
+          });
+        });
+
+        wrapper.appendChild(item);
+      });
+      container.appendChild(wrapper);
+    }
+
+    // 切换歌单并播放
+    function switchFavPlaylist(playlistId, name) {
+      FavState.activePlaylistId = playlistId;
+      FavState.currentSongIndex = 0;
+      FavState.isPlaying = true;
+      renderFavPlaylists();
+      // 通知全局播放器切换歌单
+      if (window.globalMusicPlayer) {
+        window.globalMusicPlayer.switchPlaylist(playlistId);
+      }
+      window.showMusicToast(`已切换至歌单「${name}」`);
+    }
+
+    // 播放指定歌曲
+    function playFavSong(playlistId, songIndex) {
+      FavState.activePlaylistId = playlistId;
+      FavState.currentSongIndex = songIndex;
+      FavState.isPlaying = true;
+      renderFavPlaylists();
+      if (window.globalMusicPlayer) {
+        window.globalMusicPlayer.switchPlaylist(playlistId);
+        setTimeout(() => {
+          window.globalMusicPlayer.playSong(songIndex);
+        }, 100);
+      }
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFavPlaylists();
+
+      // 绑定布局切换按钮
+      document.querySelectorAll('[data-mode]').forEach(btn => {
+        btn.addEventListener('click', () => switchFavLayout(btn.dataset.mode));
+      });
+    });
+  </script>
 </MainGridLayout>

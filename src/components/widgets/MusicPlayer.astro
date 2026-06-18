@@ -71,7 +71,7 @@ const playlistSongsData = JSON.stringify(playlistSongs);
   data-playlist-list={playlistListData}
   data-playlist-songs={playlistSongsData}>
 
-  <div class="bg-white dark:bg-gray-900 shadow-lg rounded-[40px] p-6 md:p-8 relative overflow-hidden">
+  <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg rounded-[40px] p-6 md:p-8 relative overflow-hidden border border-white/60 dark:border-white/10">
     <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 min-h-[560px]">
 
       <!-- ========== 左列（1/2）：封面 + 进度条 + 歌单列表 ========== -->
@@ -214,6 +214,19 @@ const playlistSongsData = JSON.stringify(playlistSongs);
               <span id="player-status-dot" class="w-2 h-2 rounded-full bg-red-400"></span>
               <span id="player-status-text" class="text-[10px] font-mono font-bold text-gray-600 dark:text-gray-300 tracking-wider">待机</span>
             </div>
+          </div>
+
+          <!-- 音频可视化条 -->
+          <div id="audio-visualizer" class="relative z-10 w-full h-10 flex items-end justify-center gap-[3px] px-6 my-2 overflow-hidden">
+            <div class="w-[4px] h-full bg-[var(--primary)]/20 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/25 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/30 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/40 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/50 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/40 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/30 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/25 origin-bottom rounded-full transition-transform duration-300"></div>
+            <div class="w-[4px] h-full bg-[var(--primary)]/20 origin-bottom rounded-full transition-transform duration-300"></div>
           </div>
 
           <!-- 内容区域：歌词容器 和 播放列表容器（切换显示） -->
@@ -381,11 +394,52 @@ const playlistSongsData = JSON.stringify(playlistSongs);
     .lyric-active .lyric-line-inner {
       transform: scale(1.12);
     }
-    /* 当前播放歌词行：主题色高亮 + 发光效果 */
+    /* 当前播放歌词行：主题色高亮 + 发光效果 + 加粗 */
     .lyric-active {
         color: var(--primary) !important;
         opacity: 1 !important;
+        font-weight: 600;
         text-shadow: 0 0 20px color-mix(in oklch, var(--primary) 60%, transparent);
+    }
+
+    /* 音频可视化条动画 */
+    @keyframes visualizer-bounce {
+        0%, 100% { transform: scaleY(0.15); }
+        50% { transform: scaleY(1); }
+    }
+    .visualizer-bar-active {
+        animation: visualizer-bounce 1s ease-in-out infinite;
+    }
+
+    /* Toast 通知样式 */
+    #music-toast {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* 底部歌单面板样式 */
+    .playlist-mode-btn-active {
+        background-color: white;
+        color: var(--primary);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .dark .playlist-mode-btn-active {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    /* 折叠面板动画 */
+    .accordion-content {
+        transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        overflow: hidden;
+    }
+
+    /* 歌曲播放中波形动画 */
+    @keyframes bar-active {
+        0%, 100% { transform: scaleY(0.3); }
+        50% { transform: scaleY(1); }
+    }
+    .bar-active {
+        animation: bar-active 0.8s ease-in-out infinite;
     }
     /* 逐字歌词：已唱过的字发光 */
     .lyric-word-active {

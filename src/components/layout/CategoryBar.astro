@@ -379,7 +379,7 @@ const categoriesUrl = getCategoryPageUrl();
   // 在 Swup 导航时提前更新状态，避免切换期间激活态闪烁
   function setupSwupEarlyUpdate() {
     if (!window.swup?.hooks) return;
-    window.swup.hooks.on("visit:start", (visit: any) => {
+    window.swup.hooks.on("visit:start", (visit: { to: { url: string } }) => {
       const bar = document.getElementById("category-bar");
       if (!bar) return;
       const targetUrl = new URL(visit.to.url, window.location.href);

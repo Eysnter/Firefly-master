@@ -304,6 +304,6 @@
   }
 
   // 将函数暴露到全局作用域
-  (window as any).showModelMessage = showMessage;
-  (window as any).clearModelMessage = clearMessage;
+  window.showModelMessage = showMessage;
+  window.clearModelMessage = clearMessage;
 </script>

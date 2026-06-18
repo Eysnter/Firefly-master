@@ -126,7 +126,7 @@ const isComponentInitiallyVisible = (
   return true;
 };
 
-// 动态构建组件 props
+// 动态构建组件 props（动态组件渲染，类型在运行时确定）
 const getComponentProps = (
   config: WidgetComponentConfig | MobileBottomComponentConfig,
   index: number,
@@ -197,7 +197,8 @@ const hasInitiallyVisibleTopComponents = topComponents.some(
           {bottomComponents.map((comp, index) => {
             const Component = componentMap[comp.type];
             if (!Component) return null;
-            const props = getComponentProps(comp, index) as any;
+            // biome-ignore lint/suspicious/noExplicitAny: Dynamic component props spread
+const props = getComponentProps(comp, index) as any;
             return <Component {...props} />;
           })}
         </div>
@@ -214,7 +215,8 @@ const hasInitiallyVisibleTopComponents = topComponents.some(
               {topComponents.map((comp, index) => {
                 const Component = componentMap[comp.type];
                 if (!Component) return null;
-                const props = getComponentProps(comp, index) as any;
+                // biome-ignore lint/suspicious/noExplicitAny: Dynamic component props spread
+const props = getComponentProps(comp, index) as any;
                 return <Component {...props} />;
               })}
             </div>
@@ -233,6 +235,7 @@ const hasInitiallyVisibleTopComponents = topComponents.some(
               {stickyComponents.map((comp, index) => {
                 const Component = componentMap[comp.type];
                 if (!Component) return null;
+                // biome-ignore lint/suspicious/noExplicitAny: Dynamic component props spread
                 const props = getComponentProps(
                   comp,
                   topComponents.length + index,

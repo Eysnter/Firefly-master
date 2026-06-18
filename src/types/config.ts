@@ -498,6 +498,7 @@ export type WidgetComponentConfig = {
 	responsive?: {
 		hidden?: ("mobile" | "tablet" | "desktop")[]; // 在指定设备上隐藏
 		collapseThreshold?: number; // 折叠阈值
+		showHeatmap?: boolean; // 是否显示年度文章热力图（Calendar 组件专用）
 	};
 	customProps?: Record<string, unknown>; // 自定义属性，用于扩展组件功能
 };
@@ -511,6 +512,7 @@ export type MobileBottomComponentConfig = {
 	responsive?: {
 		hidden?: ("mobile" | "tablet" | "desktop")[]; // 在指定设备上隐藏
 		collapseThreshold?: number; // 折叠阈值
+		showHeatmap?: boolean; // 是否显示年度文章热力图（Calendar 组件专用）
 	};
 	customProps?: Record<string, unknown>; // 自定义属性，用于扩展组件功能
 };

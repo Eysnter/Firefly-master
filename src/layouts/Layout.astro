@@ -7,7 +7,7 @@ import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontManager from "@components/features/FontManager.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
-import GlobalAudio from "@components/widgets/GlobalAudio.astro";
+import GlobalAudio from "@components/widget/GlobalAudio.astro";
 
 import {
 	backgroundWallpaper,
@@ -949,7 +949,7 @@ function disableAnimation() {
 		}
 	})
 */
-    window.swup.hooks.on("link:click", (_visit: any, { el }: { el: HTMLAnchorElement }) => {
+    window.swup.hooks.on("link:click", (_visit: unknown, { el }: { el: HTMLAnchorElement }) => {
       // Remove the delay for the first time page load
       document.documentElement.style.setProperty("--content-delay", "0ms");
 
@@ -1036,10 +1036,11 @@ function disableAnimation() {
 
       // 只在文章页面重新初始化桌面端 TOC 组件
       if (isArticlePage) {
-        const tocElement = document.querySelector("table-of-contents");
-        if (tocElement && typeof (tocElement as any).init === "function") {
+        const tocElement = document.querySelector("table-of-contents") as (HTMLElement & { init?: () => void }) | null;
+        if (tocElement && typeof tocElement.init === "function") {
+          const initFn = tocElement.init;
           setTimeout(() => {
-            (tocElement as any).init();
+            initFn();
           }, 100);
         }
       }
@@ -1052,9 +1053,9 @@ function disableAnimation() {
         if (transparentMode === "semifull") {
           // 重新调用初始化函数来重新绑定滚动事件
           if (
-            typeof (window as any).initSemifullScrollDetection === "function"
+            typeof window.initSemifullScrollDetection === "function"
           ) {
-            (window as any).initSemifullScrollDetection();
+            window.initSemifullScrollDetection();
           }
         }
       }
@@ -1116,9 +1117,9 @@ function disableAnimation() {
         if (transparentMode === "semifull") {
           // 重新调用初始化函数来重新绑定滚动事件
           if (
-            typeof (window as any).initSemifullScrollDetection === "function"
+            typeof window.initSemifullScrollDetection === "function"
           ) {
-            (window as any).initSemifullScrollDetection();
+            window.initSemifullScrollDetection();
           }
         }
       }

@@ -118,6 +118,7 @@ import petGif from "@/assets/images/zc.gif";
 
     // 应用尺寸配置到 CSS 变量
     function applyStyles() {
+      if (!petContainer || !petImg) return;
       const mobile = isMobile();
       petContainer.style.setProperty("--pet-width", mobile ? `${mobileWidth}px` : `${width}px`);
       petContainer.style.setProperty("--pet-height", mobile

@@ -8,6 +8,9 @@ declare global {
 	interface Window {
 		// biome-ignore lint/suspicious/noExplicitAny: External library
 		swup: any;
+		showModelMessage?: (message: string, options?: { containerId?: string; displayTime?: number }) => void;
+		clearModelMessage?: () => void;
+		globalMusicPlayer?: any;
 		spineModelInitialized?: boolean;
 		floatingTOCListenersInitialized?: boolean;
 		// biome-ignore lint/suspicious/noExplicitAny: External library

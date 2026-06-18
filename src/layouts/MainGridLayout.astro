@@ -798,7 +798,7 @@ const bannerCarouselInterval = Math.max(
                         <div class="banner-page-subtitle text-white/90 leading-snug mt-2 lg:mt-4" style={{ fontSize: pageTextConfig?.subtitleSize || "1.5rem" }}>
                             {pageTextConfig?.typewriter?.enable ? (
                                 <TypewriterText
-                                    text={pageSubtitleRaw}
+                                    text={pageSubtitleRaw ?? ""}
                                     speed={pageTextConfig.typewriter.speed}
                                     deleteSpeed={pageTextConfig.typewriter.deleteSpeed}
                                     pauseTime={pageTextConfig.typewriter.pauseTime}

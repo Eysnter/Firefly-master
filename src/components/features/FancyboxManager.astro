@@ -5,6 +5,7 @@ import "@/styles/fancybox-custom.css";
 ---
 
 <script>
+  // biome-ignore lint/suspicious/noExplicitAny: Fancybox is loaded dynamically from external library
   let Fancybox: any;
 
   async function setup() {
@@ -82,7 +83,7 @@ import "@/styles/fancybox-custom.css";
     // 绑定链接
     Fancybox.bind(".moment-images a[data-fancybox]", {
       ...commonOptions,
-      source: (el: any) => el.getAttribute("data-src") || el.getAttribute("href"),
+      source: (el: HTMLElement) => el.getAttribute("data-src") || el.getAttribute("href"),
     });
 
     // 绑定其他

@@ -13,7 +13,13 @@ export interface MusicItem {
  */
 import musicData from './music.json';
 
-const raw: any = musicData;
+interface MusicDataFile {
+    songs?: MusicItem[];
+    playlistCounts?: Record<string, number>;
+    playlistSongs?: Record<string, MusicItem[]>;
+}
+
+const raw = musicData as MusicItem[] | MusicDataFile;
 const musicList: MusicItem[] = Array.isArray(raw) ? raw : (raw.songs || []);
 
 export { musicList };

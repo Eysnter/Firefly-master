@@ -5,8 +5,8 @@ import { getCollection } from "astro:content";
 // 从 content/ziyuan/quote.md 读取名言数据
 const ziyuanEntries = await getCollection("ziyuan");
 const quoteEntry = ziyuanEntries.find((e) => e.id === "quote");
-const quoteData = quoteEntry?.data as any;
-const quotes = quoteData?.quotes || [];
+const quoteData = quoteEntry?.data;
+const quotes = quoteData && "quotes" in quoteData && quoteData.quotes ? quoteData.quotes : [];
 
 interface Props {
 	class?: string;
